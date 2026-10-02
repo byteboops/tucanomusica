@@ -44,8 +44,8 @@ function loadUsers(){const u=localStorage.getItem('tucano_users');return u?JSON.
 function saveUsers(u){localStorage.setItem('tucano_users',JSON.stringify(u))}
 function persistUser(){if(state.user){const u=loadUsers();const c={...state.user};delete c.username;u[state.user.username]=c;saveUsers(u)}}
 if(!localStorage.getItem('tucano_users')){saveUsers({
-  'yan':{password:'1234',answeredContract:false,contractType:null,contractSigned:false,contractPdfDownloaded:false,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[],fullName:'Yan Matheus Antunes Batista',artistName:'Yan',email:'',whatsapp:''},
-  'artista':{password:'1234',answeredContract:false,contractType:null,contractSigned:false,contractPdfDownloaded:false,knittingAcknowledged:false,hasRealContract:false,releases:[],artists:[],videoReleases:[],fullName:'',artistName:'',email:'',whatsapp:''}
+  'Ricardo':{password:'oreiade_baterbolo332',answeredContract:true,contractType:null,contractSigned:true,contractPdfDownloaded:true,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[],fullName:'Ricardo de Almeida dos Santos',artistName:'Ricardo',email:'robsonj56@gmail.com',whatsapp:'+55 41 98478 1295'},
+  'Daví Luiz':{password:'daviluiz_497',answeredContract:true,contractType:null,contractSigned:true,contractPdfDownloaded:true,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[],fullName:'Daví Luiz',artistName:'Daví Luiz',email:'',whatsapp:'+55 41 9626-5488'}
 })}
 
 function $(id){return document.getElementById(id)}
