@@ -45,7 +45,9 @@ function saveUsers(u){localStorage.setItem('tucano_users',JSON.stringify(u))}
 function persistUser(){if(state.user){const u=loadUsers();const c={...state.user};delete c.username;u[state.user.username]=c;saveUsers(u)}}
 if(!localStorage.getItem('tucano_users')){saveUsers({
   'Ricardo':{password:'oreiade-baterbolo332',answeredContract:true,contractType:null,contractSigned:true,contractPdfDownloaded:true,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[],fullName:'Ricardo de Almeida dos Santos',artistName:'Ricardo',email:'robsonj56@gmail.com',whatsapp:'+55 41 98478 1295'},
+  
   'Davi Luiz':{password:'daviluiz-497',answeredContract:true,contractType:null,contractSigned:true,contractPdfDownloaded:true,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[],fullName:'Daví Luiz',artistName:'Davi Luiz',email:'',whatsapp:'+55 41 9626-5488'}
+                                          
 })}
 
 function $(id){return document.getElementById(id)}
