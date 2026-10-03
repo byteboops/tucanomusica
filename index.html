@@ -77,6 +77,15 @@ function datePlus(days){
 }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
+function normalizeLoginValue(value){ return String(value ?? '').trim().toLowerCase(); }
+function findUserByLogin(name){
+  const users=loadUsers();
+  const target=normalizeLoginValue(name);
+  const exactKey=Object.keys(users).find(k => normalizeLoginValue(k) === target);
+  if(!exactKey) return null;
+  return { key: exactKey, data: users[exactKey] };
+}
+
 function go(p){state.page=p;render()}
 
 function liarAlert(){
@@ -143,14 +152,22 @@ function viewLanding(){
 }
 function bindLanding(){
   $('login-btn').onclick=()=>{
-    const u=$('login-user').value.trim(),p=$('login-pass').value.trim();
+    const u=$('login-user').value;
+    const p=$('login-pass').value;
     const users=loadUsers();
     $('login-error').classList.add('hidden');
-    if(users[u]&&users[u].password===p){
-      state.user={username:u,...users[u]};
-      localStorage.setItem('tucano_current_user',u);
+
+    const match=findUserByLogin(u);
+    const senhaDigitada=String(p ?? '').trim();
+    const senhaValida=match ? String(match.data.password ?? '').trim() : '';
+
+    if(match && senhaValida === senhaDigitada){
+      state.user={username:match.key,...match.data};
+      localStorage.setItem('tucano_current_user',match.key);
       go('dashboard');
-    }else{$('login-error').classList.remove('hidden')}
+    }else{
+      $('login-error').classList.remove('hidden');
+    }
   };
 }
 
