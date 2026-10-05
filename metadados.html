@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Capa e Metadados</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+input,select{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;color:#fff;width:100%;outline:none;font-size:15px;font-family:inherit}
+input:focus,select:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+::placeholder{color:#64748b}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
+.progress-bar{height:6px;background:#1e293b;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#0ea5e9,#3b82f6);border-radius:999px;transition:width .3s}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen p-4">
+  <div class="max-w-3xl mx-auto">
+    <div class="glass p-6 mb-4">
+      <h2 class="text-2xl font-bold mb-2">Capa e Metadados</h2>
+      <div class="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 text-sm text-sky-300 space-y-1">
+        <p><strong>Diretrizes da capa:</strong></p>
+        <p>• PNG ou JPG/JPEG</p>
+        <p>• 3000x3000 obrigatório</p>
+        <p>• Só nome do lançamento, do artista e Parental Advisory (se explícito)</p>
+        <p>• Sem logos, sem conteúdo explícito, sem bordas</p>
+      </div>
+    </div>
+
+    <div class="glass p-6 mb-4">
+      <label for="cov-in" class="block mb-2 font-semibold">Capa (3000x3000) *</label>
+      <input id="cov-in" type="file" accept="image/png,image/jpeg">
+      <div id="cov-preview" class="mt-3 hidden">
+        <img id="cov-img" alt="Prévia da capa" class="w-40 h-40 rounded-xl object-cover border border-slate-700">
+      </div>
+      <div class="progress-bar mt-3"><div id="cov-fill" class="progress-fill"></div></div>
+    </div>
+
+    <div class="glass p-6 mb-4 space-y-3">
+      <div>
+        <label for="f-title" class="block mb-2 font-semibold">Título do lançamento *</label>
+        <input id="f-title" type="text" placeholder="Ex.: Minha Música Nova">
+      </div>
+      <div>
+        <label for="f-upc" class="block mb-2 font-semibold">UPC/EAN</label>
+        <input id="f-upc" type="text" placeholder="Opcional — deixe em branco se não tiver">
+      </div>
+      <div>
+        <label for="f-genre" class="block mb-2 font-semibold">Gênero principal *</label>
+        <select id="f-genre">
+          <option value="">Selecione...</option>
+          <option>Sertanejo</option><option>Country</option><option>Pop</option><option>Rock</option>
+          <option>Metal</option><option>Hip Hop</option><option>Funk</option><option>Samba</option>
+          <option>Pagode</option><option>MPB</option><option>R&amp;B</option><option>Jazz</option>
+          <option>Eletrônica</option><option>Coral</option><option>Orquestra</option><option>Phonk</option>
+          <option>Gospel</option><option>Forró</option><option>Boom Bap</option><option>J-pop</option>
+          <option>K-pop</option><option>Trip Hop</option><option>Piano</option><option>Ambiente</option>
+          <option>Infantil</option><option>Comédia</option><option>Música Clássica</option>
+          <option>Reggae</option><option>Louvor</option><option>Reggaeton</option><option>Dubstep</option>
+          <option>Halloween/Terror</option>
+        </select>
+      </div>
+      <div>
+        <label for="f-sub" class="block mb-2 font-semibold">Subgênero</label>
+        <input id="f-sub" type="text" placeholder="Opcional">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="f-cy" class="block mb-2 font-semibold">Ano dos direitos © *</label>
+          <input id="f-cy" type="text" placeholder="Ex.: 2026">
+        </div>
+        <div>
+          <label for="f-ch" class="block mb-2 font-semibold">Direitos © *</label>
+          <input id="f-ch" type="text" placeholder="Ex.: Seu Nome / Sua Editora">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="f-py" class="block mb-2 font-semibold">Ano dos direitos ℗ *</label>
+          <input id="f-py" type="text" placeholder="Ex.: 2026">
+        </div>
+        <div>
+          <label for="f-ph" class="block mb-2 font-semibold">direitos ℗ *</label>
+          <input id="f-ph" type="text" placeholder="Ex.: Seu Nome">
+        </div>
+      </div>
+      <div>
+        <label for="f-date" class="block mb-2 font-semibold">Data de lançamento *</label>
+        <input id="f-date" type="date">
+      </div>
+    </div>
+
+    <p id="cover-error" class="text-red-400 text-sm mb-3 hidden"></p>
+    <div class="flex gap-3 flex-wrap">
+      <button id="sub" class="btn btn-primary flex-1" type="button">Mandar para revisão 🐦🕵️🌴♫♪</button>
+      <a href="./novo-faixas.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i></a>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var SUPABASE_URL='https://mjqwiqjojkzobuysziyv.supabase.co';
+var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+var BUCKET='releases';
+var SESSION_KEY='tucano_session_v2';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+var DRAFT_KEY='tucano_draft_v1';
+
+var _sb=null;
+function getSupabase(){
+  if(_sb) return _sb;
+  if(!window.supabase||!window.supabase.createClient){
+    throw new Error('Biblioteca do Supabase não carregou (verifique a internet).');
+  }
+  _sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  return _sb;
+}
+async function uploadFile(file,path){
+  var sb=getSupabase();
+  var r=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false});
+  if(r.error) throw new Error('Supabase: '+(r.error.message||JSON.stringify(r.error)));
+  return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+async function uploadText(text,path){
+  var blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+  var file=new File([blob],path.split('/').pop(),{type:'text/plain'});
+  return await uploadFile(file,path);
+}
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}');
+    return acc[(s.username||'').toLowerCase()]||null;
+  }catch(e){ return null; }
+}
+function loadDraft(){ try{ return JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}'); }catch(e){ return {}; } }
+function fmtDate(d){ if(!d) return ''; var p=d.split('-'); return p.length===3?(p[2]+'/'+p[1]+'/'+p[0]):d; }
+function datePlus(days){ var d=new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='./index.html'; return; }
+  var draft=loadDraft();
+  if(!draft.type||!draft.releaseId||!draft.tracksClean||!draft.tracksClean.length){
+    window.location.href='./novo-tipo.html';
+    return;
+  }
+
+  var covIn=document.getElementById('cov-in');
+  var covImg=document.getElementById('cov-img');
+  var covPrev=document.getElementById('cov-preview');
+  var covFill=document.getElementById('cov-fill');
+  var errBox=document.getElementById('cover-error');
+  var coverFile=null;
+
+  document.getElementById('f-date').min=datePlus(14);
+
+  covIn.addEventListener('change',function(ev){
+    errBox.classList.add('hidden');
+    var f=ev.target.files[0];
+    if(!f) return;
+    if(f.type!=='image/png'&&f.type!=='image/jpeg'){
+      errBox.textContent='Capa deve ser PNG ou JPG/JPEG.';
+      errBox.classList.remove('hidden');
+      ev.target.value='';
+      return;
+    }
+    var img=new Image();
+    img.onload=function(){
+      if(img.width!==3000||img.height!==3000){
+        errBox.textContent='Capa deve ser exatamente 3000x3000. (Recebido: '+img.width+'x'+img.height+')';
+        errBox.classList.remove('hidden');
+        ev.target.value='';
+        return;
+      }
+      coverFile=f;
+      covImg.src=URL.createObjectURL(f);
+      covPrev.classList.remove('hidden');
+    };
+    img.src=URL.createObjectURL(f);
+  });
+
+  document.getElementById('sub').addEventListener('click',async function(){
+    var btn=this;
+    errBox.classList.add('hidden');
+
+    var title=document.getElementById('f-title').value.trim();
+    var upc=document.getElementById('f-upc').value.trim();
+    var genre=document.getElementById('f-genre').value;
+    var sub=document.getElementById('f-sub').value.trim();
+    var cy=document.getElementById('f-cy').value.trim();
+    var ch=document.getElementById('f-ch').value.trim();
+    var py=document.getElementById('f-py').value.trim();
+    var ph=document.getElementById('f-ph').value.trim();
+    var date=document.getElementById('f-date').value;
+
+    if(!title||!genre||!cy||!ch||!py||!ph||!date){
+      errBox.textContent='Preencha todos os campos obrigatórios.';
+      errBox.classList.remove('hidden');
+      return;
+    }
+    if(!coverFile){
+      errBox.textContent='Envie a capa 3000x3000.';
+      errBox.classList.remove('hidden');
+      return;
+    }
+
+    var oldHtml=btn.innerHTML;
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span> Enviando...';
+
+    try{
+      var releaseId=draft.releaseId;
+      var basePath=u.username+'/'+releaseId;
+
+      var coverUrl=await uploadFile(coverFile, basePath+'/capa_'+coverFile.name);
+      covFill.style.width='40%';
+
+      var tracks=draft.tracksClean;
+      var trackUrls=tracks.map(function(t){ return t.url; });
+
+      covFill.style.width='70%';
+
+      var metaText='Lançamento novo\n\n'
+        +'Tipo: '+draft.type.toUpperCase()+'\n'
+        +'Título: '+title+'\n'
+        +'UPC/EAN: '+(upc||'')+'\n'
+        +'Capa: '+(coverFile?coverFile.name:'')+'\n'
+        +'Gênero principal: '+genre+'\n'
+        +'Subgênero: '+(sub||'')+'\n'
+        +'Ano dos direitos ©: '+cy+'\n'
+        +'Direitos ©: '+ch+'\n'
+        +'Ano dos direitos ℗: '+py+'\n'
+        +'direitos ℗: '+ph+'\n'
+        +'Data de lançamento: '+fmtDate(date)+'\n\n'
+        +'DADOS DO ARTISTA\n'
+        +'Nome completo: '+(u.fullName||'')+'\n'
+        +'Nome artístico: '+(u.artistName||'')+'\n'
+        +'E-mail: '+(u.email||'')+'\n'
+        +'WhatsApp: '+(u.whatsapp||'')+'\n'
+        +'Usuário: '+u.username+'\n'
+        +'Data do envio: '+new Date().toLocaleString('pt-BR')+'\n\n';
+
+      tracks.forEach(function(t,i){
+        metaText+='Música '+(i+1)+'\n'
+          +'Título: '+t.title+'\n'
+          +'Artista principal: '+(t.artist||'')+'\n'
+          +'Artista featured: '+(t.feat||'')+'\n'
+          +'Compositores: '+t.composers+'\n'
+          +'ISRC: '+(t.isrc||'')+'\n'
+          +'Explícito: '+(t.explicit?'Sim (Parental Advisory)':'Não')+'\n'
+          +'Nome do arquivo: '+t.fileName+'\n'
+          +'URL: '+(t.url||'')+'\n\n';
+      });
+
+      await uploadText(metaText, basePath+'/metadados.txt');
+      covFill.style.width='100%';
+
+      if(!u.releases) u.releases=[];
+      if(draft.editId){
+        u.releases=u.releases.map(function(r){ return r.id===draft.editId ? Object.assign({},r,{
+          title:title, coverUrl:coverUrl, trackUrls:trackUrls, releaseDate:date, tracks:tracks, status:'Em revisão'
+        }) : r; });
+      }else{
+        u.releases.push({
+          id: releaseId,
+          type: draft.type,
+          title: title,
+          coverUrl: coverUrl,
+          trackUrls: trackUrls,
+          status: 'Em revisão',
+          releaseDate: date,
+          createdAt: Date.now(),
+          tracks: tracks
+        });
+      }
+
+      var acc=JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}');
+      acc[u.username.toLowerCase()]=u;
+      localStorage.setItem(ACCOUNTS_KEY,JSON.stringify(acc));
+      localStorage.removeItem(DRAFT_KEY);
+
+      window.location.href='./dashboard.html';
+    }catch(e){
+      btn.disabled=false;
+      btn.innerHTML=oldHtml;
+      errBox.textContent=e.message||'Erro ao enviar.';
+      errBox.classList.remove('hidden');
+    }
+  });
+});
+})();
+</script>
+</body>
+</html>
