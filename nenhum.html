@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Nenhum Contrato</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass w-full max-w-lg p-8">
+    <h2 class="text-2xl font-bold mb-4 text-center">Você não assinou nenhum contrato.</h2>
+    <p class="text-slate-300 text-center mb-6">Gostaria de assinar o contrato com a Tucano Independente?</p>
+    <div id="n-warn" class="hidden bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4 text-red-300 text-sm">
+      Sem contrato você não pode distribuir pela Tucano.
+    </div>
+    <div class="space-y-3">
+      <button id="n-yes" class="btn btn-primary w-full" type="button">
+        <i class="fas fa-check"></i> Sim
+      </button>
+      <button id="n-no" class="btn btn-outline w-full" type="button">
+        <i class="fas fa-times"></i> Não
+      </button>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+var SESSION_KEY='tucano_session_v2';
+function normUser(u){ return (u||'').toString().trim().toLowerCase(); }
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}'); }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a)); }
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=loadAccounts();
+    return acc[normUser(s.username)]||null;
+  }catch(e){ return null; }
+}
+function persist(u){
+  var acc=loadAccounts();
+  acc[normUser(u.username)]=u;
+  saveAccounts(acc);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='./index.html'; return; }
+  if(u.contractType!=='none'||u.contractSigned){ window.location.href='./dashboard.html'; return; }
+
+  document.getElementById('n-yes').onclick=function(){
+    window.location.href='./contrato-form.html';
+  };
+  document.getElementById('n-no').onclick=function(){
+    document.getElementById('n-warn').classList.remove('hidden');
+  };
+});
+})();
+</script>
+</body>
+</html>
