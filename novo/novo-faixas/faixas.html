@@ -4,312 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0f172a">
-<title>Tucano Música — Faixas</title>
+<title>Tucano Música — Novo Lançamento</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="manifest" href="../../manifest.json">
-<link rel="icon" type="image/png" href="../../tucano.png">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../tucano.png">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
 .glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
-.track-card{background:rgba(30,41,59,.5);border:1px solid #1e293b;border-radius:16px;padding:20px;margin-bottom:12px}
-input,select{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:10px;color:#fff;width:100%;outline:none;font-size:14px;font-family:inherit}
-input:focus,select:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
-::placeholder{color:#64748b}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
-.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
-.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.type-btn{border:2px solid #334155;border-radius:16px;padding:24px;cursor:pointer;transition:all .2s;text-align:center;background:transparent;color:#e2e8f0;display:block;width:100%;font-family:inherit}
+.type-btn:hover,.type-btn.active{border-color:#0ea5e9;background:rgba(14,165,233,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#e2e8f0}
 .btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
 .btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
-.btn-danger{background:#ef4444;color:#fff}
-.file-indicator{font-size:12px;color:#22c55e;margin-top:6px;display:block}
-.checkbox-custom{width:16px;height:16px;accent-color:#0ea5e9}
-.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
-.hidden{display:none !important}
 </style>
 </head>
 <body>
 
-<main class="min-h-screen p-4">
-  <div class="max-w-3xl mx-auto">
-    <div class="glass p-6 mb-4">
-      <h2 class="text-2xl font-bold mb-2">Faixas</h2>
-      <p id="tracks-info" class="text-slate-400 text-sm"></p>
+<main class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass w-full max-w-2xl p-6 md:p-8">
+    <h2 class="text-2xl font-bold mb-6 text-center">Tipo de Lançamento</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <button class="type-btn" data-type="single" type="button">
+        <div class="text-4xl mb-2">🎵</div>
+        <div class="font-bold">Single</div>
+        <div class="text-sm text-slate-400">1 a 3 faixas</div>
+      </button>
+      <button class="type-btn" data-type="ep" type="button">
+        <div class="text-4xl mb-2">💿</div>
+        <div class="font-bold">EP</div>
+        <div class="text-sm text-slate-400">4 a 6 faixas</div>
+      </button>
+      <button class="type-btn" data-type="album" type="button">
+        <div class="text-4xl mb-2">📀</div>
+        <div class="font-bold">Álbum</div>
+        <div class="text-sm text-slate-400">7+ faixas</div>
+      </button>
     </div>
-    <div id="tracks-list"></div>
-    <p id="ep-warn" class="text-yellow-400 text-sm mb-4 hidden"></p>
-    <div class="flex gap-3 flex-wrap mb-3">
-      <button id="add-t" class="btn btn-outline" type="button"><i class="fas fa-plus"></i> Adicionar Faixa</button>
-      <button id="next" class="btn btn-primary flex-1" type="button">Próximo <i class="fas fa-arrow-right"></i></button>
-      <a href="../tipo.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i></a>
-    </div>
-    <p id="tracks-error" class="text-red-400 text-sm hidden"></p>
+    <a href="../dashboard/dashboard.html" class="btn btn-outline w-full">
+      <i class="fas fa-arrow-left"></i> Voltar
+    </a>
   </div>
 </main>
 
 <script>
 (function(){
 'use strict';
-var SUPABASE_URL='https://mjqwiqjojkzobuysziyv.supabase.co';
-var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmA[...';
-var BUCKET='releases';
 var SESSION_KEY='tucano_session_v2';
-var ACCOUNTS_KEY='tucano_accounts_v2';
 var DRAFT_KEY='tucano_draft_v1';
-
-var limits={ single:{min:1,max:3}, ep:{min:4,max:6}, album:{min:7,max:50} };
-
-var _sb=null;
-function getSupabase(){
-  if(_sb) return _sb;
-  if(!window.supabase||!window.supabase.createClient){
-    throw new Error('Biblioteca do Supabase não carregou (verifique a internet).');
-  }
-  _sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  return _sb;
-}
-async function uploadFile(file,path){
-  var sb=getSupabase();
-  var r=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false});
-  if(r.error) throw new Error('Supabase: '+(r.error.message||JSON.stringify(r.error)));
-  return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
-}
-
 function getUser(){
   try{
     var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
     if(!s) return null;
-    var acc=JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}');
+    var acc=JSON.parse(localStorage.getItem('tucano_accounts_v2')||'{}');
     return acc[(s.username||'').toLowerCase()]||null;
   }catch(e){ return null; }
 }
-function loadDraft(){ try{ return JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}'); }catch(e){ return {}; } }
-function saveDraftMeta(d){
-  var meta={
-    type:d.type,
-    editId:d.editId||null,
-    releaseId:d.releaseId||null,
-    tracksClean:(d.tracks||[]).map(function(t){
-      return {
-        title:t.title||'', artist:t.artist||'', feat:t.feat||'',
-        composers:t.composers||'', isrc:t.isrc||'', explicit:!!t.explicit,
-        fileName:t.fileName||'', duration:t.duration||0,
-        url:t.url||''
-      };
-    })
-  };
-  localStorage.setItem(DRAFT_KEY, JSON.stringify(meta));
+
+function buildTracks(){
+  return [{ title:'', artist:'', feat:'', composers:'', isrc:'', explicit:false, fileName:'', duration:0 }];
 }
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
-function esc(s){ return (s||'').toString().replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
-  if(!u){ window.location.href='../../index.html'; return; }
-  var draft=loadDraft();
-  if(!draft.type){ window.location.href='../tipo.html'; return; }
-  if(!draft.tracks||!draft.tracks.length){
-    draft.tracks=[{ title:'', artist:'', feat:'', composers:'', isrc:'', explicit:false, fileName:'', duration:0, file:null }];
-  }
-  if(draft.tracksClean && !draft.tracks){
-    draft.tracks=draft.tracksClean.map(function(t){
-      return { title:t.title, artist:t.artist, feat:t.feat, composers:t.composers, isrc:t.isrc, explicit:t.explicit, fileName:t.fileName, duration:t.duration, file:null };
+  if(!u){ window.location.href='../index.html'; return; }
+
+  document.querySelectorAll('.type-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var type=btn.dataset.type;
+      var initialTracks=buildTracks();
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        type: type,
+        tracks: initialTracks,
+        tracksClean: initialTracks.map(function(t){ return { title:t.title, artist:t.artist, feat:t.feat, composers:t.composers, isrc:t.isrc, explicit:t.explicit, fileName:t.fileName, duration:t.duration, url:t.url||'' }; })
+      }));
+      window.location.href='./novo-faixas/faixas.html';
     });
-  }
-  if(!u.artists) u.artists=[];
-
-  var list=document.getElementById('tracks-list');
-  var info=document.getElementById('tracks-info');
-  var epWarn=document.getElementById('ep-warn');
-  var errBox=document.getElementById('tracks-error');
-  var addBtn=document.getElementById('add-t');
-  var lim=limits[draft.type]||limits.single;
-
-  info.textContent='Tipo: '+draft.type.toUpperCase()+' — mínimo '+lim.min+', máximo '+lim.max+' faixa(s)';
-
-  function renderArtistsSelect(sel,current){
-    var html='<option value="">Selecione...</option>';
-    u.artists.forEach(function(a){
-      html+='<option value="'+esc(a)+'"'+(a===current?' selected':'')+'>'+esc(a)+'</option>';
-    });
-    sel.innerHTML=html;
-  }
-
-  function renderTracks(){
-    list.innerHTML='';
-    draft.tracks.forEach(function(t,i){
-      var card=document.createElement('div');
-      card.className='track-card';
-      card.innerHTML=
-        '<div class="flex justify-between items-center mb-3">'+
-          '<h3 class="font-bold">Faixa '+(i+1)+'</h3>'+
-          (draft.tracks.length>1 ? '<button class="rm-t btn btn-danger btn-sm" type="button"><i class="fas fa-trash"></i></button>' : '')+
-        '</div>'+
-        '<div class="space-y-3">'+
-          '<input class="t-title" placeholder="Título *" value="'+esc(t.title||'')+'">'+
-          '<input class="t-file" type="file" accept=".mp3,.wav">'+
-          '<span class="file-indicator">'+(t.fileName ? '✔ '+esc(t.fileName)+' (pronto)' : '')+'</span>'+
-          '<div class="flex gap-2">'+
-            '<select class="t-artist flex-1"><option value="">Artista principal</option></select>'+
-            '<button class="t-new-art btn btn-outline btn-sm" type="button"><i class="fas fa-user-plus"></i></button>'+
-          '</div>'+
-          '<input class="t-feat" placeholder="Artista featured (opcional)" value="'+esc(t.feat||'')+'">'+
-          '<input class="t-composers" placeholder="Compositores *" value="'+esc(t.composers||'')+'">'+
-          '<input class="t-isrc" placeholder="ISRC (opcional)" value="'+esc(t.isrc||'')+'">'+
-          '<label class="flex items-center gap-2 text-sm"><input type="checkbox" class="t-explicit checkbox-custom"'+(t.explicit?' checked':'')+'> Explícito (Parental Advisory)</label>'+
-        '</div>';
-      list.appendChild(card);
-
-      var sel=card.querySelector('.t-artist');
-      renderArtistsSelect(sel,t.artist);
-      sel.value=t.artist||'';
-
-      var rm=card.querySelector('.rm-t');
-      if(rm) rm.addEventListener('click',function(){
-        draft.tracks.splice(i,1);
-        renderTracks();
-        updateEpWarn();
-      });
-
-      card.querySelector('.t-new-art').addEventListener('click',function(){
-        var name=prompt('Nome do novo artista:');
-        if(!name) return;
-        name=name.trim();
-        if(!name) return;
-        if(u.artists.indexOf(name)===-1) u.artists.push(name);
-        var acc=JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}');
-        acc[u.username.toLowerCase()]=u;
-        localStorage.setItem(ACCOUNTS_KEY,JSON.stringify(acc));
-        renderArtistsSelect(sel,name);
-      });
-
-      card.querySelector('.t-file').addEventListener('change',function(ev){
-        var f=ev.target.files[0];
-        if(!f) return;
-        var ext=f.name.toLowerCase().split('.').pop();
-        if(ext!=='mp3'&&ext!=='wav'){
-          errBox.textContent='Arquivo deve ser .mp3 ou .wav';
-          errBox.classList.remove('hidden');
-          ev.target.value='';
-          return;
-        }
-        errBox.classList.add('hidden');
-        var audio=new Audio(URL.createObjectURL(f));
-        audio.addEventListener('loadedmetadata',function(){
-          var dur=audio.duration;
-          if(dur<30||dur>2700){
-            errBox.textContent='Duração deve ser entre 30s e 45min.';
-            errBox.classList.remove('hidden');
-            ev.target.value='';
-            return;
-          }
-          draft.tracks[i].fileName=f.name;
-          draft.tracks[i].duration=dur;
-          draft.tracks[i].file=f;
-          card.querySelector('.file-indicator').textContent='✔ '+f.name+' (pronto para envio)';
-          updateEpWarn();
-        });
-      });
-
-      card.querySelector('.t-title').addEventListener('input',function(ev){ draft.tracks[i].title=ev.target.value; });
-      card.querySelector('.t-artist').addEventListener('change',function(ev){ draft.tracks[i].artist=ev.target.value; });
-      card.querySelector('.t-feat').addEventListener('input',function(ev){ draft.tracks[i].feat=ev.target.value; });
-      card.querySelector('.t-composers').addEventListener('input',function(ev){ draft.tracks[i].composers=ev.target.value; });
-      card.querySelector('.t-isrc').addEventListener('input',function(ev){ draft.tracks[i].isrc=ev.target.value; });
-      card.querySelector('.t-explicit').addEventListener('change',function(ev){ draft.tracks[i].explicit=ev.target.checked; });
-    });
-  }
-
-  function updateEpWarn(){
-    if(draft.type==='ep'){
-      var total=draft.tracks.reduce(function(s,t){ return s+(t.duration||0); },0);
-      if(total<600){
-        epWarn.textContent='Atenção: um EP precisa de pelo menos 10 minutos no total. Total atual: '+Math.floor(total/60)+'min '+(Math.floor(total%60))+'s';
-        epWarn.classList.remove('hidden');
-      }else{
-        epWarn.classList.add('hidden');
-      }
-    }
-  }
-
-  addBtn.addEventListener('click',function(){
-    if(draft.tracks.length>=lim.max){
-      errBox.textContent='Máximo de '+lim.max+' faixas para este tipo.';
-      errBox.classList.remove('hidden');
-      return;
-    }
-    draft.tracks.push({ title:'', artist:'', feat:'', composers:'', isrc:'', explicit:false, fileName:'', duration:0, file:null });
-    renderTracks();
-    updateEpWarn();
   });
-
-  document.getElementById('next').addEventListener('click',async function(){
-    var btn=this;
-    errBox.classList.add('hidden');
-
-    if(draft.tracks.length<lim.min){
-      errBox.textContent='Mínimo de '+lim.min+' faixas para este tipo.';
-      errBox.classList.remove('hidden');
-      return;
-    }
-    for(var i=0;i<draft.tracks.length;i++){
-      var t=draft.tracks[i];
-      if(!t.title||!t.composers){
-        errBox.textContent='Preencha título e compositores da faixa '+(i+1)+'.';
-        errBox.classList.remove('hidden');
-        return;
-      }
-      if(!t.file && !t.fileName){
-        errBox.textContent='Selecione o arquivo da faixa '+(i+1)+'.';
-        errBox.classList.remove('hidden');
-        return;
-      }
-    }
-    if(draft.type==='ep'){
-      var total=draft.tracks.reduce(function(s,t){ return s+(t.duration||0); },0);
-      if(total<600){
-        errBox.textContent='EP precisa de pelo menos 10 minutos totais.';
-        errBox.classList.remove('hidden');
-        return;
-      }
-    }
-
-    var oldHtml=btn.innerHTML;
-    btn.disabled=true;
-    btn.innerHTML='<span class="spinner"></span> Enviando áudios...';
-
-    try{
-      var releaseId=draft.editId||draft.releaseId||uid();
-      var basePath=u.username+'/'+releaseId;
-
-      for(var i=0;i<draft.tracks.length;i++){
-        var tr=draft.tracks[i];
-        var nn=String(i+1).padStart(2,'0');
-        if(tr.file){
-          var path=basePath+'/faixa'+nn+'_'+tr.file.name;
-          tr.url=await uploadFile(tr.file, path);
-        }
-      }
-
-      draft.releaseId=releaseId;
-      saveDraftMeta(draft);
-
-      window.location.href='../novo-capa/metadados.html';
-    }catch(e){
-      btn.disabled=false;
-      btn.innerHTML=oldHtml;
-      errBox.textContent=e.message||'Erro ao enviar áudios.';
-      errBox.classList.remove('hidden');
-    }
-  });
-
-  renderTracks();
-  updateEpWarn();
 });
 })();
 </script>
