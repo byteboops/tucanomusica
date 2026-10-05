@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Contrato Assinado</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" type="image/png" href="../../resize.png">
+<link rel="apple-touch-icon" href="../../manifest.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass w-full max-w-md p-8 text-center">
+    <div class="text-6xl mb-4 text-green-400"><i class="fas fa-check-circle"></i></div>
+    <h2 class="text-2xl font-bold text-green-400 mb-2">Contrato Assinado!</h2>
+    <p class="text-slate-300 mb-6">Baixe sua cópia em PDF.</p>
+    <button id="pdf-btn" class="btn btn-primary w-full" type="button">
+      <i class="fas fa-download"></i> Baixar PDF
+    </button>
+  </div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+var SESSION_KEY='tucano_session_v2';
+
+function normUser(u){ return (u||'').toString().trim().toLowerCase(); }
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}'); }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a)); }
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=loadAccounts();
+    return acc[normUser(s.username)]||null;
+  }catch(e){ return null; }
+}
+function persist(u){
+  var acc=loadAccounts();
+  acc[normUser(u.username)]=u;
+  saveAccounts(acc);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='../../index.html'; return; }
+  if(!u.answeredContract){ window.location.href='../pergunta/'; return; }
+  if(u.contractType!=='none'||!u.contractSigned||u.contractPdfDownloaded){
+    window.location.href='../../dashboard/';
+    return;
+  }
+
+  document.getElementById('pdf-btn').onclick=function(){
+    var text='Contrato Tucano Música - Cópia assinada';
+    var blob=new Blob([text],{type:'application/pdf'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='contrato_tucano.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+
+    u.contractPdfDownloaded=true;
+    persist(u);
+    window.location.href='../../dashboard/';
+  };
+
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('../../sw.js').catch(function(){});
+  }
+});
+})();
+</script>
+</body>
+</html>
