@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Suporte</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+input,textarea{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;color:#fff;width:100%;outline:none;font-size:15px;font-family:inherit}
+input:focus,textarea:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+::placeholder{color:#64748b}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <form id="form-support" class="glass w-full max-w-lg p-6 md:p-8" onsubmit="return false;">
+    <h2 class="text-2xl font-bold mb-6 text-sky-400"><i class="fas fa-life-ring mr-2"></i>Suporte</h2>
+    <div class="space-y-3">
+      <input id="s-sub" type="text" placeholder="Assunto *">
+      <textarea id="s-msg" rows="5" placeholder="Mensagem *"></textarea>
+      <div>
+        <label for="s-photo" class="block mb-2 text-sm text-slate-400">Foto (opcional)</label>
+        <input id="s-photo" type="file" accept="image/*">
+      </div>
+      <p id="s-error" class="text-red-400 text-sm hidden"></p>
+      <button id="s-end" class="btn btn-primary w-full" type="button"><i class="fas fa-paper-plane"></i> Enviar</button>
+      <a href="./dashboard.html" class="btn btn-outline w-full"><i class="fas fa-arrow-left"></i> Voltar</a>
+    </div>
+  </form>
+</main>
+
+<script>
+(function(){
+'use strict';
+var SUPABASE_URL='https://mjqwiqjojkzobuysziyv.supabase.co';
+var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+var BUCKET='releases';
+var SESSION_KEY='tucano_session_v2';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+
+var _sb=null;
+function getSupabase(){
+  if(_sb) return _sb;
+  if(!window.supabase||!window.supabase.createClient){
+    throw new Error('Biblioteca do Supabase não carregou (verifique a internet).');
+  }
+  _sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  return _sb;
+}
+async function uploadFile(file,path){
+  var sb=getSupabase();
+  var r=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false});
+  if(r.error) throw new Error('Supabase: '+(r.error.message||JSON.stringify(r.error)));
+  return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+async function uploadText(text,path){
+  var blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+  var file=new File([blob],path.split('/').pop(),{type:'text/plain'});
+  return await uploadFile(file,path);
+}
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}');
+    return acc[(s.username||'').toLowerCase()]||null;
+  }catch(e){ return null; }
+}
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='./index.html'; return; }
+
+  document.getElementById('s-end').addEventListener('click',async function(){
+    var btn=this;
+    var sub=document.getElementById('s-sub').value.trim();
+    var msg=document.getElementById('s-msg').value.trim();
+    var photo=document.getElementById('s-photo').files[0];
+    var errBox=document.getElementById('s-error');
+
+    errBox.classList.add('hidden');
+    if(!sub||!msg){
+      errBox.textContent='Preencha assunto e mensagem.';
+      errBox.classList.remove('hidden');
+      return;
+    }
+
+    var oldHtml=btn.innerHTML;
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span> Enviando...';
+
+    try{
+      var supportId=uid();
+      var basePath='support/'+u.username+'/'+supportId;
+      var photoInfo='(nenhuma)';
+      if(photo){
+        photoInfo=await uploadFile(photo,basePath+'/foto_'+photo.name);
+      }
+      var txt='Suporte\n\n'
+        +'Usuário: '+u.username+'\n'
+        +'Nome completo: '+(u.fullName||'')+'\n'
+        +'Nome artístico: '+(u.artistName||'')+'\n'
+        +'E-mail: '+(u.email||'')+'\n'
+        +'WhatsApp: '+(u.whatsapp||'')+'\n'
+        +'Assunto: '+sub+'\n'
+        +'Data: '+new Date().toLocaleString('pt-BR')+'\n'
+        +'Foto: '+photoInfo+'\n\n'
+        +'Mensagem:\n'+msg;
+
+      await uploadText(txt,basePath+'/mensagem.txt');
+      alert('Mensagem enviada!');
+      window.location.href='./dashboard.html';
+    }catch(e){
+      btn.disabled=false;
+      btn.innerHTML=oldHtml;
+      errBox.textContent=e.message||'Erro ao enviar.';
+      errBox.classList.remove('hidden');
+    }
+  });
+});
+})();
+</script>
+</body>
+</html>
