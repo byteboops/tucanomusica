@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.glow{box-shadow:0 0 30px rgba(56,189,248,.2)}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+.tucano-logo{max-width:280px;width:100%;height:auto}
+input{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;color:#fff;width:100%;outline:none;font-size:15px;font-family:inherit}
+input:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+::placeholder{color:#64748b}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
+.hidden{display:none !important}
+@media(max-width:640px){.tucano-logo{max-width:180px}}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass glow w-full max-w-5xl p-6 md:p-10 grid md:grid-cols-2 gap-8 items-center">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-4">
+        Distribua sua música nas<br>
+        <span class="text-sky-400">várias plataformas</span><br>
+        <span class="text-yellow-400">GRATUITAMENTE</span><br>
+        com streams <span class="text-purple-400">ILIMITADOS ∞</span><br>
+        e receba <span class="text-green-400">75%</span> dos royalties.
+      </h1>
+      <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6 text-yellow-300 text-sm">
+        <i class="fas fa-exclamation-triangle mr-2"></i>
+        Desculpe, mas não aceitamos criação de conta comum para artistas.
+      </div>
+      <form id="login-form" class="space-y-3" onsubmit="return false;">
+        <input id="login-user" type="text" placeholder="Usuário" autocomplete="username">
+        <input id="login-pass" type="password" placeholder="Senha" autocomplete="current-password">
+        <p id="login-error" class="text-red-400 text-sm hidden"></p>
+        <div class="flex gap-3 flex-wrap">
+          <button id="login-btn" class="btn btn-primary flex-1" type="submit">
+            <i class="fas fa-sign-in-alt"></i> Fazer Login
+          </button>
+          <a href="./candidatura.html" class="btn btn-outline flex-1">
+            <i class="fas fa-paper-plane"></i> Candidatar-se
+          </a>
+        </div>
+      </form>
+    </div>
+    <div class="flex flex-col items-center justify-center text-center">
+      <img src="./tucano.png" alt="Tucano Música" class="tucano-logo mb-4" onerror="this.style.display='none'">
+      <h2 class="text-2xl font-bold text-sky-400">Tucano Música</h2>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+var SESSION_KEY='tucano_session_v2';
+
+function normUser(u){ return (u||'').toString().trim().toLowerCase(); }
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}'); }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a)); }
+
+function ensureAccounts(){
+  var acc=loadAccounts();
+  var defaults={
+    'ricardo':{username:'Ricardo',password:'oreiade_baterbolo332',fullName:'Ricardo de Almeida dos Santos',artistName:'Ricardo',email:'robsonj56@gmail.com',whatsapp:'+55 41 98478 1295',answeredContract:false,contractType:null,contractSigned:true,contractPdfDownloaded:true,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[]},
+    'davi luiz':{username:'Daví Luiz',password:'daviluiz_497',fullName:'Daví Luiz',artistName:'Daví Luiz',email:'',whatsapp:'+55 41 9626-5488',answeredContract:false,contractType:null,contractSigned:true,contractPdfDownloaded:true,knittingAcknowledged:false,hasRealContract:true,releases:[],artists:[],videoReleases:[]}
+  };
+  Object.keys(defaults).forEach(function(k){
+    if(!acc[k]) acc[k]=defaults[k];
+    else Object.keys(defaults[k]).forEach(function(f){ if(acc[k][f]===undefined) acc[k][f]=defaults[k][f]; });
+  });
+  saveAccounts(acc);
+  return acc;
+}
+
+function currentUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=loadAccounts();
+    return acc[normUser(s.username)]||null;
+  }catch(e){ return null; }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  ensureAccounts();
+  var u=currentUser();
+  if(u){
+    if(!u.answeredContract){ window.location.href='./contrato-pergunta.html'; return; }
+    if(u.contractType==='knitting'&&!u.knittingAcknowledged){ window.location.href='./contrato-knitting.html'; return; }
+    if(u.contractType==='none'&&!u.contractSigned){ window.location.href='./contrato-nenhum.html'; return; }
+    if(u.contractType==='none'&&u.contractSigned&&!u.contractPdfDownloaded){ window.location.href='./contrato-assinado.html'; return; }
+    window.location.href='./dashboard.html';
+    return;
+  }
+  var form=document.getElementById('login-form');
+  var userI=document.getElementById('login-user');
+  var passI=document.getElementById('login-pass');
+  var err=document.getElementById('login-error');
+  form.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var acc=ensureAccounts();
+    var key=normUser(userI.value);
+    if(acc[key]&&acc[key].password===passI.value){
+      localStorage.setItem(SESSION_KEY,JSON.stringify({username:key}));
+      window.location.href='./contrato-pergunta.html';
+    }else{
+      err.textContent='Usuário ou senha inválidos.';
+      err.classList.remove('hidden');
+    }
+  });
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
+});
+})();
+</script>
+</body>
+</html>
