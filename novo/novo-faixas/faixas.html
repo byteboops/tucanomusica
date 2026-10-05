@@ -8,8 +8,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./tucano.png">
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" type="image/png" href="../../tucano.png">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
@@ -18,7 +18,7 @@ html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system
 input,select{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:10px;color:#fff;width:100%;outline:none;font-size:14px;font-family:inherit}
 input:focus,select:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
 ::placeholder{color:#64748b}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
 .btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
 .btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -46,7 +46,7 @@ input:focus,select:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,2
     <div class="flex gap-3 flex-wrap mb-3">
       <button id="add-t" class="btn btn-outline" type="button"><i class="fas fa-plus"></i> Adicionar Faixa</button>
       <button id="next" class="btn btn-primary flex-1" type="button">Próximo <i class="fas fa-arrow-right"></i></button>
-      <a href="./novo-tipo.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i></a>
+      <a href="../tipo.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i></a>
     </div>
     <p id="tracks-error" class="text-red-400 text-sm hidden"></p>
   </div>
@@ -56,7 +56,7 @@ input:focus,select:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,2
 (function(){
 'use strict';
 var SUPABASE_URL='https://mjqwiqjojkzobuysziyv.supabase.co';
-var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmA[...';
 var BUCKET='releases';
 var SESSION_KEY='tucano_session_v2';
 var ACCOUNTS_KEY='tucano_accounts_v2';
@@ -110,9 +110,9 @@ function esc(s){ return (s||'').toString().replace(/[&<>"']/g,function(c){ retur
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
-  if(!u){ window.location.href='./index.html'; return; }
+  if(!u){ window.location.href='../../index.html'; return; }
   var draft=loadDraft();
-  if(!draft.type){ window.location.href='./novo-tipo.html'; return; }
+  if(!draft.type){ window.location.href='../tipo.html'; return; }
   if(!draft.tracks||!draft.tracks.length){
     draft.tracks=[{ title:'', artist:'', feat:'', composers:'', isrc:'', explicit:false, fileName:'', duration:0, file:null }];
   }
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded',function(){
       draft.releaseId=releaseId;
       saveDraftMeta(draft);
 
-      window.location.href='./novo-capa.html';
+      window.location.href='../novo-capa/metadados.html';
     }catch(e){
       btn.disabled=false;
       btn.innerHTML=oldHtml;

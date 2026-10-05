@@ -7,8 +7,8 @@
 <title>Tucano Música — Aviso Knitting</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./tucano.png">
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" type="image/png" href="../../tucano.png">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
@@ -65,9 +65,9 @@ function persist(u){
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
-  if(!u){ window.location.href='./index.html'; return; }
-  if(u.contractType!=='knitting'){ window.location.href='./dashboard.html'; return; }
-  if(u.knittingAcknowledged){ window.location.href='./dashboard.html'; return; }
+  if(!u){ window.location.href='../../index.html'; return; }
+  if(u.contractType!=='knitting'){ window.location.href='../../dashboard/dashboard.html'; return; }
+  if(u.knittingAcknowledged){ window.location.href='../../dashboard/dashboard.html'; return; }
 
   var btn=document.getElementById('k-ok');
   var cd=document.getElementById('cd');
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded',function(){
     u.contractSigned=true;
     u.contractPdfDownloaded=true;
     persist(u);
-    window.location.href='./dashboard.html';
+    window.location.href='../../dashboard/dashboard.html';
   });
 });
 })();

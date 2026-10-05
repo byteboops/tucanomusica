@@ -8,8 +8,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./tucano.png">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../tucano.png">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
@@ -19,7 +19,7 @@ html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system
 input,textarea{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;color:#fff;width:100%;outline:none;font-size:15px;font-family:inherit}
 input:focus,textarea:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
 ::placeholder{color:#64748b}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
 .btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
@@ -42,7 +42,7 @@ input:focus,textarea:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165
       </div>
       <p id="s-error" class="text-red-400 text-sm hidden"></p>
       <button id="s-end" class="btn btn-primary w-full" type="button"><i class="fas fa-paper-plane"></i> Enviar</button>
-      <a href="./dashboard.html" class="btn btn-outline w-full"><i class="fas fa-arrow-left"></i> Voltar</a>
+      <a href="../dashboard/dashboard.html" class="btn btn-outline w-full"><i class="fas fa-arrow-left"></i> Voltar</a>
     </div>
   </form>
 </main>
@@ -51,7 +51,7 @@ input:focus,textarea:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165
 (function(){
 'use strict';
 var SUPABASE_URL='https://mjqwiqjojkzobuysziyv.supabase.co';
-var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmA[...';
 var BUCKET='releases';
 var SESSION_KEY='tucano_session_v2';
 var ACCOUNTS_KEY='tucano_accounts_v2';
@@ -88,7 +88,7 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
-  if(!u){ window.location.href='./index.html'; return; }
+  if(!u){ window.location.href='../index.html'; return; }
 
   document.getElementById('s-end').addEventListener('click',async function(){
     var btn=this;
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
       await uploadText(txt,basePath+'/mensagem.txt');
       alert('Mensagem enviada!');
-      window.location.href='./dashboard.html';
+      window.location.href='../dashboard/dashboard.html';
     }catch(e){
       btn.disabled=false;
       btn.innerHTML=oldHtml;

@@ -7,8 +7,8 @@
 <title>Tucano Música — Dados do Contrato</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./tucano.png">
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" type="image/png" href="../../tucano.png">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
@@ -60,8 +60,8 @@ function getUser(){
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
-  if(!u){ window.location.href='./index.html'; return; }
-  if(u.contractType!=='none'||u.contractSigned){ window.location.href='./dashboard.html'; return; }
+  if(!u){ window.location.href='../../index.html'; return; }
+  if(u.contractType!=='none'||u.contractSigned){ window.location.href='../../dashboard/dashboard.html'; return; }
 
   if(u.fullName) document.getElementById('full-name').value=u.fullName;
   if(u.artistName) document.getElementById('artist-name').value=u.artistName;
@@ -86,8 +86,8 @@ document.addEventListener('DOMContentLoaded',function(){
       return;
     }
     localStorage.setItem(FORM_KEY,JSON.stringify({full:full,art:art,mail:mail,whats:whats}));
-    window.location.href='./contrato.html';
-  });
+    window.location.href='../contrato.html';
+  };
 });
 })();
 </script>

@@ -7,15 +7,15 @@
 <title>Tucano Música — Novo Lançamento</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./tucano.png">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../tucano.png">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
 .glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
 .type-btn{border:2px solid #334155;border-radius:16px;padding:24px;cursor:pointer;transition:all .2s;text-align:center;background:transparent;color:#e2e8f0;display:block;width:100%;font-family:inherit}
 .type-btn:hover,.type-btn.active{border-color:#0ea5e9;background:rgba(14,165,233,.1)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
 .btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
 .btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
 </style>
@@ -42,7 +42,7 @@ html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system
         <div class="text-sm text-slate-400">7+ faixas</div>
       </button>
     </div>
-    <a href="./dashboard.html" class="btn btn-outline w-full">
+    <a href="../dashboard/dashboard.html" class="btn btn-outline w-full">
       <i class="fas fa-arrow-left"></i> Voltar
     </a>
   </div>
@@ -64,7 +64,7 @@ function getUser(){
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
-  if(!u){ window.location.href='./index.html'; return; }
+  if(!u){ window.location.href='../index.html'; return; }
 
   document.querySelectorAll('.type-btn').forEach(function(btn){
     btn.addEventListener('click',function(){
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded',function(){
         type: type,
         tracks: [{ title:'', artist:'', feat:'', composers:'', isrc:'', explicit:false, fileName:'', duration:0 }]
       }));
-      window.location.href='./novo-faixas.html';
+      window.location.href='./novo-faixas/faixas.html';
     });
   });
 });
