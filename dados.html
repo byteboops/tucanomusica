@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Dados do Contrato</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+input{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;color:#fff;width:100%;outline:none;font-size:15px;font-family:inherit}
+input:focus{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+::placeholder{color:#64748b}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <form id="form-contract" class="glass w-full max-w-xl p-6 md:p-8" onsubmit="return false;">
+    <h2 class="text-2xl font-bold mb-6 text-sky-400 text-center">Dados do Contrato</h2>
+    <div class="space-y-3">
+      <input id="full-name"   type="text"  placeholder="Nome completo *">
+      <input id="artist-name" type="text"  placeholder="Nome artístico *">
+      <input id="user-email"  type="email" placeholder="E-mail *">
+      <input id="user-whats"  type="tel"   placeholder="WhatsApp *">
+      <p id="contract-form-error" class="text-red-400 text-sm hidden"></p>
+      <button id="go-contract" class="btn btn-primary w-full" type="button">
+        <i class="fas fa-file-signature"></i> Gerar Contrato
+      </button>
+    </div>
+  </form>
+</main>
+
+<script>
+(function(){
+'use strict';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+var SESSION_KEY='tucano_session_v2';
+var FORM_KEY='tucano_contract_form';
+
+function normUser(u){ return (u||'').toString().trim().toLowerCase(); }
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}'); }catch(e){ return {}; } }
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=loadAccounts();
+    return acc[normUser(s.username)]||null;
+  }catch(e){ return null; }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='./index.html'; return; }
+  if(u.contractType!=='none'||u.contractSigned){ window.location.href='./dashboard.html'; return; }
+
+  if(u.fullName) document.getElementById('full-name').value=u.fullName;
+  if(u.artistName) document.getElementById('artist-name').value=u.artistName;
+  if(u.email) document.getElementById('user-email').value=u.email;
+  if(u.whatsapp) document.getElementById('user-whats').value=u.whatsapp;
+
+  document.getElementById('go-contract').onclick=function(){
+    var full=document.getElementById('full-name').value.trim();
+    var art=document.getElementById('artist-name').value.trim();
+    var mail=document.getElementById('user-email').value.trim();
+    var whats=document.getElementById('user-whats').value.trim();
+    var err=document.getElementById('contract-form-error');
+    err.classList.add('hidden');
+    if(!full||!art||!mail||!whats){
+      err.textContent='Preencha todos os campos.';
+      err.classList.remove('hidden');
+      return;
+    }
+    if(!/^\S+@\S+\.\S+$/.test(mail)){
+      err.textContent='E-mail inválido.';
+      err.classList.remove('hidden');
+      return;
+    }
+    localStorage.setItem(FORM_KEY,JSON.stringify({full:full,art:art,mail:mail,whats:whats}));
+    window.location.href='./contrato.html';
+  });
+});
+})();
+</script>
+</body>
+</html>
