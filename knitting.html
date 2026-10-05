@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Aviso Knitting</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.red-list{list-style:none;padding:0;margin:0}
+.red-list li{display:flex;align-items:center;gap:8px;color:#f87171;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass w-full max-w-lg p-8">
+    <h2 class="text-2xl font-bold mb-4 text-red-400 text-center">Atenção com a Knitting Records™</h2>
+    <ul class="red-list mb-6">
+      <li><i class="fas fa-times-circle"></i> Knitting retém 80% dos seus royalties</li>
+      <li><i class="fas fa-times-circle"></i> É uma gravadora que toma seus direitos</li>
+      <li><i class="fas fa-times-circle"></i> Retém todos os direitos das suas obras</li>
+      <li><i class="fas fa-times-circle"></i> É dona da Tucano Música</li>
+      <li><i class="fas fa-times-circle"></i> É exclusiva — você não pode distribuir em outros lugares</li>
+    </ul>
+    <p class="text-center text-slate-400 mb-4">
+      Aguarde <span id="cd" class="font-bold text-yellow-400">5</span>s
+    </p>
+    <button id="k-ok" class="btn btn-primary w-full" type="button" disabled>Entendi</button>
+  </div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var ACCOUNTS_KEY='tucano_accounts_v2';
+var SESSION_KEY='tucano_session_v2';
+
+function normUser(u){ return (u||'').toString().trim().toLowerCase(); }
+function loadAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'{}'); }catch(e){ return {}; } }
+function saveAccounts(a){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a)); }
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=loadAccounts();
+    return acc[normUser(s.username)]||null;
+  }catch(e){ return null; }
+}
+function persist(u){
+  var acc=loadAccounts();
+  acc[normUser(u.username)]=u;
+  saveAccounts(acc);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='./index.html'; return; }
+  if(u.contractType!=='knitting'){ window.location.href='./dashboard.html'; return; }
+  if(u.knittingAcknowledged){ window.location.href='./dashboard.html'; return; }
+
+  var btn=document.getElementById('k-ok');
+  var cd=document.getElementById('cd');
+  var n=5;
+  var iv=setInterval(function(){
+    n--;
+    cd.textContent=n;
+    if(n<=0){
+      clearInterval(iv);
+      cd.textContent='0';
+      btn.disabled=false;
+    }
+  },1000);
+
+  btn.addEventListener('click',function(){
+    clearInterval(iv);
+    u.knittingAcknowledged=true;
+    u.contractType='tucano';
+    u.contractSigned=true;
+    u.contractPdfDownloaded=true;
+    persist(u);
+    window.location.href='./dashboard.html';
+  });
+});
+})();
+</script>
+</body>
+</html>
