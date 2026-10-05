@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Tucano Música — Novo Lançamento</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./tucano.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+.glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
+.type-btn{border:2px solid #334155;border-radius:16px;padding:24px;cursor:pointer;transition:all .2s;text-align:center;background:transparent;color:#e2e8f0;display:block;width:100%;font-family:inherit}
+.type-btn:hover,.type-btn.active{border-color:#0ea5e9;background:rgba(14,165,233,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;color:#fff;text-decoration:none}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
+</style>
+</head>
+<body>
+
+<main class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass w-full max-w-2xl p-6 md:p-8">
+    <h2 class="text-2xl font-bold mb-6 text-center">Tipo de Lançamento</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <button class="type-btn" data-type="single" type="button">
+        <div class="text-4xl mb-2">🎵</div>
+        <div class="font-bold">Single</div>
+        <div class="text-sm text-slate-400">1 a 3 faixas</div>
+      </button>
+      <button class="type-btn" data-type="ep" type="button">
+        <div class="text-4xl mb-2">💿</div>
+        <div class="font-bold">EP</div>
+        <div class="text-sm text-slate-400">4 a 6 faixas</div>
+      </button>
+      <button class="type-btn" data-type="album" type="button">
+        <div class="text-4xl mb-2">📀</div>
+        <div class="font-bold">Álbum</div>
+        <div class="text-sm text-slate-400">7+ faixas</div>
+      </button>
+    </div>
+    <a href="./dashboard.html" class="btn btn-outline w-full">
+      <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+  </div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var SESSION_KEY='tucano_session_v2';
+var DRAFT_KEY='tucano_draft_v1';
+function getUser(){
+  try{
+    var s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!s) return null;
+    var acc=JSON.parse(localStorage.getItem('tucano_accounts_v2')||'{}');
+    return acc[(s.username||'').toLowerCase()]||null;
+  }catch(e){ return null; }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var u=getUser();
+  if(!u){ window.location.href='./index.html'; return; }
+
+  document.querySelectorAll('.type-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var type=btn.dataset.type;
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        type: type,
+        tracks: [{ title:'', artist:'', feat:'', composers:'', isrc:'', explicit:false, fileName:'', duration:0 }]
+      }));
+      window.location.href='./novo-faixas.html';
+    });
+  });
+});
+})();
+</script>
+</body>
+</html>
