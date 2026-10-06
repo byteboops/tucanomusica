@@ -15,7 +15,7 @@ html,body{margin:0;padding:0;background:#0f172a;color:#e2e8f0;font-family:system
 .glass{background:rgba(30,41,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(148,163,184,.15);border-radius:20px}
 .btn-primary{background:linear-gradient(135deg,#0ea5e9,#3b82f6);transition:all .2s}
 .btn-primary:hover{filter:brightness(1.1);transform:scale(1.02)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-size:15px;text-decoration:none;color:#e2e8f0}
 .btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
 .btn-outline:hover{border-color:#0ea5e9;color:#0ea5e9}
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px}
@@ -84,35 +84,55 @@ function liarAlert(){
       if(p==='granted'){ try{ new Notification('Assine primeiro, mentiroso da porra 😡'); }catch(e){} }
     });
   }
-  document.getElementById('modal-liar').classList.add('show');
+  var modal=document.getElementById('modal-liar');
+  modal.classList.add('show');
 }
+
+var blockNav=false;
 
 document.addEventListener('DOMContentLoaded',function(){
   var u=getUser();
   if(!u){ window.location.href='../../index.html'; return; }
   if(u.answeredContract){ window.location.href='../../dashboard/dashboard.html'; return; }
 
-  document.getElementById('liar-ok').onclick=function(){
+  document.getElementById('liar-ok').addEventListener('click',function(){
     document.getElementById('modal-liar').classList.remove('show');
-  };
-  document.getElementById('modal-liar').onclick=function(e){
+  });
+  document.getElementById('modal-liar').addEventListener('click',function(e){
     if(e.target===this) this.classList.remove('show');
-  };
+  });
 
-  document.getElementById('c-knit').onclick=function(){
+  document.getElementById('c-knit').addEventListener('click',function(){
+    if(blockNav) return;
     if(u.hasRealContract!==true){ liarAlert(); return; }
+    blockNav=true;
     u.contractType='knitting'; u.answeredContract=true; u.knittingAcknowledged=false;
-    persist(u); window.location.href='../knitting/knitting.html';
-  };
-  document.getElementById('c-tuc').onclick=function(){
+    persist(u);
+    setTimeout(function(){
+      window.location.href='../knitting/knitting.html';
+    }, 100);
+  });
+  
+  document.getElementById('c-tuc').addEventListener('click',function(){
+    if(blockNav) return;
     if(u.hasRealContract!==true){ liarAlert(); return; }
+    blockNav=true;
     u.contractType='tucano'; u.answeredContract=true; u.contractSigned=true; u.contractPdfDownloaded=true;
-    persist(u); window.location.href='../../dashboard/dashboard.html';
-  };
-  document.getElementById('c-none').onclick=function(){
+    persist(u);
+    setTimeout(function(){
+      window.location.href='../../dashboard/dashboard.html';
+    }, 100);
+  });
+  
+  document.getElementById('c-none').addEventListener('click',function(){
+    if(blockNav) return;
+    blockNav=true;
     u.contractType='none'; u.answeredContract=true; u.contractSigned=false; u.contractPdfDownloaded=false;
-    persist(u); window.location.href='../nenhum/nenhum.html';
-  };
+    persist(u);
+    setTimeout(function(){
+      window.location.href='../nenhum/nenhum.html';
+    }, 100);
+  });
 });
 })();
 </script>
