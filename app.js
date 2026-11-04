@@ -804,7 +804,7 @@ CLÁUSULA QUARTA - EXCLUSIVIDADE
 
 4.1. Este contrato não é exclusivo, podendo o Artista distribuir suas obras em outras distribuidoras.
 4.2. A exclusividade fica apenas para os releases que já foram lançados pela Tucano, não podendo ser re-distribuídas por outras distribuidoras.
-4.2.1. Isso não se deve a uma simples decisão da Tucano, mas sim por causa da distribuidora utilizada pela Tucano para realizar as distribuições, a Lan
+4.2.1. Isso não se deve a uma simples decisão da Tucano, mas sim por causa da distribuidora utilizada pela Tucano para realizar as distribuições, a Lantuns.
 
 CLÁUSULA QUINTA - DIREITOS AUTORAIS
 
@@ -865,7 +865,7 @@ CLÁUSULA DÉCIMA QUARTA - DO SPOTIFY FOR ARTISTS
 
 CLÁUSULA DÉCIMA QUINTA - DOS CRÉDITOS NAS PLATAFORMAS
 
-15.1. Os créditos © nas plataformas como o Artista digitou na hora de criar um release, junto do texto "[dist. Tucano]" ao lado.
+15.1. Os créditos © nas plataformas como o Artista digitou na hora de criar um release, junto do texto "(dist. Tucano)" ao lado.
 15.2. Os créditos ℗ nas plataformas aparecerão como "Lantuns".
 15.2.1. Isso se deve por causa que a distribuidora musical contratada pela Tucano, a Lantuns, não permite mudar os créditos ℗.
 
