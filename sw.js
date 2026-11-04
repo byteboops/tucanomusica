@@ -11,9 +11,9 @@
 //    e o artista acha que não foi aprovado.
 //  - Supabase Auth/API: nunca cacheia.
 
-const VERSION = 'tucano_gostoso_v3';
-const SHELL_CACHE = 'tucano_gostoso_v3-shell';
-const STATIC_CACHE = 'tucano_gostoso_v3-static;
+const VERSION = 'tucano_gostoso_v4';
+const SHELL_CACHE = 'tucano_gostoso_v4-shell';
+const STATIC_CACHE = 'tucano_gostoso_v4-static;
 
 const SHELL_ASSETS = [
   './',
