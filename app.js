@@ -542,7 +542,7 @@ function viewLanding(){
           <p><a href="https://www.tiktok.com/@tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i> @tucanomusica</a></p>
           <p><a href="https://www.instagram.com/tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> @tucanomusica</a></p>
           <p><a href="mailto:ncolassuport@gmail.com"><i class="fas fa-envelope"></i> ncolassuport@gmail.com</a></p>
-          <p><a href="#" id="footer-login">Entrar na conta</a></p>
+          <p><a href="#" id="footer-login">Portal do Artista Tucano Música</a></p>
         </div>
         <div>
           <label class="text-white">Assinar newsletter</label>
