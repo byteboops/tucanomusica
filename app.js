@@ -1038,8 +1038,8 @@ O tempo em que o suporte da Tucano responderá o Artista será entre <u>1-5 dias
 
 <strong>CLÁUSULA DÉCIMA OITAVA - CONTATO DE SUPORTE</strong>
 
-17.1. O Artista poderá enviar suas reclamações ou outras coisas via SAC no painel, Contate-Nos na seção inicial ou diretamente via e-mail de SAC <a href="mailto:ncolassuport@gmail.com" style="#a3e635"><strong>ncolassuport@gmail.com</strong></a>.
-17.2. As reclamações do Artista serão respondidas pelo e-mail <strong>ncolassuport@gmail.com</strong>.
+18.1. O Artista poderá enviar suas reclamações ou outras coisas via SAC no painel, Contate-Nos na seção inicial ou diretamente via e-mail de SAC <a href="mailto:ncolassuport@gmail.com" style="#a3e635"><strong>ncolassuport@gmail.com</strong></a>.
+18.2. As reclamações do Artista serão respondidas pelo e-mail <strong>ncolassuport@gmail.com</strong>.
 
 <strong>CLÁUSULA DÉCIMA NONA - DOS ATRASOS NOS RELEASES</strong>
 
