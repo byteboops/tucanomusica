@@ -924,7 +924,7 @@ function showContract(fullName, artistName, email, whatsapp, tiktok, schoolGrade
 
 Pelo presente instrumento particular celebrado em ${fill(today)}, as partes, doravante denominadas <strong>Tucano</strong> e <strong>Artista</strong> se identificarão abaixo:
 
-<strong>Tucano:</strong> Tucano Música, com seu representante legal Yan Matheus Antunes Batista, de WhatsApp +55 (41) 9 9147-1356 e e-mail <a href="mailto:ncolassuport@gmail.com" style="color:#a3e635">ncolassuport@gmail.com</a>
+<strong>Tucano:</strong> Tucano Música, de e-mail <a href="mailto:ncolassuport@gmail.com" style="color:#a3e635">ncolassuport@gmail.com</a>, WhatsApp +55 41 8452-7352, TikTok @tucanomusica, Discord yanbananao_.42487, com seu representante legal Yan Matheus Antunes Batista, de WhatsApp +55 (41) 9 9147-1356, e-mail <a href="mailto:yanmatheus160589@gmail.com" style="color:#a3e635">yanmatheus160589@gmail.com</a>, TikTok @knitting.cat e Discord yanbananao._42487.
 
 <strong>Artista:</strong> ${fill(fullName)}, de nome artístico ${fill(artistName)}, e-mail ${fill(email)}, WhatsApp ${fill(whatsapp)}, TikTok ${fill(tiktok || '(não informado)')} e série escolar ${fill(schoolGrade)}.
 
@@ -963,6 +963,7 @@ IV. Capa em PNG ou JPG/JPEG, quadrado, únicos textos permitidos são nome do la
 4.1. <u>Este contrato não é exclusivo</u>, podendo o Artista distribuir suas obras em outras distribuidoras.
 4.2. A exclusividade fica apenas para os releases que já foram lançados pela Tucano, não podendo ser re-distribuídas por outras distribuidoras.
 4.2.1. Isso não se deve a uma simples decisão da Tucano, mas sim por causa da distribuidora utilizada pela Tucano para realizar as distribuições, a Lantuns.
+4.3. Caso o Artista <strong>deseje</strong> utilizar a Tucano com <strong>exclusividade</strong>, deverá solicitar via <strong>e-mail ncolassuport@gmail.com</strong> ou <strong>WhatsApp +55 41 8452-7352</strong>.
 
 <strong>CLÁUSULA QUINTA - DIREITOS AUTORAIS</strong>
 
@@ -1035,15 +1036,20 @@ O tempo que a distribuição das Obras levará para ser distribuído será escol
 
 O tempo em que o suporte da Tucano responderá o Artista será entre <u>1-5 dias corridos</u>.
 
-<strong>CLÁUSULA DÉCIMA OITAVA - DOS ATRASOS NOS RELEASES</strong>
+<strong>CLÁUSULA DÉCIMA OITAVA - CONTATO DE SUPORTE</strong>
+
+17.1. O Artista poderá enviar suas reclamações ou outras coisas via SAC no painel, Contate-Nos na seção inicial ou diretamente via e-mail de SAC <a href="mailto:ncolassuport@gmail.com" style="#a3e635"><strong>ncolassuport@gmail.com</strong></a>.
+17.2. As reclamações do Artista serão respondidas pelo e-mail <strong>ncolassuport@gmail.com</strong>.
+
+<strong>CLÁUSULA DÉCIMA NONA - DOS ATRASOS NOS RELEASES</strong>
 
 Caso uma das Obras seja atrasada e não seja enviada no prazo em que o Artista escolheu (data e hora), a Tucano deverá <u>avisar previamente</u> sobre o atraso.
 
-<strong>CLÁUSULA DÉCIMA NONA - DOS ATRASOS NA RESPOSTA DO SUPORTE</strong>
+<strong>CLÁUSULA VIGÉSIMA - DOS ATRASOS NA RESPOSTA DO SUPORTE</strong>
 
 Caso o suporte atrase a resposta da reclamação do Artista, a mensagem deverá vir acompanhada do porquê o motivo do atraso.
 
-<strong>CLÁUSULA VIGÉSIMA - DOS DIREITOS AUTORAIS E LICENÇAS</strong>
+<strong>CLÁUSULA VIGÉSIMA PRIMEIRA - DOS DIREITOS AUTORAIS E LICENÇAS</strong>
 
 20.1. O Artista <u>não poderá distribuir obras sob as licenças CC-NC, CC-SA, CC BY-NC, CC BY-NC-SA, CC BY-NC-ND ou CC BY-NC-ND-SA</u>.
 20.2. Caso seja CC-BY ou CC-BY-ND, o Artista preencherá um campo do atribuído e a Tucano colocará a atribuição nos créditos © separado por barra entre o crédito © que o Artista colocou e o titular da criação e distribuição.
@@ -1051,9 +1057,9 @@ Caso o suporte atrase a resposta da reclamação do Artista, a mensagem deverá 
 20.3. Serão aceitos normalmente e sem exigências as Obras com licença CC0 ou direitos autorais 100% do Artista.
 20.4. Só serão aceitas a distribuição de Obras com licença Creative Commons ou direitos autorais.
 
-<strong>CLÁUSULA VIGÉSIMA PRIMEIRA - DAS DISTRIBUIÇÕES ADICIONAIS</strong>
+<strong>CLÁUSULA VIGÉSIMA SEGUNDA - DAS DISTRIBUIÇÕES ADICIONAIS</strong>
 
-21.1. O Artista também opcionalmente poderá distribuir suas Obras em:
+O Artista também opcionalmente poderá distribuir suas Obras em:
 
 I. YouTube Content ID (requer 100% de direitos autorais);
 II. Roblox (o Artista concorda com o <a href="https://en.help.roblox.com/hc/en-us/articles/23359485439124-Audio-Upload-License-Agreement">Acordo de Licença de Upload de Áudio da Roblox</a>.)
@@ -1063,30 +1069,30 @@ V. Facebook Fingerprint;
 VI. Spotify for Kids (precisa ser do gênero de música infantil e passar pelos requisitos da Spotify AB);
 VII. YouTube Kids (precisa ser do gênero de música infantil e passar pelos requisitos do YouTube).
 
-<strong>CLÁUSULA VIGÉSIMA SEGUNDA - PUBLICIDADE NOS PERFIS DA TUCANO</strong>
+<strong>CLÁUSULA VIGÉSIMA TERCEIRA - PUBLICIDADE NOS PERFIS DA TUCANO</strong>
 
 O Artista concorda que a Tucano poderá divulgar o Artista no perfil oficial da Tucano Música (@tucanomusica).
 
-<strong>CLÁUSULA VIGÉSIMA TERCEIRA - CURADORIA</strong>
+<strong>CLÁUSULA VIGÉSIMA QUARTA - CURADORIA</strong>
 
 O Artista concorda que a Tucano poderá inserir o Artista em playlists oficiais da Tucano.
 
-<strong>CLÁUSULA VIGÉSIMA QUARTA - FORCE MAJEURE</strong>
+<strong>CLÁUSULA VIGÉSIMA QUINTA - FORCE MAJEURE</strong>
 
-24.1. Caso o Artista se mude para outro domicílio de residência ou instituição escolar de ensino, poderá continuar distribuindo suas Obras e Vídeos pela Tucano, desde que não perca contato.
-24.2. Caso o Artista mude o número de WhatsApp sem aviso prévio, deverá avisar presencialmente seu novo número de WhatsApp, e poderá continuar utilizando os serviços da Tucano.
-24.3. Caso o agente de distribuição da Tucano fique em momentos de castigo e proibido ao uso de aparelhos eletrônicos essenciais, o Artista temporariamente não poderá utilizar os serviços da Tucano, por tempo indeterminado, até que acabe o período do castigo e o agente de distribuição recupere os aparelhos eletrônicos e possa continuar a distribuição.
-24.3.1. O site será desativado temporariamente neste caso.
-24.4. Caso o Artista perca totalmente qualquer contato com a Tucano, não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
-24.5. Caso o mesmo acontecimento do item 16.4 desta cláusula aconteça com o agente de distribuição da Tucano, o Artista não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
-24.6. Caso os mesmos acontecimentos dos itens 16.1 e 16.2 desta cláusula aconteçam com a Tucano, as instruções serão as mesmas e o Artista poderá continuar utilizando os serviços da Tucano.
-24.7. Caso aconteça guerras, golpes militares e quaisquer coisas sérias que envolvam destruição, destruição da nação, guerra com a nação ou com o mundo, o Artista poderá continuar utilizando os serviços da Tucano, desde que isso não afete aparelhos eletrônicos, rede de internet, saúde das partes ou quaisquer outras coisas que impossibilitem a prestação do serviço.
+25.1. Caso o Artista se mude para outro domicílio de residência ou instituição escolar de ensino, poderá continuar distribuindo suas Obras e Vídeos pela Tucano, desde que não perca contato.
+25.2. Caso o Artista mude o número de WhatsApp sem aviso prévio, deverá avisar presencialmente seu novo número de WhatsApp, e poderá continuar utilizando os serviços da Tucano.
+25.3. Caso o agente de distribuição da Tucano fique em momentos de castigo e proibido ao uso de aparelhos eletrônicos essenciais, o Artista temporariamente não poderá utilizar os serviços da Tucano, por tempo indeterminado, até que acabe o período do castigo e o agente de distribuição recupere os aparelhos eletrônicos e possa continuar a distribuição.
+25.3.1. O site será desativado temporariamente neste caso.
+25.4. Caso o Artista perca totalmente qualquer contato com a Tucano, não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
+25.5. Caso o mesmo acontecimento do item 16.4 desta cláusula aconteça com o agente de distribuição da Tucano, o Artista não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
+25.6. Caso os mesmos acontecimentos dos itens 16.1 e 16.2 desta cláusula aconteçam com a Tucano, as instruções serão as mesmas e o Artista poderá continuar utilizando os serviços da Tucano.
+25.7. Caso aconteça guerras, golpes militares e quaisquer coisas sérias que envolvam destruição, destruição da nação, guerra com a nação ou com o mundo, o Artista poderá continuar utilizando os serviços da Tucano, desde que isso não afete aparelhos eletrônicos, rede de internet, saúde das partes ou quaisquer outras coisas que impossibilitem a prestação do serviço.
 
-<strong>CLÁUSULA VIGÉSIMA QUINTA - TIPO DE CONTRATO</strong>
+<strong>CLÁUSULA VIGÉSIMA SEXTA - TIPO DE CONTRATO</strong>
 
 Este contrato se aplica como um contrato paritário, podendo as partes negociarem as cláusulas.
 
-<strong>CLÁUSULA VIGÉSIMA SEXTA - FORO</strong>
+<strong>CLÁUSULA VIGÉSIMA SÉTIMA - FORO</strong>
 
 Fica eleito o foro do PV do TikTok (@knitting.cat) ou do Discord (yanbananao._42487) para dirimir quaisquer controvérsias oriundas deste contrato.
 
@@ -1094,7 +1100,7 @@ E por estarem assim, justos e contratados, as partes assinam este contrato em 1 
 
 <strong>Assinatura da Tucano:</strong>
 
-<img src="testi.png" alt="Assinatura Tucano" style="max-width:180px;margin-top:8px">
+<img src="./tucano.png" alt="Assinatura Tucano" style="max-width:180px;margin-top:8px">
         </div>
 
         <div class="mb-2">
