@@ -358,30 +358,30 @@ function viewLanding(){
         <div class="mt-20 space-y-24">
           <div id="sec-b" class="scroll-mt-24 rounded-3xl overflow-hidden">
             <video src="./sistema_tucanico.mp4" autoplay muted loop playsinline class="w-full" style="display:block;max-height:60vh;object-fit:cover"></video>
-            <div class="p-8 md:p-12" style="background:rgba(15,23,42,.85)">
-              <h3 class="kab text-3xl text-white">Distribua sua música em uma cacetada de DSPs</h3>
-              <p class="tts mt-4 text-lg text-slate-200">São +480 plataformas para onde a sua música vai! Veja elas em <a href="https://plataformasknitting.vercel.app" target="_blank" rel="noopener noreferrer" style="color:#a3e635;text-decoration:underline">https://plataformasknitting.vercel.app</a>.</p>
+            <div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)">
+              <h3 class="kab text-3xl" style="color:#fff">Distribua sua música em uma cacetada de DSPs</h3>
+              <p class="tts mt-4 text-lg" style="color:#e5e7eb">São +480 plataformas para onde a sua música vai! Veja elas em <a href="https://plataformasknitting.vercel.app" target="_blank" rel="noopener noreferrer" style="color:#a3e635;text-decoration:underline">https://plataformasknitting.vercel.app</a>.</p>
             </div>
           </div>
           <div id="sec-a" class="scroll-mt-24 rounded-3xl overflow-hidden">
             <img src="./sample.png" alt="" class="w-full" style="display:block;max-height:60vh;object-fit:cover">
-            <div class="p-8 md:p-12" style="background:rgba(15,23,42,.85)">
-              <h3 class="kab text-3xl text-white">Seja curado em playlists</h3>
-              <p class="tts mt-4 text-lg text-slate-200">A Tucano Música é uma sub-empresa de uma gravadora chamada Knitting Records™. A Knitting te curará. Entre em playlists públicas e playlists da própria Tucano!</p>
+            <div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)">
+              <h3 class="kab text-3xl" style="color:#fff">Seja curado em playlists</h3>
+              <p class="tts mt-4 text-lg" style="color:#e5e7eb">A Tucano Música é uma sub-empresa de uma gravadora chamada Knitting Records™. A Knitting te curará. Entre em playlists públicas e playlists da própria Tucano!</p>
             </div>
           </div>
           <div id="sec-c" class="scroll-mt-24 rounded-3xl overflow-hidden">
             <img src="./dinheiro.png" alt="" class="w-full" style="display:block;max-height:60vh;object-fit:cover">
-            <div class="p-8 md:p-12" style="background:rgba(15,23,42,.85)">
-              <h3 class="kab text-3xl text-white">Receba 75% dos seus royalties</h3>
-              <p class="tts mt-4 text-lg text-slate-200">Você cede uma pequena comissão de 25% dos royalties a Tucano para nossos sistemas continuarem operando!</p>
+            <div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)">
+              <h3 class="kab text-3xl" style="color:#fff">Receba 75% dos seus royalties</h3>
+              <p class="tts mt-4 text-lg" style="color:#e5e7eb">Você cede uma pequena comissão de 25% dos royalties a Tucano para nossos sistemas continuarem operando!</p>
             </div>
           </div>
           <div id="sec-d" class="scroll-mt-24 rounded-3xl overflow-hidden">
             <img src="./spotify.png" alt="" class="w-full" style="display:block;max-height:60vh;object-fit:cover">
-            <div class="p-8 md:p-12" style="background:rgba(15,23,42,.85)">
-              <h3 class="kab text-3xl text-white">Tenha fácil acesso ao Spotify for Artists</h3>
-              <p class="tts mt-4 text-lg text-slate-200">A Tucano reivindica o seu perfil do Spotify for Artists e você pode solicitar acesso ao seu perfil! Mas não mexemos em nada nele.</p>
+            <div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)">
+              <h3 class="kab text-3xl" style="color:#fff">Tenha fácil acesso ao Spotify for Artists</h3>
+              <p class="tts mt-4 text-lg" style="color:#e5e7eb">A Tucano reivindica o seu perfil do Spotify for Artists e você pode solicitar acesso ao seu perfil! Mas não mexemos em nada nele.</p>
             </div>
           </div>
         </div>
@@ -393,7 +393,12 @@ function viewLanding(){
       <div class="max-w-6xl mx-auto px-4 text-center">
         <img src="./tucano.png" alt="Tucano Música" style="max-width:120px;border-radius:16px;margin:0 auto 16px" onerror="this.style.display='none'">
         <h2 class="kab text-3xl md:text-4xl" style="color:#fff">Gerencie todos os seus lançamentos!</h2>
-        <p class="tts mt-3 text-green-100">Um painel único para acompanhar status, catálogo, royalties e suporte.</p>
+        <p class="tts mt-3" style="color:#dcfce7">Um painel único para acompanhar status, catálogo, royalties e suporte.</p>
+
+        <!-- Botão Portal do Artista -->
+        <div class="mt-6">
+          <button id="portal-artista-btn" class="btn-primary text-base" style="padding:.9rem 2rem;font-size:1rem"><i class="fas fa-right-to-bracket"></i> Portal do Artista</button>
+        </div>
 
         <!-- As duas imagens lado a lado -->
         <div class="mt-8 flex flex-wrap items-center justify-center gap-6">
@@ -542,7 +547,6 @@ function viewLanding(){
           <p><a href="https://www.tiktok.com/@tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i> @tucanomusica</a></p>
           <p><a href="https://www.instagram.com/tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> @tucanomusica</a></p>
           <p><a href="mailto:ncolassuport@gmail.com"><i class="fas fa-envelope"></i> ncolassuport@gmail.com</a></p>
-          <p><a href="#" id="footer-login">Portal do Artista Tucano Música</a></p>
         </div>
         <div>
           <label class="text-white">Assinar newsletter</label>
@@ -560,6 +564,10 @@ function viewLanding(){
 }
 
 function bindLanding(){
+  // Botão Portal do Artista (bloco verde)
+  const portalBtn = $('#portal-artista-btn');
+  if(portalBtn) portalBtn.addEventListener('click', ()=>{ playSound('botao'); state.page='login'; render(); });
+
   const track = $('#carousel');
   if(track){
     let auto = true;
@@ -640,8 +648,6 @@ function bindLanding(){
     }catch(e){ msg.textContent='Erro: '+e.message; msg.style.color='#fca5a5'; }
     finally{ btn.disabled=false; btn.innerHTML='Assinar'; }
   });
-
-  $('#footer-login').addEventListener('click', (e)=>{ e.preventDefault(); state.page='login'; render(); });
 
   const reasonSel = $('#ct-reason');
   const prefWrap = $('#ct-pref-wrap');
