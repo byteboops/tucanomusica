@@ -110,7 +110,6 @@ async function fetchJsonFile(path){
     }
   }
 }
-}
 
 // ============================================================
 // DELTA DE ESTADO
