@@ -92,6 +92,18 @@ function generateNumericId(existing){
   for(let n=1000;n<=9999;n++){ if(!used.has(String(n))) return n; }
   return Date.now() % 9000 + 1000;
 }
+async function fetchJsonFile(path){
+  const txt = await fetchTextFile(path);
+  if(!txt) return null;
+  try{ 
+    // Remove caracteres de controle invisíveis e caracteres nulos
+    const cleanTxt = txt.replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); 
+    return JSON.parse(cleanTxt); 
+  }catch(e){ 
+    console.error("Erro no JSON:", e);
+    return null; 
+  }
+}
 
 // ============================================================
 // DELTA DE ESTADO
