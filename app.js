@@ -1051,11 +1051,11 @@ Caso o suporte atrase a resposta da reclamação do Artista, a mensagem deverá 
 
 <strong>CLÁUSULA VIGÉSIMA PRIMEIRA - DOS DIREITOS AUTORAIS E LICENÇAS</strong>
 
-20.1. O Artista <u>não poderá distribuir obras sob as licenças CC-NC, CC-SA, CC BY-NC, CC BY-NC-SA, CC BY-NC-ND ou CC BY-NC-ND-SA</u>.
-20.2. Caso seja CC-BY ou CC-BY-ND, o Artista preencherá um campo do atribuído e a Tucano colocará a atribuição nos créditos © separado por barra entre o crédito © que o Artista colocou e o titular da criação e distribuição.
-20.2.1. A atribuição poderá ser o nome completo ou nome de usuário de onde o Artista pegou.
-20.3. Serão aceitos normalmente e sem exigências as Obras com licença CC0 ou direitos autorais 100% do Artista.
-20.4. Só serão aceitas a distribuição de Obras com licença Creative Commons ou direitos autorais.
+21.1. O Artista <u>não poderá distribuir obras sob as licenças CC-NC, CC-SA, CC BY-NC, CC BY-NC-SA, CC BY-NC-ND ou CC BY-NC-ND-SA</u>.
+21.2. Caso seja CC-BY ou CC-BY-ND, o Artista preencherá um campo do atribuído e a Tucano colocará a atribuição nos créditos © separado por barra entre o crédito © que o Artista colocou e o titular da criação e distribuição.
+21.2.1. A atribuição poderá ser o nome completo ou nome de usuário de onde o Artista pegou.
+21.3. Serão aceitos normalmente e sem exigências as Obras com licença CC0 ou direitos autorais 100% do Artista.
+21.4. Só serão aceitas a distribuição de Obras com licença Creative Commons ou direitos autorais.
 
 <strong>CLÁUSULA VIGÉSIMA SEGUNDA - DAS DISTRIBUIÇÕES ADICIONAIS</strong>
 
@@ -1084,8 +1084,8 @@ O Artista concorda que a Tucano poderá inserir o Artista em playlists oficiais 
 25.3. Caso o agente de distribuição da Tucano fique em momentos de castigo e proibido ao uso de aparelhos eletrônicos essenciais, o Artista temporariamente não poderá utilizar os serviços da Tucano, por tempo indeterminado, até que acabe o período do castigo e o agente de distribuição recupere os aparelhos eletrônicos e possa continuar a distribuição.
 25.3.1. O site será desativado temporariamente neste caso.
 25.4. Caso o Artista perca totalmente qualquer contato com a Tucano, não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
-25.5. Caso o mesmo acontecimento do item 16.4 desta cláusula aconteça com o agente de distribuição da Tucano, o Artista não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
-25.6. Caso os mesmos acontecimentos dos itens 16.1 e 16.2 desta cláusula aconteçam com a Tucano, as instruções serão as mesmas e o Artista poderá continuar utilizando os serviços da Tucano.
+25.5. Caso o mesmo acontecimento do item 25.4 desta cláusula aconteça com o agente de distribuição da Tucano, o Artista não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
+25.6. Caso os mesmos acontecimentos dos itens 25.1 e 25.2 desta cláusula aconteçam com a Tucano, as instruções serão as mesmas e o Artista poderá continuar utilizando os serviços da Tucano.
 25.7. Caso aconteça guerras, golpes militares e quaisquer coisas sérias que envolvam destruição, destruição da nação, guerra com a nação ou com o mundo, o Artista poderá continuar utilizando os serviços da Tucano, desde que isso não afete aparelhos eletrônicos, rede de internet, saúde das partes ou quaisquer outras coisas que impossibilitem a prestação do serviço.
 
 <strong>CLÁUSULA VIGÉSIMA SEXTA - TIPO DE CONTRATO</strong>
