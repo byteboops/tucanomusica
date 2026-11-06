@@ -95,14 +95,21 @@ function generateNumericId(existing){
 async function fetchJsonFile(path){
   const txt = await fetchTextFile(path);
   if(!txt) return null;
-  try{ 
-    // Remove caracteres de controle invisíveis e caracteres nulos
-    const cleanTxt = txt.replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); 
-    return JSON.parse(cleanTxt); 
-  }catch(e){ 
-    console.error("Erro no JSON:", e);
-    return null; 
+  try { 
+    return JSON.parse(txt); 
+  } catch(e) { 
+    console.warn("JSON quebrado. Tentando consertar...");
+    try {
+      // Remove quebras de linha reais dentro de aspas
+      let fixed = txt.replace(/[\r\n]+/g, ' '); 
+      // Tenta de novo
+      return JSON.parse(fixed);
+    } catch(e2) {
+      console.error("Falha ao consertar o JSON:", e2);
+      return null;
+    }
   }
+}
 }
 
 // ============================================================
