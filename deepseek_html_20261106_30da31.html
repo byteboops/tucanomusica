@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Formulário de Aplicação - Tucano Música</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    @font-face { font-family: 'Kablammo'; src: url('./kablammo.ttf') format('truetype'); font-display: swap; }
+    @font-face { font-family: 'TikTok Sans'; src: url('./tiktok.ttf') format('truetype'); font-display: swap; }
+    @font-face { font-family: 'Ifood RC'; src: url('./tucanomusicaletra.woff2') format('woff2'); font-display: swap; }
+
+    :root {
+      --bg-primary: #0b1f13; --bg-secondary: #123a24; --bg-tertiary: #1f5c38;
+      --text-primary: #f0fdf4; --text-secondary: #bbf7d0; --text-muted: #86efac;
+      --border-color: rgba(163, 230, 53, .18);
+      --accent-blue: #a3e635; --accent-blue-dark: #65a30d;
+    }
+
+    * { font-family: 'Ifood RC', sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+    
+    h1, h2, h3, .kab { font-family: 'Kablammo', cursive; }
+    .tts { font-family: 'TikTok Sans', sans-serif; }
+
+    .glass { background: rgba(18, 58, 36, .72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(163, 230, 53, .22); border-radius: 20px; }
+    .glow { box-shadow: 0 0 40px rgba(163, 230, 53, .15), 0 0 80px rgba(163, 230, 53, .05); }
+    .jungle-texture { background-image: radial-gradient(circle at 20% 30%, rgba(163, 230, 53, .08), transparent 45%), radial-gradient(circle at 80% 70%, rgba(34, 197, 94, .08), transparent 45%); }
+
+    .btn-primary { background: linear-gradient(135deg, #65a30d, #a3e635); color: #052e16 !important; border-radius: 12px; padding: .75rem 1.5rem; font-weight: 700; transition: all .25s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(163, 230, 53, .4); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border-radius: 12px; padding: .75rem 1.5rem; font-weight: 500; transition: all .25s ease; border: 1px solid var(--border-color); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; text-decoration: none; }
+    .btn-secondary:hover { background: var(--bg-secondary); border-color: var(--accent-blue); }
+    
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff !important; border-radius: 12px; padding: .5rem .75rem; border: none; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-danger:hover { box-shadow: 0 4px 15px rgba(239, 68, 68, .4); }
+
+    input, select, textarea { background: var(--bg-secondary) !important; border: 1px solid var(--bg-tertiary) !important; border-radius: 12px !important; padding: .75rem !important; color: var(--text-primary) !important; width: 100%; transition: border-color .2s, box-shadow .2s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-blue) !important; box-shadow: 0 0 0 3px rgba(163, 230, 53, .15) !important; }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+    textarea { resize: vertical; min-height: 100px; }
+    
+    label { color: var(--text-secondary); font-size: .875rem; font-weight: 500; display: block; margin-bottom: .375rem; }
+    
+    .alert-box { background: rgba(239, 68, 68, .1); border: 1px solid rgba(239, 68, 68, .3); border-radius: 12px; padding: 16px; color: #fca5a5; }
+    
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255, 255, 255, .3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes fadeInScale { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+    .fade-in-scale { animation: fadeInScale .4s ease forwards; }
+
+    .file-upload-wrapper { position: relative; }
+    .file-upload-wrapper input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 2; }
+    .file-upload-box { background: var(--bg-secondary); border: 2px dashed var(--bg-tertiary); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all .25s ease; color: var(--text-muted); }
+    .file-upload-box:hover { border-color: var(--accent-blue); background: rgba(31, 92, 56, .4); }
+    .file-upload-box.has-file { border-style: solid; border-color: var(--accent-blue); color: var(--text-primary); }
+    .file-upload-box i { font-size: 1.75rem; margin-bottom: .5rem; display: block; color: var(--accent-blue); }
+    .file-preview { max-width: 100%; max-height: 180px; border-radius: 8px; margin-top: .75rem; object-fit: cover; }
+    .file-name { font-size: .8rem; color: var(--text-secondary); margin-top: .5rem; word-break: break-all; }
+  </style>
+</head>
+<body class="p-4 py-8 flex justify-center items-center jungle-texture">
+
+  <div class="glass glow p-6 md:p-10 max-w-3xl w-full fade-in-scale" id="main-card">
+    
+    <div class="text-center mb-8">
+      <img src="./tucano.png" alt="Tucano" class="mx-auto mb-4" style="max-width:100px" onerror="this.style.display='none'">
+      <h1 class="kab text-3xl" style="color: var(--text-primary);">Formulário de Aplicação</h1>
+      <p class="tts text-slate-400 mt-1" style="color: var(--text-secondary);">Preencha seus dados para lançar músicas pela Tucano Música</p>
+    </div>
+
+    <form id="apply-form" class="space-y-4">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label>Nome completo *</label><input id="ap-full" type="text" required></div>
+        <div><label>Nome artístico *</label><input id="ap-art" type="text" required></div>
+        <div><label>E-mail *</label><input id="ap-mail" type="email" required></div>
+        <div><label>WhatsApp *</label><input id="ap-whats" type="text" required></div>
+        <div><label>TikTok *</label><input id="ap-tiktok" type="text" required></div>
+        <div><label>Discord *</label><input id="ap-discord" type="text" required></div>
+        <div><label>Idade * (11 a 16 anos)</label><input id="ap-age" type="number" min="11" max="16" required></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label>Rua *</label><input id="ap-rua" type="text" required></div>
+        <div><label>Bairro *</label><input id="ap-bairro" type="text" required></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label>Escola * (Digite o nome)</label>
+          <input id="ap-school" type="text" required placeholder="Digite o nome da escola">
+        </div>
+        <div>
+          <label>Série Escolar *</label>
+          <select id="ap-grade" required>
+            <option value="">Selecione</option>
+            <option value="6º ano">6º ano</option>
+            <option value="7º ano">7º ano</option>
+            <option value="8º ano">8º ano</option>
+            <option value="9º ano">9º ano</option>
+            <option value="1º ano (ensino médio)">1º ano (ensino médio)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- NOVOS CAMPOS DE UPLOAD DE IMAGEM -->
+      <div class="pt-2">
+        <h2 class="kab text-xl mb-3" style="color: var(--accent-blue);">Verificação de Identidade</h2>
+        <p class="text-sm mb-4" style="color: var(--text-muted);">Envie as fotos abaixo para confirmarmos sua identidade e vínculo com a escola parceira.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Foto do rosto -->
+          <div>
+            <label>Foto do seu rosto *</label>
+            <div class="file-upload-wrapper">
+              <input type="file" id="ap-face-photo" accept="image/*" required>
+              <div class="file-upload-box" id="face-photo-box">
+                <i class="fas fa-camera"></i>
+                <span>Clique para enviar</span>
+                <div class="file-name" id="face-photo-name"></div>
+              </div>
+              <img id="face-photo-preview" class="file-preview" style="display:none;">
+            </div>
+          </div>
+
+          <!-- Foto em frente à escola -->
+          <div>
+            <label>Foto em frente à escola *</label>
+            <div class="file-upload-wrapper">
+              <input type="file" id="ap-school-photo" accept="image/*" required>
+              <div class="file-upload-box" id="school-photo-box">
+                <i class="fas fa-school"></i>
+                <span>Clique para enviar</span>
+                <div class="file-name" id="school-photo-name"></div>
+              </div>
+              <img id="school-photo-preview" class="file-preview" style="display:none;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label>YouTube (opcional)</label><input id="ap-yt" type="text"></div>
+        <div><label>Instagram (opcional)</label><input id="ap-insta" type="text"></div>
+        <div><label>Facebook (opcional)</label><input id="ap-face" type="text"></div>
+        <div><label>Reddit (opcional)</label><input id="ap-reddit" type="text"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label>Você usa Family Link? *</label>
+          <select id="ap-family" required>
+            <option value="">Selecione</option>
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+          </select>
+        </div>
+        <div>
+          <label>Você é banda ou artista? *</label>
+          <select id="ap-isband" required>
+            <option value="">Selecione</option>
+            <option value="Não">Não, sou artista solo</option>
+            <option value="Sim">Sim, sou banda</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="band-section" style="display: none; border-color: var(--border-color); background: rgba(18, 58, 36, 0.5);" class="p-4 border rounded-xl space-y-3">
+        <p class="text-sm" style="color: var(--text-muted);">Adicione os membros da sua banda (mínimo 2):</p>
+        <div id="band-members-container" class="space-y-2">
+          <div class="flex gap-2">
+            <input type="text" class="band-member" placeholder="Nome do membro 1" required>
+            <input type="text" class="band-member" placeholder="Nome do membro 2" required>
+          </div>
+        </div>
+        <button type="button" id="add-member" class="btn-secondary text-sm w-full"><i class="fas fa-plus"></i> Adicionar mais integrantes</button>
+      </div>
+
+      <div class="space-y-4 pt-2">
+        <div>
+          <label>Por que você faz música? *</label>
+          <textarea id="ap-why-music" required placeholder="Conte para a gente o que te motiva a criar música..."></textarea>
+        </div>
+        <div>
+          <label>Por que você quer usar a Tucano? *</label>
+          <textarea id="ap-why-tucano" required placeholder="Explique por que você quer lançar suas músicas pela Tucano Música..."></textarea>
+        </div>
+      </div>
+
+      <div id="apply-error" class="alert-box" style="display: none;"></div>
+
+      <div class="flex gap-2 mt-6">
+        <a href="./index.html" class="btn-secondary flex-1 text-center justify-center">Voltar</a>
+        <button type="submit" id="apply-submit" class="btn-primary flex-[2]"><i class="fas fa-paper-plane"></i> Enviar Aplicação</button>
+      </div>
+    </form>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://mjqwiqjojkzobuysziyv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+    const BUCKET = 'releases';
+    
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const apIsBand = document.getElementById('ap-isband');
+    const bandSection = document.getElementById('band-section');
+    const addMemberBtn = document.getElementById('add-member');
+    const membersContainer = document.getElementById('band-members-container');
+
+    apIsBand.addEventListener('change', () => {
+      if (apIsBand.value === 'Sim') {
+        bandSection.style.display = 'block';
+      } else {
+        bandSection.style.display = 'none';
+      }
+    });
+
+    addMemberBtn.addEventListener('click', () => {
+      const div = document.createElement('div');
+      div.className = 'flex gap-2 mt-2';
+      div.innerHTML = `
+        <input type="text" class="band-member" placeholder="Nome do integrante">
+        <button type="button" class="btn-danger remove-member"><i class="fas fa-trash"></i></button>
+      `;
+      membersContainer.appendChild(div);
+      
+      div.querySelector('.remove-member').addEventListener('click', () => {
+        div.remove();
+      });
+    });
+
+    // ===== Preview dos uploads de imagem =====
+    function setupImageUpload(inputId, boxId, nameId, previewId) {
+      const input = document.getElementById(inputId);
+      const box = document.getElementById(boxId);
+      const nameEl = document.getElementById(nameId);
+      const preview = document.getElementById(previewId);
+
+      input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (!file) {
+          box.classList.remove('has-file');
+          nameEl.textContent = '';
+          preview.style.display = 'none';
+          preview.src = '';
+          return;
+        }
+        box.classList.add('has-file');
+        nameEl.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    setupImageUpload('ap-face-photo', 'face-photo-box', 'face-photo-name', 'face-photo-preview');
+    setupImageUpload('ap-school-photo', 'school-photo-box', 'school-photo-name', 'school-photo-preview');
+
+    const validSchools = [
+      'colégio victor gabriel camargo',
+      'colégio victor gabriel',
+      'escola victor gabriel camargo',
+      'escola victor gabriel',
+      'victor gabriel camargo',
+      'victor gabriel'
+    ];
+
+    document.getElementById('apply-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const err = document.getElementById('apply-error');
+      const btn = document.getElementById('apply-submit');
+      err.style.display = 'none';
+      
+      const fullName = document.getElementById('ap-full').value.trim();
+      const artistName = document.getElementById('ap-art').value.trim();
+      const email = document.getElementById('ap-mail').value.trim();
+      const whatsapp = document.getElementById('ap-whats').value.trim();
+      const tiktok = document.getElementById('ap-tiktok').value.trim();
+      const discord = document.getElementById('ap-discord').value.trim();
+      const age = document.getElementById('ap-age').value;
+      const rua = document.getElementById('ap-rua').value.trim();
+      const bairro = document.getElementById('ap-bairro').value.trim();
+      const schoolRaw = document.getElementById('ap-school').value.trim().toLowerCase();
+      const grade = document.getElementById('ap-grade').value;
+      const yt = document.getElementById('ap-yt').value.trim();
+      const insta = document.getElementById('ap-insta').value.trim();
+      const face = document.getElementById('ap-face').value.trim();
+      const reddit = document.getElementById('ap-reddit').value.trim();
+      const familyLink = document.getElementById('ap-family').value;
+      const isBand = apIsBand.value;
+      const whyMusic = document.getElementById('ap-why-music').value.trim();
+      const whyTucano = document.getElementById('ap-why-tucano').value.trim();
+      const facePhotoFile = document.getElementById('ap-face-photo').files[0];
+      const schoolPhotoFile = document.getElementById('ap-school-photo').files[0];
+
+      if (!fullName || !artistName || !email || !whatsapp || !tiktok || !discord || !age || !rua || !bairro || !schoolRaw || !grade || !familyLink || !isBand || !whyMusic || !whyTucano) {
+        err.textContent = 'Por favor, preencha todos os campos obrigatórios.';
+        err.style.display = 'block';
+        return;
+      }
+
+      if (!facePhotoFile || !schoolPhotoFile) {
+        err.textContent = 'Por favor, envie a foto do seu rosto e a foto em frente à escola.';
+        err.style.display = 'block';
+        return;
+      }
+
+      if (parseInt(age) < 11 || parseInt(age) > 16) {
+        err.textContent = 'A idade deve ser entre 11 e 16 anos.';
+        err.style.display = 'block';
+        return;
+      }
+
+      if (!validSchools.includes(schoolRaw)) {
+        err.textContent = 'Instituição de ensino não reconhecida. A Tucano é apenas para alunos de escolas parceiras.';
+        err.style.display = 'block';
+        return;
+      }
+
+      let bandMembersText = 'Não se aplica (Artista Solo)';
+      if (isBand === 'Sim') {
+        const members = Array.from(document.querySelectorAll('.band-member')).map(input => input.value.trim()).filter(val => val !== '');
+        if (members.length < 2) {
+          err.textContent = 'Banda precisa ter pelo menos 2 integrantes preenchidos.';
+          err.style.display = 'block';
+          return;
+        }
+        bandMembersText = members.join(', ');
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+      try {
+        const safeArtist = artistName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]+/g, '_').toLowerCase();
+        const uniqueId = Date.now().toString(36);
+
+        // Upload das imagens
+        const faceExt = (facePhotoFile.name.split('.').pop() || 'jpg').toLowerCase();
+        const schoolExt = (schoolPhotoFile.name.split('.').pop() || 'jpg').toLowerCase();
+        const facePath = `aplicacoes/farolatino_${safeArtist}_${uniqueId}_rosto.${faceExt}`;
+        const schoolPath = `aplicacoes/farolatino_${safeArtist}_${uniqueId}_escola.${schoolExt}`;
+
+        const { error: faceErr } = await sb.storage.from(BUCKET).upload(facePath, facePhotoFile, { upsert: true });
+        if (faceErr) throw new Error('Erro ao enviar foto do rosto: ' + faceErr.message);
+
+        const { error: schoolErr } = await sb.storage.from(BUCKET).upload(schoolPath, schoolPhotoFile, { upsert: true });
+        if (schoolErr) throw new Error('Erro ao enviar foto da escola: ' + schoolErr.message);
+
+        // Gera URLs públicas (ou assinadas)
+        const { data: faceUrlData } = sb.storage.from(BUCKET).getPublicUrl(facePath);
+        const { data: schoolUrlData } = sb.storage.from(BUCKET).getPublicUrl(schoolPath);
+
+        const txt = `FORMULÁRIO DE APLICAÇÃO TUCANO MÚSICA (FAROLATINO)\n\n` +
+          `--- DADOS PESSOAIS ---\n` +
+          `Nome completo: ${fullName}\n` +
+          `Nome artístico: ${artistName}\n` +
+          `Idade: ${age} anos\n` +
+          `E-mail: ${email}\n` +
+          `WhatsApp: ${whatsapp}\n` +
+          `TikTok: ${tiktok}\n` +
+          `Discord: ${discord}\n` +
+          `Usa Family Link: ${familyLink}\n\n` +
+          `--- LOCALIZAÇÃO E ESCOLA ---\n` +
+          `Rua: ${rua}\n` +
+          `Bairro: ${bairro}\n` +
+          `Escola: ${schoolRaw}\n` +
+          `Série escolar: ${grade}\n\n` +
+          `--- VERIFICAÇÃO DE IDENTIDADE ---\n` +
+          `Foto do rosto: ${faceUrlData.publicUrl}\n` +
+          `Foto em frente à escola: ${schoolUrlData.publicUrl}\n\n` +
+          `--- REDES SOCIAIS EXTRAS ---\n` +
+          `YouTube: ${yt || '(não informado)'}\n` +
+          `Instagram: ${insta || '(não informado)'}\n` +
+          `Facebook: ${face || '(não informado)'}\n` +
+          `Reddit: ${reddit || '(não informado)'}\n\n` +
+          `--- TIPO DE ARTISTA ---\n` +
+          `É banda: ${isBand}\n` +
+          `Membros da banda: ${bandMembersText}\n\n` +
+          `--- MOTIVAÇÕES ---\n` +
+          `Por que faz música: ${whyMusic}\n` +
+          `Por que quer usar a Tucano: ${whyTucano}\n\n` +
+          `Data da aplicação: ${new Date().toLocaleString('pt-BR')}`;
+
+        const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+        const file = new File([blob], 'farolatino.txt', { type: 'text/plain' });
+        const path = `aplicacoes/farolatino_${safeArtist}_${uniqueId}.txt`;
+
+        const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert: true });
+        
+        if (error) throw error;
+
+        document.querySelector('.glass').innerHTML = `
+          <div class="text-center fade-in py-10">
+            <div style="font-size:5rem">🐦</div>
+            <h1 class="kab text-3xl mt-4 mb-2" style="color:var(--accent-blue)">Aplicação Enviada!</h1>
+            <p class="text-slate-300 mb-6">Fala, ${artistName}! Seus dados foram enviados para a nossa equipe.</p>
+            <p class="text-sm text-slate-400 mb-8">Aguarde o contato do suporte pelo seu e-mail ou WhatsApp para saber se você foi aprovado.</p>
+            <a href="./index.html" class="btn-primary" style="text-decoration:none">Voltar para o início</a>
+          </div>
+        `;
+
+      } catch (e) {
+        console.error(e);
+        err.textContent = 'Erro ao enviar: ' + e.message;
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Aplicação';
+      }
+    });
+  </script>
+</body>
+</html>
