@@ -562,10 +562,15 @@ function viewLanding(){
           <p class="mt-3 text-sm text-slate-400">Tucano Música — distribuição musical digital.</p>
         </div>
         <div class="text-sm space-y-2">
-          <p><a href="https://www.tiktok.com/@tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i> @tucanomusica</a></p>
-          <p><a href="https://www.instagram.com/tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> @tucanomusica</a></p>
-          <p><a href="mailto:ncolassuport@gmail.com"><i class="fas fa-envelope"></i> ncolassuport@gmail.com</a></p>
-        </div>
+  <p><a href="https://www.tiktok.com/@tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i> @tucanomusica</a></p>
+  <p><a href="https://www.instagram.com/tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> @tucanomusica</a></p>
+  <p><a href="mailto:ncolassuport@gmail.com"><i class="fas fa-envelope"></i> ncolassuport@gmail.com</a></p>
+  <p>
+    <a href="https://open.spotify.com/user/31prcfuajw4lieuejvul45sjmizi?si=3252dc9eea3e4050" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.5rem">
+      <i class="fab fa-spotify" style="color:#1DB954;font-size:1.15rem"></i> Perfil no Spotify
+    </a>
+  </p>
+</div>
         <div>
           <label class="text-white">Assinar newsletter</label>
           <div class="flex gap-2">
