@@ -1006,7 +1006,7 @@ O Artista pode optar por assinar este contrato em 2 vias físicas de igual teor,
 
 <strong>CLÁUSULA OITAVA - VIGÊNCIA, VIGOR E RENOVAÇÃO</strong>
 
-8.1. A vigência deste contrato é de <u>30 (trinta) dias corridos</u>.
+8.1. A vigência deste contrato é de <u>730 </u>(setecentos e trinta) dias <u>corridos</u>.
 8.2. O vigor deste contrato tem efeito imediato.
 8.3. A renovação é automática, salvo se qualquer das partes manifestar intenção de rescindir conforme a cláusula nona.
 
