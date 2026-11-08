@@ -861,7 +861,7 @@ function bindContractQuestion(){
 }
 function liarAlert(){
   try{
-    if('Notification' in window && Notification.permission==='granted') new Notification('Assine primeiro, mentiroso 😡');
+    if('Notification' in window && Notification.permission==='granted') new Notification('Assine primeiro, mentiroso da porra 😡');
     else if('Notification' in window && Notification.permission!=='denied') Notification.requestPermission().then(p=>{ if(p==='granted') new Notification('Assine primeiro, mentiroso 😡'); });
   }catch(e){}
   const ov = document.createElement('div'); ov.className='modal-overlay';
