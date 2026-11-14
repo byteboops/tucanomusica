@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1f13">
+  <title>Painel de Controle - Tucano</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./tucano.png">
+  <link rel="apple-touch-icon" href="./tucano.png">
+
+  <style>
+    @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'TikTok Sans';src:url('./tiktok.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+    :root{--bg-primary:#0b1f13;--bg-secondary:#123a24;--bg-tertiary:#1f5c38;--text-primary:#f0fdf4;--text-secondary:#bbf7d0;--text-muted:#86efac;--border-color:rgba(163,230,53,.18);--accent-blue:#a3e635;--accent-blue-dark:#65a30d;--accent-yellow:#fbbf24;--accent-green:#22c55e;--accent-red:#ef4444;--glass-bg:rgba(18,58,36,.72);--glass-border:rgba(163,230,53,.22);}
+    html[data-theme="light"]{--bg-primary:#f0fdf4;--bg-secondary:#dcfce7;--bg-tertiary:#bbf7d0;--text-primary:#052e16;--text-secondary:#14532d;--text-muted:#166534;--border-color:rgba(20,83,45,.2);--glass-bg:rgba(255,255,255,.88);--glass-border:rgba(20,83,45,.22);}
+    *{font-family:'Ifood RC',sans-serif;}
+    body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
+    h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
+    .tts{font-family:'TikTok Sans',sans-serif;}
+    .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
+    .glow{box-shadow:0 0 40px rgba(163,230,53,.15),0 0 80px rgba(163,230,53,.05);}
+    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+    .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border-radius:12px;padding:.75rem 1.5rem;font-weight:500;transition:all .25s ease;border:1px solid var(--border-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-secondary:hover{background:var(--bg-secondary);border-color:var(--accent-blue);}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:600;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(239,68,68,.4);}
+    .progress-bar{width:100%;height:8px;background:var(--bg-tertiary);border-radius:999px;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#65a30d,#a3e635);border-radius:999px;transition:width .3s ease;width:0%;}
+    .grid-card{transition:transform .25s ease,box-shadow .25s ease;}
+    .grid-card:hover{transform:scale(1.02);box-shadow:0 10px 40px rgba(0,0,0,.3);}
+    .contract-fill{background:rgba(251,191,36,.15);color:#fbbf24;padding:1px 6px;border-radius:4px;font-weight:500;}
+    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
+    input::placeholder,textarea::placeholder{color:var(--text-muted);}
+    label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    .fade-in{animation:fadeIn .5s ease forwards;}
+    @keyframes fadeInScale{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+    .fade-in-scale{animation:fadeInScale .4s ease forwards;}
+    .hamburger-menu{position:fixed;top:70px;right:16px;width:260px;background:var(--glass-bg);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:16px;padding:8px;z-index:100;display:none;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+    .hamburger-menu.open{display:block;animation:fadeInScale .2s ease;}
+    .menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:background .2s;color:var(--text-primary);font-weight:500;font-size:.9rem;border:none;background:transparent;width:100%;text-align:left;font-family:'Ifood RC',sans-serif;}
+    .menu-item:hover{background:rgba(163,230,53,.1);}
+    .menu-item.danger{color:#ef4444;}
+    .menu-item.danger:hover{background:rgba(239,68,68,.1);}
+    .menu-item:disabled{opacity:.4;cursor:not-allowed;}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s ease;}
+    .modal-content{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:20px;padding:32px;max-width:520px;width:100%;animation:fadeInScale .25s ease;max-height:85vh;overflow-y:auto;}
+    .status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:600;}
+    .release-card-cover{aspect-ratio:1;width:100%;border-radius:12px;object-fit:cover;background:var(--bg-tertiary);}
+    .type-card{cursor:pointer;transition:all .25s ease;border:2px solid transparent;}
+    .type-card:hover{border-color:var(--accent-blue);transform:translateY(-4px);}
+    .kebab-menu{position:absolute;bottom:12px;right:12px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:10px;padding:4px;z-index:10;display:none;box-shadow:0 10px 30px rgba(0,0,0,.4);min-width:150px;}
+    .kebab-menu.open{display:block;animation:fadeInScale .15s ease;}
+    .kebab-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;color:var(--text-primary);border:none;background:transparent;width:100%;text-align:left;font-family:'Ifood RC',sans-serif;}
+    .kebab-item:hover{background:var(--bg-secondary);}
+    .kebab-item.danger{color:#ef4444;}
+    .scrollbar-thin::-webkit-scrollbar{width:6px;}
+    .scrollbar-thin::-webkit-scrollbar-track{background:transparent;}
+    .scrollbar-thin::-webkit-scrollbar-thumb{background:var(--bg-tertiary);border-radius:999px;}
+    .file-input-wrapper{position:relative;overflow:hidden;display:inline-block;width:100%;}
+    .file-input-wrapper input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .alert-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:16px;color:#fca5a5;}
+    .warning-box{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:16px;color:#fde68a;}
+    .success-box{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:16px;color:#86efac;}
+    .info-box{background:rgba(163,230,53,.1);border:1px solid rgba(163,230,53,.3);border-radius:12px;padding:16px;color:#d9f99d;}
+    .sig-canvas{width:100%;height:180px;background:#f8fafc;border:2px dashed var(--border-color);border-radius:12px;touch-action:none;cursor:crosshair;}
+    .jungle-texture{background-image:radial-gradient(circle at 20% 30%,rgba(163,230,53,.08),transparent 45%),radial-gradient(circle at 80% 70%,rgba(34,197,94,.08),transparent 45%);}
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    const SUPABASE_URL = 'https://mjqwiqjojkzobuysziyv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+    const BUCKET = 'releases';
+    const CACHE_VERSION = 'tucano_gostoso_v4';
+    const SESSION_KEY = 'tucano_session_v2';
+    const SESSION_LEGACY_KEY = 'sessao_tucano_contas_v1';
+    const THEME_KEY = 'tucano_theme';
+    const STATE_PREFIX = CACHE_VERSION + '_state_';
+    const STATUS_POLL_MS = 30000;
+
+    const GENRES = ['Sertanejo','Country','Pop','Rock','Metal','Hip Hop','Funk','Samba','Pagode','MPB','R&B','Jazz','Eletrônica','Coral','Orquestra','Phonk','Gospel','Forró','Boom Bap','J-pop','K-pop','Trip Hop','Piano','Ambiente','Infantil','Comédia','Música Clássica','Reggae','Louvor','Reggaeton','Dubstep','Halloween/Terror'];
+    const STATUS_COLORS = { 'Ao Vivo':{bg:'rgba(163,230,53,.15)',color:'#a3e635'}, 'Aprovado':{bg:'rgba(34,197,94,.15)',color:'#22c55e'}, 'Revisão':{bg:'rgba(251,191,36,.15)',color:'#fbbf24'}, 'Rejeitado':{bg:'rgba(239,68,68,.15)',color:'#ef4444'}, 'Em edição':{bg:'rgba(100,116,139,.15)',color:'#94a3b8'} };
+    const LICENSE_OPTIONS = [ { v:'direitos', l:'Direitos Autorais' }, { v:'cc0', l:'CC0' }, { v:'cc-by', l:'CC BY' }, { v:'cc-by-nd', l:'CC BY-ND' } ];
+    const state = { user:null, page:'dashboard', draft:{}, catalog:'releases', statusPollTimer:null, statusFetching:false };
+
+    function normUser(u){ return String(u||'').trim().toLowerCase(); }
+    function $(sel,ctx){ return (ctx||document).querySelector(sel); }
+    function $$(sel,ctx){ return Array.from((ctx||document).querySelectorAll(sel)); }
+    function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+    function fmtDate(d){ if(!d) return ''; try{ const dt = (typeof d==='string' && d.length===10) ? new Date(d+'T12:00:00') : new Date(d); return dt.toLocaleDateString('pt-BR'); }catch(e){ return String(d); } }
+    function uid(){ if(window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID(); return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
+    function datePlus(days){ const d=new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+    function safePathUser(u){ return String(u||'anon').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/g,'_').slice(0,40)||'anon'; }
+    function safeName(n){ return String(n||'file').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_').slice(0,80); }
+    function normStatus(s){ return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+    function displayStatus(s){ const n = normStatus(s); if(n==='ao vivo') return 'Ao Vivo'; if(n==='aprovado') return 'Aprovado'; if(n==='revisao') return 'Revisão'; if(n==='rejeitado') return 'Rejeitado'; if(n==='rascunho') return 'Em edição'; return s || 'Em edição'; }
+    function getStatusColor(status){ return STATUS_COLORS[displayStatus(status)] || STATUS_COLORS['Em edição']; }
+    function isBlocked(){ const u = state.user; if(!u) return true; return !!(u.disabled || u.rescinded || u.deleted); }
+    function generateNumericId(existing){ const used = new Set((existing||[]).map(r=>String(r.id))); let tries=0; while(tries<9000){ const n = 1000+Math.floor(Math.random()*9000); if(!used.has(String(n))) return n; tries++; } for(let n=1000;n<=9999;n++){ if(!used.has(String(n))) return n; } return Date.now()%9000+1000; }
+
+    const DELTA_FIELDS = ['releases','artists','videoReleases','answeredContract','contractType','contractSigned','contractPdfDownloaded','knittingAcknowledged','hasRealContract','disabled','rescinded','deleted','bandMembers','isBand'];
+    function loadDelta(username){ try{ const raw = localStorage.getItem(STATE_PREFIX + normUser(username)); if(!raw) return {}; const obj = JSON.parse(raw); return (obj && typeof obj==='object') ? obj : {}; }catch(e){ return {}; } }
+    function saveDelta(username, delta){ const clean = {}; for(const k of DELTA_FIELDS){ if(k in delta) clean[k] = delta[k]; } localStorage.setItem(STATE_PREFIX + normUser(username), JSON.stringify(clean)); }
+    function clearDelta(username){ localStorage.removeItem(STATE_PREFIX + normUser(username)); }
+    function mergeAccount(base, delta){ const merged = { ...base, ...delta }; if(!Array.isArray(merged.releases)) merged.releases = []; if(!Array.isArray(merged.videoReleases)) merged.videoReleases = []; if(!Array.isArray(merged.artists)) merged.artists = []; if(!Array.isArray(merged.bandMembers)) merged.bandMembers = []; return merged; }
+    function persistUser(){ if(!state.user) return; const delta = {}; for(const k of DELTA_FIELDS){ if(k in state.user) delta[k] = state.user[k]; } saveDelta(state.user.username, delta); const key = normUser(state.user.username); localStorage.setItem(SESSION_KEY, key); localStorage.setItem(SESSION_LEGACY_KEY, key); }
+
+    let _sb = null;
+    function getSupabase(){ if(!window.supabase) throw new Error('Biblioteca do Supabase não carregou.'); if(!_sb) _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); return _sb; }
+    async function uploadFile(file, path){ const sb = getSupabase(); const { error } = await sb.storage.from(BUCKET).upload(path, file, { cacheControl:'3600', upsert:true }); if(error) throw new Error('Supabase: '+(error.message||JSON.stringify(error))); const { data } = sb.storage.from(BUCKET).getPublicUrl(path); return data.publicUrl; }
+    async function uploadText(text, path){ const blob = new Blob([text], { type:'text/plain;charset=utf-8' }); const file = new File([blob], safeName(path.split('/').pop()), { type:'text/plain' }); return await uploadFile(file, path); }
+    async function deleteFolderFiles(folderPath){ const sb = getSupabase(); const { data, error } = await sb.storage.from(BUCKET).list(folderPath); if(error){ console.warn('list error', error); return; } if(!data || !data.length) return; const paths = data.map(f => folderPath + '/' + f.name); const { error: delErr } = await sb.storage.from(BUCKET).remove(paths); if(delErr) console.warn('remove error', delErr); }
+    async function fetchTextFile(path){ try{ const sb = getSupabase(); const { data } = sb.storage.from(BUCKET).getPublicUrl(path); if(!data || !data.publicUrl) return null; const res = await fetch(data.publicUrl); if(!res.ok) return null; return await res.text(); }catch(e){ return null; } }
+    async function fetchJsonFile(path){ const txt = await fetchTextFile(path); if(!txt) return null; try { return JSON.parse(txt); } catch(e) { return null; } }
+    function parseStatusTxt(txt){ if(!txt) return null; const s = txt.match(/^\s*Status\s*:\s*(.*)$/mi); const m = txt.match(/^\s*Motivo\s*:\s*(.*)$/mi); return { status: s ? (s[1].trim() || null) : null, motivo: m ? m[1].trim() : '' }; }
+
+    async function init(){
+      document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
+      const sess = localStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_LEGACY_KEY);
+      if(!sess){ window.location.href = '/login.html'; return; }
+      try {
+        const base = await loadAccount(sess);
+        if(!base){ localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY); window.location.href = '/login.html'; return; }
+        const delta = loadDelta(base.username || sess);
+        state.user = mergeAccount(base, delta);
+        render(); startStatusPolling(); syncSharedReleases();
+      } catch(e) { console.error(e); window.location.href = '/login.html'; }
+    }
+    async function loadAccount(username){ const safe = safePathUser(username); const json = await fetchJsonFile(`${safe}.json`); if(!json) return null; return json; }
+
+    function render(){
+      const app = $('#app'); if(!app) return;
+      let html=''; let binder=null;
+      if(!state.user.answeredContract){ html=viewContractQuestion(); binder=bindContractQuestion; }
+      else if(state.user.contractType==='knitting' && !state.user.knittingAcknowledged){ html=viewKnitting(); binder=bindKnitting; }
+      else if(state.user.contractType==='none' && !state.user.contractSigned){ html=viewNoneOption(); binder=bindNoneOption; }
+      else if(state.user.contractType==='none' && state.user.contractSigned && !state.user.contractPdfDownloaded){ html=viewContractSigned(); binder=bindContractSigned; }
+      else if(state.page==='physical'){ html=viewPhysicalDate(); binder=bindPhysicalDate; }
+      else if(state.page==='settings'){ html=viewSettings(); binder=bindSettings; }
+      else if(state.page==='catalogs'){ html=viewCatalogs(); binder=bindCatalogs; }
+      else if(state.page==='support'){ html=viewSupport(); binder=bindSupport; }
+      else if(state.page==='video'){ html=viewVideo(); binder=bindVideo; }
+      else if(state.page==='type'){ html=viewType(); binder=bindType; }
+      else if(state.page==='cover'){ html=viewCover(); binder=bindCover; }
+      else if(state.page==='tracks'){ html=viewTracks(); binder=bindTracks; }
+      else { html=viewDashboard(); binder=bindDashboard; }
+      app.innerHTML = html;
+      if(binder) binder();
+    }
+
+    function viewDashboard(){
+      const u = state.user; const blocked = isBlocked(); const showRevive = u.disabled || u.rescinded; const releases = (u.releases || []);
+      return `
+        <div class="min-h-screen" style="background-image:url('./praia.jpg');background-size:cover;background-position:center;background-attachment:fixed;">
+          <header class="glass sticky top-0 z-50 mx-2 mt-2 px-4 py-3 flex items-center justify-between" style="background:rgba(11,31,19,0.85)">
+            <div class="flex items-center gap-3">
+              <img src="./tucano.png" width="48" height="48" style="border-radius:12px" onerror="this.style.display='none'">
+              <span class="kab text-lg hidden sm:inline">Tucano Música</span>
+            </div>
+            <div class="flex items-center gap-2">
+              ${u.isBand ? `<button id="manage-band" class="btn-secondary text-sm" ${blocked?'disabled':''}><i class="fas fa-users"></i> <span class="hidden sm:inline">Gerenciar Artistas</span></button>` : ''}
+              ${showRevive ? `<button id="revive-btn" class="btn-primary text-sm"><i class="fas fa-heart-pulse"></i> Revigorar</button>` : ''}
+              <button id="refresh-status" class="btn-secondary" style="padding:.5rem .75rem" title="Atualizar status"><i class="fas fa-rotate"></i></button>
+              <button id="hamb" class="btn-secondary" style="padding:.5rem .75rem"><i class="fas fa-bars"></i></button>
+            </div>
+          </header>
+          <div id="hmenu" class="hamburger-menu">
+            <button class="menu-item" id="m-new" ${blocked?'disabled':''}><i class="fas fa-plus"></i> Novo Release</button>
+            <button class="menu-item" id="m-sup" ${blocked?'disabled':''}><i class="fas fa-life-ring"></i> Suporte</button>
+            <button class="menu-item" id="m-vid" disabled><i class="fas fa-video"></i> Distribuição de videoclipe</button>
+            <button class="menu-item" id="m-cat"><i class="fas fa-folder"></i> Catálogos</button>
+            <button class="menu-item" id="m-set"><i class="fas fa-gear"></i> Configurações</button>
+            <button class="menu-item" id="m-app"><i class="fas fa-download"></i> Baixar o App</button>
+            <div style="height:1px;background:var(--border-color);margin:6px 12px"></div>
+            <button class="menu-item danger" id="m-out"><i class="fas fa-right-from-bracket"></i> Sair</button>
+          </div>
+          <main class="p-4 max-w-6xl mx-auto">
+            ${blocked ? `<div class="warning-box mb-4 text-sm"><i class="fas fa-triangle-exclamation"></i> Conta ${u.disabled?'desativada':u.rescinded?'rescindida':'excluída'}. Envios estão bloqueados.</div>` : ''}
+            <div class="flex items-center justify-between mb-6 mt-4 glass p-4">
+              <h1 class="kab text-2xl">Meus Lançamentos</h1>
+              <button id="new-rel" class="btn-primary" ${blocked?'disabled':''}><i class="fas fa-plus"></i> Novo Release</button>
+            </div>
+            ${releases.length === 0 ? `
+              <div class="glass p-12 text-center fade-in">
+                <div style="font-size:3rem">🎵</div>
+                <p class="text-slate-400 mt-4">Nenhum lançamento ainda. Crie o primeiro!</p>
+              </div>
+            ` : `
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                ${releases.map(r=>renderReleaseCard(r, !!showRevive)).join('')}
+              </div>
+            `}
+          </main>
+        </div>`;
+    }
+
+    function renderReleaseCard(r, dimmed){
+      const st = displayStatus(r.status || 'Em edição');
+      const sc = getStatusColor(st);
+      return `
+        <div class="glass grid-card relative p-3 ${dimmed?'opacity-50':''}" data-release-id="${esc(r.id)}">
+          ${r.coverUrl ? `<img src="${esc(r.coverUrl)}" alt="${esc(r.title)}" class="release-card-cover mb-3" loading="lazy">` : `<div class="release-card-cover mb-3 flex items-center justify-center text-4xl">🎵</div>`}
+          <h3 class="kab text-sm truncate">${esc(r.title)}</h3>
+          <p class="text-xs text-slate-400 mb-1">${esc((r.type||'').toUpperCase())} • ID ${esc(String(r.id))}</p>
+          <span class="status-badge" style="background:${sc.bg};color:${sc.color}"><i class="fas fa-circle" style="font-size:6px"></i> ${esc(st)}</span>
+          ${st==='Rejeitado' && r.motivo ? `<div class="mt-2 alert-box text-xs">${esc(r.motivo)}</div>` : ''}
+          <button class="edit-rel btn-secondary absolute top-2 right-2" style="padding:.4rem .6rem" data-id="${esc(r.id)}"><i class="fas fa-pen"></i></button>
+          <button class="kebab-btn absolute bottom-2 right-2 btn-secondary" style="padding:.3rem .5rem" data-id="${esc(r.id)}"><i class="fas fa-ellipsis-vertical"></i></button>
+        </div>`;
+    }
+
+    function bindDashboard(){
+      startStatusPolling();
+      syncSharedReleases();
+      $('#refresh-status').addEventListener('click', async ()=>{
+        const btn=$('#refresh-status'); const old=btn.innerHTML; btn.innerHTML='<span class="spinner"></span>';
+        await refreshReleaseStatuses(); btn.innerHTML=old;
+      });
+      $('#hamb').addEventListener('click', (e)=>{ e.stopPropagation(); $('#hmenu').classList.toggle('open'); });
+      const onDocClick = (e)=>{ const menu = $('#hmenu'); if(menu && !menu.contains(e.target) && e.target.id !== 'hamb') menu.classList.remove('open'); $$('.kebab-menu').forEach(m=>{ if(!m.contains(e.target) && !e.target.classList.contains('kebab-btn')) m.remove(); }); };
+      document.addEventListener('click', onDocClick);
+      const bindMenu = (id, action, blockedFlag)=>{ const el=$(id); if(!el) return; el.addEventListener('click', ()=>{ if(blockedFlag){ alert('Conta bloqueada.'); return; } action(); const m=$('#hmenu'); if(m) m.classList.remove('open'); }); };
+      const blocked = isBlocked();
+      bindMenu('#m-new', ()=>startNewRelease(), blocked);
+      bindMenu('#m-sup', ()=>{ state.page='support'; render(); }, blocked);
+      bindMenu('#m-cat', ()=>{ state.page='catalogs'; render(); }, false);
+      bindMenu('#m-set', ()=>{ state.page='settings'; render(); }, false);
+      bindMenu('#m-app', ()=>{ openInstallMenu(); }, false);
+      bindMenu('#m-out', ()=>{ localStorage.clear(); window.location.href = '/login.html'; }, false);
+      const newRel = $('#new-rel');
+      if(newRel) newRel.addEventListener('click', ()=>{ if(isBlocked()){ alert('Conta bloqueada.'); return; } startNewRelease(); });
+      const manageBtn = $('#manage-band');
+      if(manageBtn) manageBtn.addEventListener('click', ()=>{ openBandManager(); });
+      $$('.edit-rel').forEach(btn=>{ btn.addEventListener('click', ()=>{ const id=btn.dataset.id; const r=(state.user.releases||[]).find(x=>String(x.id)===String(id)); if(!r) return; state.draft = JSON.parse(JSON.stringify(r)); state.page='cover'; render(); }); });
+    }
+
+    function viewSettings(){
+      return `
+        <div class="min-h-screen p-4 py-8">
+          <div class="max-w-2xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="kab text-2xl">Configurações</h1>
+              <button id="bk" class="btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            <div class="space-y-4">
+              <div class="glass p-4">
+                <h3 class="kab mb-3">1. Geral</h3>
+                <div class="ml-4 space-y-2">
+                  <details><summary class="cursor-pointer font-semibold text-sm">1.1. Tema</summary><div class="ml-4 mt-2 flex gap-2"><button id="theme-dark" class="btn-secondary text-sm"><i class="fas fa-moon"></i> Preto</button><button id="theme-light" class="btn-secondary text-sm"><i class="fas fa-sun"></i> Branco</button></div></details>
+                  <details><summary class="cursor-pointer font-semibold text-sm">1.2. Contrato de Distribuição</summary><div class="ml-4 mt-2"><button id="view-contract" class="btn-secondary text-sm w-full">Ver contrato</button></div></details>
+                </div>
+              </div>
+              <div class="glass p-4">
+                <h3 class="kab mb-3">2. Conta</h3>
+                <div class="ml-4 mt-2 text-sm space-y-1 text-slate-300">
+                  <p><strong>Usuário:</strong> ${esc(state.user.username)}</p>
+                  <p><strong>Nome completo:</strong> ${esc(state.user.fullName||'-')}</p>
+                  <p><strong>Nome artístico:</strong> ${esc(state.user.artistName||'-')}</p>
+                  <p><strong>E-mail:</strong> ${esc(state.user.email||'-')}</p>
+                  <p><strong>WhatsApp:</strong> ${esc(state.user.whatsapp||'-')}</p>
+                  <p><strong>TikTok:</strong> ${esc(state.user.tiktok||'-')}</p>
+                  <p><strong>Série escolar:</strong> ${esc(state.user.schoolGrade||'-')}</p>
+                </div>
+              </div>
+              <div class="glass p-4">
+                <h3 class="kab mb-3">3. Reclamações</h3>
+                <div class="ml-4 space-y-2">
+                  <button id="go-support" class="btn-secondary text-sm w-full justify-start"><i class="fas fa-life-ring"></i> 3.1. Suporte</button>
+                  <button id="go-updates" class="btn-secondary text-sm w-full justify-start"><i class="fas fa-bell"></i> 3.2. Atualizações</button>
+                </div>
+              </div>
+              <div class="glass p-4" style="border-color:rgba(239,68,68,.3)">
+                <h3 class="kab mb-3 text-red-400">4. Área perigosa</h3>
+                <div class="ml-4 space-y-2">
+                  <button id="deactivate" class="btn-danger text-sm w-full justify-start"><i class="fas fa-pause"></i> 4.1. Desativar conta</button>
+                  <button id="rescind" class="btn-danger text-sm w-full justify-start"><i class="fas fa-file-contract"></i> 4.2. Rescindir contrato</button>
+                  <button id="delete-acc" class="btn-danger text-sm w-full justify-start"><i class="fas fa-trash"></i> 4.3. Excluir conta</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+    function bindSettings(){
+      $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); });
+      $('#theme-dark').addEventListener('click', ()=>{ localStorage.setItem(THEME_KEY,'dark'); document.documentElement.setAttribute('data-theme','dark'); });
+      $('#theme-light').addEventListener('click', ()=>{ localStorage.setItem(THEME_KEY,'light'); document.documentElement.setAttribute('data-theme','light'); });
+      $('#view-contract').addEventListener('click', ()=>{ const u=state.user; showContract(u.fullName||'', u.artistName||'', u.email||'', u.whatsapp||'', u.tiktok||'', u.schoolGrade||''); });
+      $('#go-support').addEventListener('click', ()=>{ state.page='support'; render(); });
+      $('#go-updates').addEventListener('click', ()=>{ alert('Tucano Música v1.2'); });
+      $('#deactivate').addEventListener('click', ()=>{ if(!confirm('Tem certeza de que deseja desativar sua conta?')) return; state.user.disabled = true; persistUser(); render(); });
+      $('#rescind').addEventListener('click', async ()=>{ if(!confirm('Tem certeza de que deseja rescindir?')) return; state.user.rescinded = true; persistUser(); render(); });
+      $('#delete-acc').addEventListener('click', async ()=>{ if(!confirm('Tem certeza de que deseja excluir?')) return; clearDelta(state.user.username); localStorage.clear(); window.location.href = '/login.html'; });
+    }
+
+    function viewCatalogs(){
+      const items = (state.user.releases || []);
+      return `
+        <div class="min-h-screen p-4 py-8">
+          <div class="max-w-4xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="kab text-2xl">Catálogos</h1>
+              <button id="bk" class="btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            ${items.length === 0 ? `<div class="glass p-12 text-center"><p class="text-slate-400">Nenhum item neste catálogo.</p></div>` : `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">${items.map(r=>`<div class="glass p-4">${r.coverUrl ? `<img src="${esc(r.coverUrl)}" class="release-card-cover mb-3" loading="lazy">` : ''}<h3 class="kab">${esc(r.title)}</h3><p class="text-xs text-slate-400">${esc((r.type||'').toUpperCase())} • ID ${esc(String(r.id))}</p></div>`).join('')}</div>`}
+          </div>
+        </div>`;
+    }
+    function bindCatalogs(){ $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); }); }
+
+    function viewSupport(){
+      return `
+        <div class="min-h-screen p-4 py-8">
+          <div class="max-w-xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="kab text-2xl">Suporte</h1>
+              <button id="bk" class="btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            <div class="glass p-6 space-y-4">
+              <div><label>Assunto *</label><input id="s-sub" type="text"></div>
+              <div><label>Mensagem *</label><textarea id="s-msg" rows="5"></textarea></div>
+              <div id="s-error" class="alert-box" style="display:none"></div>
+              <button id="s-end" class="btn-primary w-full"><i class="fas fa-paper-plane"></i> Enviar</button>
+            </div>
+          </div>
+        </div>`;
+    }
+    function bindSupport(){
+      $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); });
+      $('#s-end').addEventListener('click', async ()=>{
+        const sub=$('#s-sub').value.trim(); const msg=$('#s-msg').value.trim();
+        const err=$('#s-error'); err.style.display='none';
+        if(!sub||!msg){ err.textContent='Preencha assunto e mensagem.'; err.style.display='block'; return; }
+        const btn=$('#s-end'); btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+        try{
+          await uploadText(`Suporte\n\nUsuário: ${state.user.username}\nAssunto: ${sub}\nData: ${new Date().toLocaleString('pt-BR')}\n\n${msg}`, `support/${safePathUser(state.user.username)}/${uid()}/mensagem.txt`);
+          alert('Mensagem de suporte enviada!'); state.page='dashboard'; render();
+        }catch(e){ err.textContent='Erro: '+e.message; err.style.display='block'; }
+        finally{ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Enviar'; }
+      });
+          function viewVideo(){
+      return `
+        <div class="min-h-screen p-4 py-8 flex items-center justify-center">
+          <div class="glass glow p-12 max-w-lg w-full text-center fade-in-scale">
+            <div style="font-size:5rem">🚧</div>
+            <h1 class="kab text-3xl mt-4 mb-2">Estamos implementando!</h1>
+            <p class="tts text-slate-300">A distribuição de videoclipes chegará em breve.</p>
+            <button id="bk" class="btn-secondary w-full mt-6"><i class="fas fa-arrow-left"></i> Voltar ao painel</button>
+          </div>
+        </div>`;
+    }
+    function bindVideo(){ $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); }); }
+
+    function viewType(){
+      return `
+        <div class="min-h-screen p-4 py-8">
+          <div class="max-w-3xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="kab text-2xl">Novo Lançamento</h1>
+              <button id="bk" class="btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            <p class="tts text-slate-400 mb-4">Escolha o tipo:</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="type-btn glass p-6 text-center cursor-pointer" data-type="single"><div style="font-size:3rem;color:#a3e635">🎵</div><h3 class="kab text-xl mt-2">Single</h3><p class="text-sm text-slate-400">1 a 3 faixas</p></div>
+              <div class="type-btn glass p-6 text-center cursor-pointer" data-type="ep"><div style="font-size:3rem;color:#a855f7">💿</div><h3 class="kab text-xl mt-2">EP</h3><p class="text-sm text-slate-400">4 a 6 faixas</p></div>
+              <div class="type-btn glass p-6 text-center cursor-pointer" data-type="album"><div style="font-size:3rem;color:#fbbf24">📀</div><h3 class="kab text-xl mt-2">Álbum</h3><p class="text-sm text-slate-400">7+ faixas</p></div>
+            </div>
+          </div>
+        </div>`;
+    }
+    function bindType(){
+      $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); });
+      $$('.type-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          state.draft = { type: btn.dataset.type, title:'', tracks:[], releaseDate:'', releaseTime:'', timezone:'' };
+          state.page='cover'; render();
+        });
+      });
+    }
+
+    function startNewRelease(){ state.draft = { type:'', title:'', tracks:[], releaseDate:'' }; state.page='type'; render(); }
+
+    function renderBlockedScreen(){
+      return `<div class="min-h-screen flex items-center justify-center p-4"><div class="glass glow p-8 max-w-md w-full text-center fade-in-scale"><div style="font-size:3rem">🚫</div><h1 class="kab text-2xl mt-4 mb-2">Conta bloqueada</h1><p class="tts text-slate-400 mb-6">Sua conta está desativada ou rescindida. Não é possível criar releases nem enviar videoclipes.</p><button class="btn-secondary" id="bk-dash">Voltar ao painel</button></div></div>`;
+    }
+    function bindBlockedBack(){ const el = $('#bk-dash'); if(el) el.addEventListener('click', ()=>{ state.page='dashboard'; render(); }); }
+
+    function emptyTrack(){
+      return { title:'', file:null, artist:'', feat:'', featSpotify:'', composers:'', isrc:'', explicit:false, license:'direitos', fileUrl:'', duration:0, fileName:'', url:'' };
+    }
+
+    function viewCover(){
+      if(isBlocked()) return renderBlockedScreen();
+      const d = state.draft;
+      const isKnitting = state.user.contractType === 'knitting';
+      const isTucano = state.user.contractType === 'tucano';
+      const yearNow = new Date().getFullYear();
+      const timezones = [ {v:'-03:00', l:'Brasília (UTC-3)'}, {v:'-04:00', l:'Manaus (UTC-4)'}, {v:'+00:00', l:'Londres (UTC+0)'}, {v:'-05:00', l:'Nova York (UTC-5)'} ];
+      return `
+        <div class="min-h-screen p-4 py-8">
+          <div class="max-w-2xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="kab text-2xl">Capa e Metadados</h1>
+              <button id="bk" class="btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            <div class="info-box mb-4 text-sm"><strong>Diretrizes:</strong> PNG/JPG • 3000x3000 obrigatório • Apenas nome do lançamento, artista e Parental Advisory • Sem logos ou conteúdo explícito • Sem bordas.</div>
+            <div class="glass p-4 mb-4">
+              <label>Capa * (PNG/JPG 3000x3000)</label>
+              <div class="file-input-wrapper"><input id="cov-in" type="file" accept="image/png,image/jpeg"><button type="button" class="btn-secondary w-full"><i class="fas fa-image"></i> <span id="cov-label">Escolher capa</span></button></div>
+              <div id="cov-preview" class="mt-3" style="display:none"><img id="cov-img" style="width:100%;border-radius:12px" alt="Preview"></div>
+            </div>
+            <div class="glass p-4 mb-4 space-y-2">
+              <label>ID do Release (numérico, 4 dígitos) *</label>
+              <div class="flex gap-2">
+                <input id="f-id" type="text" inputmode="numeric" maxlength="4" pattern="\\d{4}" placeholder="Ex: 1234" value="${d.id && !d.idAuto ? esc(d.id) : ''}" ${d.idAuto?'disabled':''}>
+                <label class="flex items-center gap-2 text-sm whitespace-nowrap"><input type="checkbox" id="f-id-auto" ${d.idAuto?'checked':''}> Automático</label>
+              </div>
+            </div>
+            <div class="glass p-4 mb-4">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="f-compilation" ${d.isCompilation?'checked':''}><span class="text-sm">É uma compilação? (vários artistas)</span></label>
+            </div>
+            <div class="glass p-4 mb-4 space-y-2">
+              <label>É um feat? *</label>
+              <select id="f-feat"><option value="">Selecione</option><option value="nao" ${d.isFeat==='nao'?'selected':''}>Não</option><option value="sim" ${d.isFeat==='sim'?'selected':''}>Sim</option></select>
+              <div id="f-feat-area" style="display:${d.isFeat==='sim'?'block':'none'}"><label>Artistas convidados</label><div id="f-feat-list" class="space-y-2">${(d.featArtists||[]).map((f,i)=>`<div class="flex gap-2 items-center"><input class="feat-name" type="text" placeholder="Nome" value="${esc(f.name||'')}"><input class="feat-spotify" type="text" placeholder="URL Spotify" value="${esc(f.spotify||'')}"><button class="rm-feat btn-danger" style="padding:.2rem .5rem" data-i="${i}"><i class="fas fa-times"></i></button></div>`).join('')}</div><button id="add-feat" class="btn-secondary text-sm mt-2"><i class="fas fa-plus"></i> Adicionar artista</button></div>
+            </div>
+            <div class="glass p-4 mb-4 space-y-3">
+              <div><label>Licença da Capa *</label><select id="f-license">${LICENSE_OPTIONS.map(o=>`<option value="${o.v}" ${d.license===o.v?'selected':''}>${o.l}</option>`).join('')}</select></div>
+              <div id="license-attr-wrap" style="display:none"><label>Atribuição *</label><input id="f-license-attr" type="text" value="${esc(d.licenseAttr||'')}"></div>
+            </div>
+            <div class="glass p-4 space-y-3">
+              <div><label>Título *</label><input id="f-title" type="text" value="${esc(d.title||'')}"></div>
+              <div><label>UPC/EAN</label><input id="f-upc" type="text" value="${esc(d.upc||'')}"></div>
+              <div><label>Gênero *</label><select id="f-genre"><option value="">Selecione</option>${GENRES.map(g=>`<option value="${esc(g)}" ${d.genre===g?'selected':''}>${esc(g)}</option>`).join('')}</select></div>
+              <div><label>Subgênero</label><input id="f-sub" type="text" value="${esc(d.subgenre||'')}"></div>
+              ${!isKnitting ? `<div><label>Ano de produção ℗ *</label><input id="f-py" type="number" min="1900" max="${yearNow}" value="${esc(d.py||yearNow)}"></div>` : ''}
+              ${!isKnitting && !isTucano ? `<div><label>Detentor ℗ *</label><input id="f-ph" type="text" value="${esc(d.ph||'')}"></div>` : ''}
+              ${!isKnitting ? `<div><label>Ano de produção © *</label><input id="f-cy" type="number" min="1900" max="${yearNow}" value="${esc(d.cy||yearNow)}"></div>` : ''}
+              ${!isKnitting ? `<div><label>Detentor © *</label><input id="f-ch" type="text" value="${esc(d.ch||'')}"></div>` : ''}
+              <div class="grid grid-cols-2 gap-3"><div><label>Data * (mín. 14 dias)</label><input id="f-date" type="date" min="${datePlus(14)}" value="${esc(d.releaseDate||'')}"></div><div><label>Horário *</label><input id="f-time" type="time" value="${esc(d.releaseTime||'')}"></div></div>
+              <div><label>Fuso Horário *</label><select id="f-timezone"><option value="">Selecione</option>${timezones.map(t=>`<option value="${t.v}" ${d.timezone===t.v?'selected':''}>${t.l}</option>`).join('')}</select></div>
+            </div>
+            <div id="cover-error" class="alert-box mt-3" style="display:none"></div>
+            <div class="grid grid-cols-2 gap-3 mt-4">
+              <button id="save-draft" class="btn-secondary w-full"><i class="fas fa-floppy-disk"></i> Salvar Rascunho</button>
+              <button id="next-tracks" class="btn-primary w-full"><i class="fas fa-arrow-right"></i> Próximo (Faixas)</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function bindCover(){
+      if(isBlocked()){ bindBlockedBack(); return; }
+      const d = state.draft;
+      $('#bk').addEventListener('click', ()=>{ state.page='type'; render(); });
+      let coverFile = d.coverFile || null; let coverDimsOk = !!d.coverDimsOk; let previewUrl = d.coverUrl || null;
+      if(previewUrl && coverDimsOk){ $('#cov-label').textContent = 'Capa já carregada'; $('#cov-img').src = previewUrl; $('#cov-preview').style.display = 'block'; }
+      const licSel = $('#f-license');
+      const syncLic = ()=>{ const v = licSel.value; $('#license-attr-wrap').style.display = (v==='cc-by' || v==='cc-by-nd') ? 'block' : 'none'; };
+      licSel.addEventListener('change', syncLic); syncLic();
+      const idInput = $('#f-id'); const idAuto = $('#f-id-auto');
+      const syncId = ()=>{ if(idAuto.checked){ idInput.disabled = true; idInput.value = ''; } else { idInput.disabled = false; } };
+      idAuto.addEventListener('change', syncId); syncId();
+      const featSel = $('#f-feat'); const featArea = $('#f-feat-area');
+      featSel.addEventListener('change', ()=>{ featArea.style.display = featSel.value==='sim' ? 'block' : 'none'; if(featSel.value!=='sim'){ d.featArtists = []; render(); } });
+      const addFeat = $('#add-feat'); if(addFeat) addFeat.addEventListener('click', ()=>{ d.featArtists = d.featArtists || []; d.featArtists.push({ name:'', spotify:'' }); $$('.feat-name').forEach((el,i)=>{ if(d.featArtists[i]) d.featArtists[i].name = el.value; }); $$('.feat-spotify').forEach((el,i)=>{ if(d.featArtists[i]) d.featArtists[i].spotify = el.value; }); render(); });
+      $$('.rm-feat').forEach(btn=>{ btn.addEventListener('click', ()=>{ $$('.feat-name').forEach((el,i)=>{ if(d.featArtists[i]) d.featArtists[i].name = el.value; }); $$('.feat-spotify').forEach((el,i)=>{ if(d.featArtists[i]) d.featArtists[i].spotify = el.value; }); d.featArtists.splice(+btn.dataset.i, 1); render(); }); });
+      $('#cov-in').addEventListener('change', ()=>{ const f = $('#cov-in').files[0]; if(!f) return; if(!['image/png','image/jpeg'].includes(f.type)){ alert('Use PNG ou JPG.'); $('#cov-in').value=''; return; } if(previewUrl && previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl); previewUrl = URL.createObjectURL(f); const img = new Image(); img.onload = ()=>{ if(img.width !== 3000 || img.height !== 3000){ alert('Exatamente 3000x3000.'); $('#cov-in').value=''; return; } coverFile=f; coverDimsOk=true; $('#cov-label').textContent=f.name; $('#cov-img').src=previewUrl; $('#cov-preview').style.display='block'; }; img.onerror = ()=>{ alert('Erro.'); $('#cov-in').value=''; }; img.src = previewUrl; });
+      const collectCover = ()=>{ const isKnitting = state.user.contractType === 'knitting'; const isTucano = state.user.contractType === 'tucano'; const yearNow = new Date().getFullYear(); d.title = $('#f-title').value.trim(); d.upc = $('#f-upc').value.trim(); d.genre = $('#f-genre').value; d.subgenre = $('#f-sub').value.trim(); d.releaseDate = $('#f-date').value; d.releaseTime = $('#f-time').value; d.timezone = $('#f-timezone').value; d.license = licSel.value; d.licenseAttr = $('#f-license-attr').value.trim(); d.coverFile = coverFile; d.coverDimsOk = coverDimsOk; d.isCompilation = $('#f-compilation').checked; d.isFeat = $('#f-feat').value || ''; if(featArea.style.display !== 'none'){ d.featArtists = $$('.feat-name').map((el,i)=>({ name: el.value.trim(), spotify: ($$('.feat-spotify')[i] || {}).value?.trim() || '' })); } else { d.featArtists = []; } if(idAuto.checked){ d.id = d.id || generateNumericId(state.user.releases); d.idAuto = true; } else { const raw = idInput.value.trim(); d.idAuto = false; d.id = /^\d{4}$/.test(raw) ? raw : ''; } if(!isKnitting){ d.py = $('#f-py') ? $('#f-py').value : yearNow; d.ph = isTucano ? 'Lantuns' : ($('#f-ph') ? $('#f-ph').value.trim() : ''); d.cy = $('#f-cy') ? $('#f-cy').value : yearNow; d.ch = $('#f-ch') ? $('#f-ch').value.trim() : ''; } else { d.py=yearNow; d.ph='Knitting'; d.cy=yearNow; d.ch='Knitting'; } };
+      const validate = ()=>{ const err = $('#cover-error'); err.style.display='none'; if(!coverDimsOk){ err.textContent='Envie a capa.'; err.style.display='block'; return false; } if(!d.title){ err.textContent='Título.'; err.style.display='block'; return false; } if(!d.genre){ err.textContent='Gênero.'; err.style.display='block'; return false; } if(!d.releaseDate){ err.textContent='Data.'; err.style.display='block'; return false; } if(d.releaseDate < datePlus(14)){ err.textContent='Mínimo 14 dias.'; err.style.display='block'; return false; } if(!d.releaseTime){ err.textContent='Horário.'; err.style.display='block'; return false; } if(!d.timezone){ err.textContent='Fuso.'; err.style.display='block'; return false; } if((d.license==='cc-by' || d.license==='cc-by-nd') && !d.licenseAttr){ err.textContent='Atribuição.'; err.style.display='block'; return false; } if(!d.id || !/^\d{4}$/.test(String(d.id))){ err.textContent='ID de 4 dígitos.'; err.style.display='block'; return false; } if((state.user.releases||[]).some(r=>String(r.id)===String(d.id))){ err.textContent='ID já existe.'; err.style.display='block'; return false; } if(d.isFeat==='sim'){ const feats = (d.featArtists||[]).filter(f=>f.name); if(!feats.length){ err.textContent='Adicione um feat.'; err.style.display='block'; return false; } } return true; };
+      $('#save-draft').addEventListener('click', async ()=>{ collectCover(); d.statusDraft = true; if(!d.tracks || d.tracks.length===0) d.tracks=[emptyTrack()]; await submitRelease(true); });
+      $('#next-tracks').addEventListener('click', ()=>{ collectCover(); if(!validate()) return; if(!d.tracks || d.tracks.length === 0) d.tracks = [emptyTrack()]; state.page='tracks'; render(); });
+    }
+
+    function viewTracks(){
+      if(isBlocked()) return renderBlockedScreen();
+      const d = state.draft; const type = d.type; const max = type==='single'?3:type==='ep'?6:50;
+      const artists = (state.user.artists || []).concat([state.user.artistName]).filter(Boolean);
+      const uniqArtists = [...new Set(artists)];
+      return `
+        <div class="min-h-screen p-4 py-8">
+          <div class="max-w-3xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="kab text-2xl">Faixas - ${esc((type||'').toUpperCase())}</h1>
+              <button id="bk" class="btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            <div id="tracks-container" class="space-y-4">${d.tracks.map((t,i)=>trackCard(t,i,uniqArtists)).join('')}</div>
+            <button id="add-t" class="btn-secondary w-full mt-4" ${d.tracks.length>=max?'disabled':''}><i class="fas fa-plus"></i> Adicionar faixa</button>
+            <div id="track-error" class="alert-box mt-3" style="display:none"></div>
+            <div class="grid grid-cols-2 gap-3 mt-4">
+              <button id="save-draft" class="btn-secondary w-full"><i class="fas fa-floppy-disk"></i> Salvar Rascunho</button>
+              <button id="submit-release" class="btn-primary w-full"><i class="fas fa-paper-plane"></i> Enviar para Revisão</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function trackCard(t, i, artists){
+      return `
+        <div class="glass p-4 fade-in" data-idx="${i}">
+          <div class="flex items-center justify-between mb-3"><h3 class="kab">Faixa ${i+1}</h3><button class="rm-t btn-danger" style="padding:.3rem .5rem" data-idx="${i}"><i class="fas fa-trash"></i></button></div>
+          <div class="space-y-3">
+            <div><label>Título *</label><input class="t-title" type="text" value="${esc(t.title)}"></div>
+            <div><label>Arquivo de áudio * (MP3/WAV)</label><input class="t-file" type="file" accept=".mp3,.wav"><p class="text-xs text-slate-400 mt-1">${t.file ? '📁 '+esc(t.file.name) : (t.fileName ? '📁 '+esc(t.fileName) : 'Nenhum')}</p></div>
+            <div><label>Artista principal *</label><select class="t-artist"><option value="">Selecione</option>${artists.map(a=>`<option value="${esc(a)}" ${t.artist===a?'selected':''}>${esc(a)}</option>`).join('')}</select></div>
+            <div><label>É um feat? *</label><select class="t-feat-sel"><option value="nao" ${t.isFeat==='sim'?'':'selected'}>Não</option><option value="sim" ${t.isFeat==='sim'?'selected':''}>Sim</option></select></div>
+            <div class="t-feat-area" style="display:${t.isFeat==='sim'?'block':'none'}"><div class="grid grid-cols-1 md:grid-cols-2 gap-2"><div><label>Convidado</label><input class="t-feat" type="text" value="${esc(t.feat||'')}"></div><div><label>Spotify</label><input class="t-feat-spotify" type="text" value="${esc(t.featSpotify||'')}"></div></div></div>
+            <div><label>Compositores *</label><input class="t-composers" type="text" value="${esc(t.composers)}"></div>
+            <div><label>Licença *</label><select class="t-license">${LICENSE_OPTIONS.map(o=>`<option value="${o.v}" ${t.license===o.v?'selected':''}>${o.l}</option>`).join('')}</select></div>
+            <div><label>ISRC</label><input class="t-isrc" type="text" value="${esc(t.isrc)}"></div>
+            <label class="flex items-center gap-2 cursor-pointer"><input class="t-explicit" type="checkbox" ${t.explicit?'checked':''}><span class="text-sm">Explícito</span></label>
+          </div>
+        </div>`;
+    }
+
+    function bindTracks(){
+      if(isBlocked()){ bindBlockedBack(); return; }
+      const d = state.draft;
+      const objectUrls = [];
+      const revokeAll = ()=>{ objectUrls.forEach(u=>URL.revokeObjectURL(u)); objectUrls.length=0; };
+      $('#bk').addEventListener('click', ()=>{ revokeAll(); state.page='cover'; render(); });
+      const collect = ()=>{ $$('#tracks-container > div').forEach(card=>{ const i = +card.dataset.idx; const t = d.tracks[i] || emptyTrack(); t.title = card.querySelector('.t-title').value; t.artist = card.querySelector('.t-artist').value; t.isFeat = card.querySelector('.t-feat-sel').value; t.feat = card.querySelector('.t-feat').value; t.featSpotify = card.querySelector('.t-feat-spotify').value; t.composers = card.querySelector('.t-composers').value; t.license = card.querySelector('.t-license').value; t.isrc = card.querySelector('.t-isrc').value; t.explicit = card.querySelector('.t-explicit').checked; }); };
+      $$('.t-feat-sel').forEach(sel=>{ sel.addEventListener('change', ()=>{ const card = sel.closest('[data-idx]'); const area = card.querySelector('.t-feat-area'); area.style.display = sel.value==='sim' ? 'block' : 'none'; }); });
+      $$('.t-file').forEach(inp=>{ inp.addEventListener('change', ()=>{ const card = inp.closest('[data-idx]'); const i = +card.dataset.idx; const f = inp.files[0]; if(!f) return; const ext = f.name.split('.').pop().toLowerCase(); if(!['mp3','wav'].includes(ext)){ alert('MP3 ou WAV.'); inp.value=''; return; } const url = URL.createObjectURL(f); objectUrls.push(url); const audio = new Audio(url); audio.addEventListener('loadedmetadata', ()=>{ const dur = audio.duration; if(!isFinite(dur) || dur < 30 || dur > 2700){ alert('Duração 30s a 45min.'); inp.value=''; return; } d.tracks[i].file = f; d.tracks[i].duration = dur; const p = card.querySelector('.text-xs'); if(p) p.textContent = '📁 '+f.name; }); audio.addEventListener('error', ()=>{ alert('Erro ao ler.'); inp.value=''; }); }); });
+      $$('.rm-t').forEach(btn=>{ btn.addEventListener('click', ()=>{ const i = +btn.dataset.idx; collect(); d.tracks.splice(i,1); if(d.tracks.length===0) d.tracks.push(emptyTrack()); revokeAll(); render(); }); });
+      const addBtn = $('#add-t'); if(addBtn) addBtn.addEventListener('click', ()=>{ collect(); d.tracks.push(emptyTrack()); revokeAll(); render(); });
+      $('#save-draft').addEventListener('click', async ()=>{ collect(); d.statusDraft = true; await submitRelease(true); });
+      $('#submit-release').addEventListener('click', async ()=>{ collect(); d.statusDraft = false; await submitRelease(false); });
+    }
+
+    async function submitRelease(isDraft){
+      const d = state.draft; const err = $('#track-error'); if(err) err.style.display='none';
+      const type = d.type; const min = type==='single'?1:type==='ep'?4:7; const max = type==='single'?3:type==='ep'?6:50;
+      if(!isDraft){
+        if(d.tracks.length < min){ err.textContent=`Mínimo ${min}.`; err.style.display='block'; return; }
+        if(d.tracks.length > max){ err.textContent=`Máximo ${max}.`; err.style.display='block'; return; }
+        for(let i=0;i<d.tracks.length;i++){ const t = d.tracks[i]; if(!t.title || (!t.file && !t.fileName) || !t.artist || !t.composers || !t.license){ err.textContent = `Preencha a faixa ${i+1}.`; err.style.display='block'; return; } }
+        if(type==='ep'){ const totalDur = d.tracks.reduce((s,t)=>s+(t.duration || 0), 0); if(totalDur < 600){ err.textContent='EP precisa de 10 min.'; err.style.display='block'; return; } }
+      }
+      const btn = $('#submit-release') || $('#save-draft'); const old = btn.innerHTML;
+      btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Enviando...';
+      try{
+        const releaseId = String(d.id || generateNumericId(state.user.releases));
+        const basePath = `${safePathUser(state.user.username)}/${releaseId}`;
+        let coverUrl = d.coverUrl || '';
+        if(d.coverFile){ coverUrl = await uploadFile(d.coverFile, `${basePath}/capa_${safeName(d.coverFile.name)}`); }
+        const trackUrls = [];
+        for(let i=0;i<d.tracks.length;i++){ const t = d.tracks[i]; if(t.file){ const nn = String(i+1).padStart(2,'0'); const url = await uploadFile(t.file, `${basePath}/faixa${nn}_${safeName(t.file.name)}`); trackUrls.push(url); } else { trackUrls.push(t.url || ''); } }
+        let meta = `Lançamento ${isDraft?'(rascunho)':''}\n\nID: ${releaseId}\nTipo: ${d.type.toUpperCase()}\nTítulo: ${d.title}\nCapa: ${d.coverFile ? d.coverFile.name : (d.coverUrl ? '(já no servidor)' : '')}\nLicença da Capa: ${d.license} ${d.licenseAttr ? '(Atribuição: '+d.licenseAttr+')' : ''}\nData: ${fmtDate(d.releaseDate)} às ${d.releaseTime} (${d.timezone})\n\nDADOS DO ARTISTA\nNome: ${state.user.fullName || ''}\nArtista: ${state.user.artistName || ''}\nE-mail: ${state.user.email || ''}\nUsuário: ${state.user.username}\nData: ${new Date().toLocaleString('pt-BR')}\n\n`;
+        d.tracks.forEach((t,i)=>{ meta += `Música ${i+1}\nTítulo: ${t.title}\nArtista principal: ${t.artist}\nÉ um feat?: ${t.isFeat || 'Não'}\nArtista featured: ${t.feat || ''}\nSpotify do feat: ${t.featSpotify || ''}\nCompositores: ${t.composers}\nLicença: ${t.license || ''}\nISRC: ${t.isrc || ''}\nExplícito: ${t.explicit ? 'Sim' : 'Não'}\nNome do arquivo: ${t.file ? t.file.name : (t.fileName || '')}\n\n`; });
+        await uploadText(meta, `${basePath}/metadados.txt`);
+        await uploadText(`Tipo: Som\nID: ${releaseId}\nStatus: ${isDraft?'Rascunho':'Revisão'}\nMotivo: `, `${basePath}/status.txt`);
+        const release = { id: releaseId, title: d.title || '(sem título)', type: d.type, genre: d.genre, releaseDate: d.releaseDate, releaseTime: d.releaseTime, timezone: d.timezone, license: d.license, licenseAttr: d.licenseAttr, isCompilation: !!d.isCompilation, isFeat: d.isFeat || 'nao', featArtists: d.featArtists || [], coverUrl, trackUrls, basePath, status: isDraft ? 'Em edição' : 'Revisão', motivo:'', createdAt: new Date().toISOString(), tracks: d.tracks.map((t,i)=>({ title:t.title, artist:t.artist, isFeat:t.isFeat||'nao', feat:t.feat||'', featSpotify:t.featSpotify||'', composers:t.composers, license:t.license||'', isrc:t.isrc||'', explicit:!!t.explicit, fileName: t.file ? t.file.name : (t.fileName||''), url: trackUrls[i]||'' })) };
+        state.user.releases = (state.user.releases || []).filter(r=>String(r.id)!==String(releaseId));
+        state.user.releases.push(release);
+        persistUser();
+        state.draft = {}; state.page='dashboard'; render();
+      }catch(e){ console.error(e); if(err){ err.textContent = 'Erro: '+e.message; err.style.display='block'; } else alert('Erro: '+e.message); btn.disabled=false; btn.innerHTML=old; }
+    }
+
+    async function handleReleaseAction(id, act){
+      const r=(state.user.releases||[]).find(x=>String(x.id)===String(id)); if(!r) return;
+      if(act==='edit'){ state.draft=JSON.parse(JSON.stringify(r)); state.page='cover'; render(); return; }
+      if(act==='takedown'){ if(!confirm('Fazer takedown?')) return; await uploadText(`Takedown em ${new Date().toLocaleString('pt-BR')} por ${state.user.username}.`, `${r.basePath}/takedown.txt`); alert('Solicitado.'); return; }
+      if(act==='delete'){ if(!confirm('Excluir?')) return; const n1 = prompt('Digite o nome:'); if(n1 !== r.title){ alert('Nome incorreto.'); return; } await deleteFolderFiles(r.basePath); await uploadText('Excluído.', `${r.basePath}/EXCLUA`); state.user.releases = (state.user.releases||[]).filter(x=>String(x.id)!==String(id)); persistUser(); render(); }
+    }
+
+    function openInstallMenu(){
+      const ov = document.createElement('div'); ov.className='modal-overlay';
+      ov.innerHTML = `<div class="modal-content"><h2 class="kab text-xl mb-4">Baixar o App</h2><div class="space-y-3"><a href="#" id="ins-win" class="btn-secondary w-full" style="text-decoration:none"><i class="fab fa-windows"></i> Windows</a><button id="ins-android" class="btn-secondary w-full"><i class="fab fa-android"></i> Android</button><button id="ins-pwa" class="btn-secondary w-full"><i class="fas fa-mobile-screen"></i> PWA</button></div><button id="ins-close" class="btn-primary w-full mt-4">Fechar</button></div>`;
+      document.body.appendChild(ov); $('#ins-close').addEventListener('click', ()=>ov.remove());
+      $('#ins-win').addEventListener('click', (e)=>{ e.preventDefault(); alert('Peça por WhatsApp.'); });
+      $('#ins-android').addEventListener('click', ()=>{ const eula = `ACORDO DE LICENÇA DE USO DO APP ANDROID DA TUCANO MÚSICA\n\nAo instalar o app da Tucano Música, você concorda com o acordo:\n\nVocê pode redistribuir;\nVocê não precisa dar créditos a Tucano Música, embora seja bom;\nVocê não pode fazer engenharia reversa;\nVocê não pode usar o app para fins de crimes;\nVocê não pode falar que é seu;\nIsso não tem validade jurídica, pois somos menores impúberes, mas vale na palavra da amizade.`; const eov = document.createElement('div'); eov.className='modal-overlay'; eov.innerHTML = `<div class="modal-content"><h2 class="kab text-lg mb-3">EULA</h2><pre class="text-sm whitespace-pre-wrap mb-4" style="color:var(--text-secondary)">${esc(eula)}</pre><div class="flex gap-2"><button id="eula-no" class="btn-secondary flex-1">Não</button><button id="eula-yes" class="btn-primary flex-1">Sim</button></div></div>`; document.body.appendChild(eov); $('#eula-no').addEventListener('click', ()=>eov.remove()); $('#eula-yes').addEventListener('click', async ()=>{ eov.remove(); const sb = getSupabase(); const { data } = sb.storage.from(BUCKET).getPublicUrl('tucano.apk'); if(data && data.publicUrl){ const a=document.createElement('a'); a.href=data.publicUrl; a.download='tucano.apk'; a.click(); } else alert('Não encontrado.'); }); });
+      $('#ins-pwa').addEventListener('click', ()=>{ alert('Use "Adicionar à tela inicial".'); });
+    }
+
+    function openBandManager(){
+      const members = state.user.bandMembers || [];
+      const ov = document.createElement('div'); ov.className='modal-overlay';
+      ov.innerHTML = `<div class="modal-content"><h2 class="kab text-xl mb-4">Gerenciar Artistas</h2><div id="bm-list" class="space-y-2 mb-4">${members.map((m,i)=>`<div class="flex items-center justify-between glass p-2"><span>${esc(m)}</span><button class="rm-member btn-danger text-xs" data-i="${i}" style="padding:.2rem .5rem"><i class="fas fa-times"></i></button></div>`).join('')}</div><div class="flex gap-2"><input id="bm-new" type="text" placeholder="Nome"><button id="bm-add" class="btn-primary text-sm whitespace-nowrap">Adicionar</button></div><button id="bm-close" class="btn-secondary w-full mt-4">Fechar</button></div>`;
+      document.body.appendChild(ov);
+      const close = ()=>{ ov.remove(); render(); };
+      $('#bm-close').addEventListener('click', close);
+      $('#bm-add').addEventListener('click', ()=>{ const v=$('#bm-new').value.trim(); if(!v) return; state.user.bandMembers = state.user.bandMembers || []; if(!state.user.bandMembers.includes(v)) state.user.bandMembers.push(v); persistUser(); close(); });
+      ov.querySelectorAll('.rm-member').forEach(btn=>{ btn.addEventListener('click', ()=>{ state.user.bandMembers.splice(+btn.dataset.i,1); persistUser(); close(); }); });
+    }
+
+    function viewContractQuestion(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full fade-in-scale"><h1 class="kab text-2xl mb-2">Contrato?</h1><div class="space-y-3"><button id="c-knit" class="btn-secondary w-full justify-start"><i class="fas fa-scroll"></i> Knitting Records™</button><button id="c-tuc" class="btn-secondary w-full justify-start"><i class="fas fa-bird"></i> Tucano Independente</button><button id="c-none" class="btn-secondary w-full justify-start"><i class="fas fa-ban"></i> Nenhum</button></div><button id="cq-out" class="btn-danger w-full mt-6">Sair</button></div></div>`; }
+    function bindContractQuestion(){ const doLogout = ()=>{ stopStatusPolling(); state.user = null; localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY); window.location.href='/login.html'; }; $('#cq-out').addEventListener('click', doLogout); const real = state.user.hasRealContract === true; const contractTypeAtual = state.user.contractType || 'none'; $('#c-knit').addEventListener('click', ()=>{ if(contractTypeAtual !== 'knitting' && !real) return liarAlert(); state.user.contractType='knitting'; state.user.answeredContract=true; state.user.knittingAcknowledged=false; state.user.hasRealContract=true; persistUser(); render(); }); $('#c-tuc').addEventListener('click', ()=>{ if(contractTypeAtual !== 'tucano' && !real) return liarAlert(); state.user.contractType='tucano'; state.user.answeredContract=true; state.user.contractSigned=true; state.user.contractPdfDownloaded=true; state.user.hasRealContract=true; persistUser(); render(); }); $('#c-none').addEventListener('click', ()=>{ state.user.contractType='none'; state.user.answeredContract=true; state.user.contractSigned=false; state.user.contractPdfDownloaded=false; state.user.hasRealContract=false; persistUser(); render(); }); }
+    function liarAlert(){ const ov = document.createElement('div'); ov.className='modal-overlay'; ov.innerHTML = `<div class="modal-content text-center"><div style="font-size:5rem">😡</div><h2 class="kab text-2xl text-red-500 mb-3">Mentiroso!</h2><p class="text-slate-400 mb-6">Escolha "Nenhum" e assine de verdade.</p><button id="liar-ok" class="btn-primary w-full">Entendi</button></div>`; document.body.appendChild(ov); $('#liar-ok').addEventListener('click', ()=>ov.remove()); }
+    function viewKnitting(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full fade-in-scale"><h1 class="kab text-2xl mb-2 text-red-400">Knitting Records™</h1><p class="tts text-slate-300 mb-4">A Knitting retém 80% dos seus ganhos e todos os direitos.</p><p class="text-sm text-slate-500 mb-4">Aguarde <span id="cd">5</span>s.</p><button id="k-ok" class="btn-primary w-full" disabled>Entendi</button></div></div>`; }
+    function bindKnitting(){ let t=5; const el=$('#cd'); const btn=$('#k-ok'); const iv = setInterval(()=>{ t--; if(el) el.textContent=t; if(t<=0){ clearInterval(iv); btn.disabled=false; } }, 1000); btn.addEventListener('click', ()=>{ clearInterval(iv); state.user.knittingAcknowledged=true; persistUser(); render(); }); }
+    function viewNoneOption(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full fade-in-scale"><h1 class="kab text-2xl mb-2">Sem contrato.</h1><p class="tts text-slate-400 mb-6">Assinar com a Tucano?</p><div class="space-y-3"><button id="n-yes" class="btn-primary w-full"><i class="fas fa-pen"></i> Sim</button><button id="n-no" class="btn-secondary w-full"><i class="fas fa-xmark"></i> Não</button></div><div id="n-warn" class="warning-box mt-4" style="display:none"><p class="mb-2">Sem contrato não pode usar.</p><button id="n-login" class="btn-secondary text-sm w-full">Sair</button></div></div></div>`; }
+    function bindNoneOption(){ const doLogout = ()=>{ stopStatusPolling(); state.user = null; localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY); window.location.href='/login.html'; }; $('#n-no').addEventListener('click', ()=>{ $('#n-warn').style.display='block'; }); $('#n-yes').addEventListener('click', ()=>{ const u = state.user; showContract(u.fullName||'', u.artistName||'', u.email||'', u.whatsapp||'', u.tiktok||'', u.schoolGrade||''); }); $('#n-login').addEventListener('click', doLogout); }
+    function showContract(){ $('#app').innerHTML = `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full text-center fade-in-scale"><h1 class="kab text-2xl mb-4">Contrato Assinado!</h1><button id="done" class="btn-primary w-full">Continuar</button></div></div>`; $('#done').addEventListener('click', ()=>{ state.user.contractType='tucano'; state.user.answeredContract=true; state.user.contractSigned=true; state.user.contractPdfDownloaded=true; state.user.hasRealContract=true; persistUser(); render(); }); }
+    function viewContractSigned(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full text-center fade-in-scale"><div style="font-size:4rem">📜</div><h1 class="kab text-2xl mt-4 mb-2">Assinado!</h1><button id="pdf-done" class="btn-secondary w-full">Continuar</button></div></div>`; }
+    function bindContractSigned(){ $('#pdf-done').addEventListener('click', ()=>{ state.user.contractPdfDownloaded=true; persistUser(); render(); }); }
+    function viewPhysicalDate(){ return `<div class="min-h-screen flex items-center justify-center p-4"><div class="glass p-8"><h1 class="kab text-2xl mb-4">Data Física</h1><button id="bk" class="btn-primary w-full">Voltar</button></div></div>`; }
+    function bindPhysicalDate(){ $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); }); }
+
+    const soundCache = {};
+    function playSound(name){ try{ const files = { botao:'./botao.mp3', alerta:'./alerta.wav', sucesso:'./sucesso.mp3', sucessao:'./sucessao.mp3' }; const src = files[name]; if(!src) return; if(!soundCache[src]){ soundCache[src] = new Audio(src); soundCache[src].preload='auto'; } const a = soundCache[src].cloneNode(); a.volume = 0.6; a.play().catch(()=>{}); }catch(e){} }
+
+    async function refreshReleaseStatuses(){
+      if(!state.user || state.statusFetching) return; state.statusFetching = true; let changed = false;
+      try{
+        for(const r of (state.user.releases || [])){ if(!r.basePath) continue; const txt = await fetchTextFile(`${r.basePath}/status.txt`); if(!txt) continue; const p = parseStatusTxt(txt); if(!p || !p.status) continue; const disp = displayStatus(p.status); if(disp !== r.status || p.motivo !== (r.motivo||'')){ r.status = disp; r.motivo = p.motivo; changed = true; } }
+        if(changed){ persistUser(); if((state.page==='dashboard' || state.page==='catalogs') && !document.activeElement?.matches?.('input,select,textarea')) render(); }
+      }catch(e){ console.warn(e); } finally{ state.statusFetching = false; }
+    }
+    function startStatusPolling(){ if(state.statusPollTimer) return; refreshReleaseStatuses(); state.statusPollTimer = setInterval(()=>{ if(state.user) refreshReleaseStatuses(); }, STATUS_POLL_MS); }
+    function stopStatusPolling(){ if(state.statusPollTimer){ clearInterval(state.statusPollTimer); state.statusPollTimer = null; } }
+
+    async function syncSharedReleases(){
+      if(!state.user) return;
+      try{
+        const sb = getSupabase(); const members = (state.user.bandMembers || []).slice(); if(!members.includes(state.user.username)) members.push(state.user.username);
+        const seen = new Set((state.user.releases||[]).map(r=>r.basePath)); let count = 0;
+        for(const m of members){
+          const safe = safePathUser(m); const { data } = await sb.storage.from(BUCKET).list(safe, { limit: 200 }); if(!data) continue;
+          for(const folder of data){
+            if(!folder.name || folder.name.includes('.')) continue; if(['support','applications'].includes(folder.name)) continue;
+            const basePath = `${safe}/${folder.name}`; if(seen.has(basePath)) continue;
+            const txt = await fetchTextFile(`${basePath}/metadados.txt`); if(!txt) continue;
+            const statusTxt = await fetchTextFile(`${basePath}/status.txt`); const parsed = parseStatusTxt(statusTxt || '');
+            const titleMatch = txt.match(/Título:\s*(.+)/); const typeMatch = txt.match(/Tipo:\s*(.+)/); const idMatch = txt.match(/ID:\s*(\d{4})/); const coverMatch = txt.match(/Capa:\s*(.+)/);
+            let coverUrl = '';
+            if(coverMatch && !coverMatch[1].includes('(já no servidor)')){ const cData = sb.storage.from(BUCKET).getPublicUrl(`${basePath}/${coverMatch[1].trim()}`).data; if(cData) coverUrl = cData.publicUrl; }
+            const tracks = []; const blocks = txt.split(/Música\s+\d+/i).slice(1);
+            blocks.forEach(block=>{ const get = (k)=>{ const mm = block.match(new RegExp('^\\s*'+k+'\\s*:\\s*(.*)$','mi')); return mm ? mm[1].trim() : ''; }; tracks.push({ title:get('Título'), artist:get('Artista principal'), isFeat: /sim/i.test(get('É um feat?')) ? 'sim' : 'nao', feat:get('Artista featured'), featSpotify:get('Spotify do feat'), composers:get('Compositores'), license:get('Licença'), isrc:get('ISRC'), explicit:/Sim/.test(get('Explícito')), fileName:get('Nome do arquivo'), url:'' }); });
+            let releaseId = idMatch ? idMatch[1] : folder.name; if(!/^\d{4}$/.test(String(releaseId))) releaseId = folder.name;
+            if((state.user.releases||[]).some(r=>String(r.id)===String(releaseId))) { seen.add(basePath); continue; }
+            state.user.releases.push({ id: releaseId, title: titleMatch ? titleMatch[1].trim() : folder.name, type: typeMatch ? typeMatch[1].trim().toLowerCase() : 'single', basePath, status: parsed?.status ? displayStatus(parsed.status) : 'Revisão', motivo: parsed?.motivo || '', coverUrl, tracks });
+            seen.add(basePath); count++;
+          }
+        }
+        if(count > 0){ persistUser(); await refreshReleaseStatuses(); if(state.page === 'dashboard' || state.page === 'catalogs') render(); }
+      }catch(e){ console.warn(e); }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
+    }
