@@ -18,7 +18,7 @@ const STATIC_CACHE = 'tucano_gostoso_v4-static';
 const SHELL_ASSETS = [
   './',
   './index.html',
-  './manifest.json',
+  './manifest.webmanifest',
   './tucano.png'
 ];
 
