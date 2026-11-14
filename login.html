@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1f13">
+  <meta name="description" content="Tucano Música - Login">
+  <title>Entrar na Tucano</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="icon" type="image/png" href="./tucano.png">
+  <link rel="apple-touch-icon" href="./tucano.png">
+
+  <style>
+    @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+
+    :root{
+      --bg-primary:#0b1f13; --bg-secondary:#123a24; --bg-tertiary:#1f5c38;
+      --text-primary:#f0fdf4; --text-secondary:#bbf7d0; --text-muted:#86efac;
+      --border-color:rgba(163,230,53,.18);
+      --accent-blue:#a3e635; --accent-blue-dark:#65a30d; --accent-red:#ef4444;
+      --glass-bg:rgba(18,58,36,.72); --glass-border:rgba(163,230,53,.22);
+    }
+    html[data-theme="light"]{
+      --bg-primary:#f0fdf4; --bg-secondary:#dcfce7; --bg-tertiary:#bbf7d0;
+      --text-primary:#052e16; --text-secondary:#14532d; --text-muted:#166534;
+      --border-color:rgba(20,83,45,.2);
+      --glass-bg:rgba(255,255,255,.88); --glass-border:rgba(20,83,45,.22);
+    }
+    *{font-family:'Ifood RC',sans-serif;}
+    body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
+    h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
+    .tts{font-family:'TikTok Sans',sans-serif;}
+    .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
+    .glow{box-shadow:0 0 40px rgba(163,230,53,.15),0 0 80px rgba(163,230,53,.05);}
+    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;width:100%;}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+    
+    input{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
+    input:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
+    input::placeholder{color:var(--text-muted);}
+    label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
+
+    .jungle-texture{background-image:radial-gradient(circle at 20% 30%,rgba(163,230,53,.08),transparent 45%),radial-gradient(circle at 80% 70%,rgba(34,197,94,.08),transparent 45%);}
+    .alert-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:16px;color:#fca5a5;}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes fadeInScale{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+    .fade-in-scale{animation:fadeInScale .4s ease forwards;}
+  </style>
+</head>
+<body>
+  <div class="min-h-screen flex items-center justify-center p-4 jungle-texture">
+    <div class="glass glow p-8 max-w-md w-full fade-in-scale">
+      <div class="text-center mb-8">
+        <img src="./tucano.png" alt="Tucano" class="mx-auto mb-4" style="max-width:100px" onerror="this.style.display='none'">
+        <h1 class="kab text-2xl">Entrar na Tucano</h1>
+        <p class="tts text-slate-400 text-sm mt-1">Use seu usuário e senha</p>
+      </div>
+      <div class="space-y-4">
+        <div><label for="login-user">Usuário</label><input id="login-user" type="text" placeholder="Seu nome de usuário" autocomplete="username"></div>
+        <div><label for="login-pass">Senha</label><input id="login-pass" type="password" placeholder="Sua senha" autocomplete="current-password"></div>
+        <div id="login-error" class="alert-box" style="display:none"></div>
+        <button id="login-btn" class="btn-primary"><i class="fas fa-right-to-bracket"></i> Fazer Login</button>
+        <div class="text-center pt-2">
+          <a href="/" class="text-sm" style="color:#a3e635">Voltar ao início</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://mjqwiqjojkzobuysziyv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+    const BUCKET = 'releases';
+    const SESSION_KEY = 'tucano_session_v2';
+    const SESSION_LEGACY_KEY = 'sessao_tucano_contas_v1';
+    const CACHE_VERSION = 'tucano_gostoso_v4';
+    const STATE_PREFIX = CACHE_VERSION + '_state_';
+
+    let _sb = null;
+    function getSupabase(){
+      if(!window.supabase) throw new Error('Biblioteca do Supabase não carregou.');
+      if(!_sb) _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return _sb;
+    }
+
+    function normUser(u){ return String(u||'').trim().toLowerCase(); }
+    function safePathUser(u){
+      return String(u||'anon').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/g,'_').slice(0,40)||'anon';
+    }
+
+    async function fetchTextFile(path){
+      try{
+        const sb = getSupabase();
+        const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+        if(!data || !data.publicUrl) return null;
+        const res = await fetch(data.publicUrl);
+        if(!res.ok) return null;
+        return await res.text();
+      }catch(e){ return null; }
+    }
+
+    async function fetchJsonFile(path){
+      const txt = await fetchTextFile(path);
+      if(!txt) return null;
+      try { return JSON.parse(txt); } catch(e) { return null; }
+    }
+
+    async function loadAccount(username){
+      const safe = safePathUser(username);
+      const json = await fetchJsonFile(`${safe}.json`);
+      if(!json) return null;
+      return json;
+    }
+
+    async function loginAccount(username, password){
+      const base = await loadAccount(username);
+      if(!base) return { ok:false, error:'Conta não encontrada. Se você ainda não tem conta, use o Contate-nos.' };
+      if(String(base.password) !== String(password)) return { ok:false, error:'Senha incorreta.' };
+      
+      // Salva a sessão no localStorage para o painel ler
+      const key = normUser(base.username || username);
+      localStorage.setItem(SESSION_KEY, key);
+      localStorage.setItem(SESSION_LEGACY_KEY, key);
+      
+      return { ok:true, user: base };
+    }
+
+    const attempt = async () => {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      const errEl = document.getElementById('login-error');
+      errEl.style.display='none';
+      if(!user || !pass){ errEl.textContent='Preencha usuário e senha.'; errEl.style.display='block'; return; }
+      
+      const btn = document.getElementById('login-btn'); const old = btn.innerHTML;
+      btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+      
+      try{
+        const res = await loginAccount(user, pass);
+        if(!res.ok){ errEl.textContent = res.error; errEl.style.display='block'; return; }
+        
+        // Login OK: redireciona para o painel
+        window.location.href = '/painel-de-controle.html';
+      }catch(e){
+        errEl.textContent = 'Erro ao entrar: '+e.message; errEl.style.display='block';
+      }finally{ 
+        btn.disabled=false; btn.innerHTML=old; 
+      }
+    };
+
+    document.getElementById('login-btn').addEventListener('click', attempt);
+    document.getElementById('login-user').addEventListener('keydown', e=>{ if(e.key==='Enter') attempt(); });
+    document.getElementById('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') attempt(); });
+  </script>
+</body>
+</html>

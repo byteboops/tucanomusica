@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1f13">
+  <meta name="description" content="Painel de Controle - Tucano Música">
+  <title>Painel de Controle - Tucano</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="icon" type="image/png" href="./tucano.png">
+  <link rel="apple-touch-icon" href="./tucano.png">
+
+  <style>
+    @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'TikTok Sans';src:url('./tiktok.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+
+    :root{
+      --bg-primary:#0b1f13; --bg-secondary:#123a24; --bg-tertiary:#1f5c38;
+      --text-primary:#f0fdf4; --text-secondary:#bbf7d0; --text-muted:#86efac;
+      --border-color:rgba(163,230,53,.18);
+      --accent-blue:#a3e635; --accent-blue-dark:#65a30d; --accent-yellow:#fbbf24;
+      --accent-green:#22c55e; --accent-red:#ef4444;
+      --glass-bg:rgba(18,58,36,.72); --glass-border:rgba(163,230,53,.22);
+    }
+    html[data-theme="light"]{
+      --bg-primary:#f0fdf4; --bg-secondary:#dcfce7; --bg-tertiary:#bbf7d0;
+      --text-primary:#052e16; --text-secondary:#14532d; --text-muted:#166534;
+      --border-color:rgba(20,83,45,.2);
+      --glass-bg:rgba(255,255,255,.88); --glass-border:rgba(20,83,45,.22);
+    }
+    *{font-family:'Ifood RC',sans-serif;}
+    body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
+    h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
+    .tts{font-family:'TikTok Sans',sans-serif;}
+    
+    .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
+    .glow{box-shadow:0 0 40px rgba(163,230,53,.15),0 0 80px rgba(163,230,53,.05);}
+    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+    .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border-radius:12px;padding:.75rem 1.5rem;font-weight:500;transition:all .25s ease;border:1px solid var(--border-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-secondary:hover{background:var(--bg-secondary);border-color:var(--accent-blue);}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:600;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(239,68,68,.4);}
+
+    .progress-bar{width:100%;height:8px;background:var(--bg-tertiary);border-radius:999px;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#65a30d,#a3e635);border-radius:999px;transition:width .3s ease;width:0%;}
+
+    .grid-card{transition:transform .25s ease,box-shadow .25s ease;}
+    .grid-card:hover{transform:scale(1.02);box-shadow:0 10px 40px rgba(0,0,0,.3);}
+    .contract-fill{background:rgba(251,191,36,.15);color:#fbbf24;padding:1px 6px;border-radius:4px;font-weight:500;}
+    
+    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
+    input::placeholder,textarea::placeholder{color:var(--text-muted);}
+    label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
+    
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    .fade-in{animation:fadeIn .5s ease forwards;}
+    @keyframes fadeInScale{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+    .fade-in-scale{animation:fadeInScale .4s ease forwards;}
+    
+    .hamburger-menu{position:fixed;top:70px;right:16px;width:260px;background:var(--glass-bg);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:16px;padding:8px;z-index:100;display:none;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+    .hamburger-menu.open{display:block;animation:fadeInScale .2s ease;}
+    .menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:background .2s;color:var(--text-primary);font-weight:500;font-size:.9rem;border:none;background:transparent;width:100%;text-align:left;font-family:'Ifood RC',sans-serif;}
+    .menu-item:hover{background:rgba(163,230,53,.1);}
+    .menu-item.danger{color:#ef4444;}
+    .menu-item.danger:hover{background:rgba(239,68,68,.1);}
+    .menu-item:disabled{opacity:.4;cursor:not-allowed;}
+
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s ease;}
+    .modal-content{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:20px;padding:32px;max-width:520px;width:100%;animation:fadeInScale .25s ease;max-height:85vh;overflow-y:auto;}
+    
+    .status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:600;}
+    .release-card-cover{aspect-ratio:1;width:100%;border-radius:12px;object-fit:cover;background:var(--bg-tertiary);}
+    .type-card{cursor:pointer;transition:all .25s ease;border:2px solid transparent;}
+    .type-card:hover{border-color:var(--accent-blue);transform:translateY(-4px);}
+    
+    .kebab-menu{position:absolute;bottom:12px;right:12px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:10px;padding:4px;z-index:10;display:none;box-shadow:0 10px 30px rgba(0,0,0,.4);min-width:150px;}
+    .kebab-menu.open{display:block;animation:fadeInScale .15s ease;}
+    .kebab-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;color:var(--text-primary);border:none;background:transparent;width:100%;text-align:left;font-family:'Ifood RC',sans-serif;}
+    .kebab-item:hover{background:var(--bg-secondary);}
+    .kebab-item.danger{color:#ef4444;}
+    
+    .scrollbar-thin::-webkit-scrollbar{width:6px;}
+    .scrollbar-thin::-webkit-scrollbar-track{background:transparent;}
+    .scrollbar-thin::-webkit-scrollbar-thumb{background:var(--bg-tertiary);border-radius:999px;}
+    
+    .file-input-wrapper{position:relative;overflow:hidden;display:inline-block;width:100%;}
+    .file-input-wrapper input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    
+    .alert-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:16px;color:#fca5a5;}
+    .warning-box{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:16px;color:#fde68a;}
+    .success-box{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:16px;color:#86efac;}
+    .info-box{background:rgba(163,230,53,.1);border:1px solid rgba(163,230,53,.3);border-radius:12px;padding:16px;color:#d9f99d;}
+    
+    .sig-canvas{width:100%;height:180px;background:#f8fafc;border:2px dashed var(--border-color);border-radius:12px;touch-action:none;cursor:crosshair;}
+    .jungle-texture{background-image:radial-gradient(circle at 20% 30%,rgba(163,230,53,.08),transparent 45%),radial-gradient(circle at 80% 70%,rgba(34,197,94,.08),transparent 45%);}
+  </style>
+</head>
+<body>
+  <!-- O conteúdo será renderizado pelo JS -->
+  <div id="app"></div>
+
+  <script>
+    // ============================================================
+    // CONSTANTES E CONFIGURAÇÕES
+    // ============================================================
+    const SUPABASE_URL = 'https://mjqwiqjojkzobuysziyv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+    const BUCKET = 'releases';
+    const CACHE_VERSION = 'tucano_gostoso_v4';
+    const SESSION_KEY = 'tucano_session_v2';
+    const SESSION_LEGACY_KEY = 'sessao_tucano_contas_v1';
+    const THEME_KEY = 'tucano_theme';
+    const STATE_PREFIX = CACHE_VERSION + '_state_';
+    const STATUS_POLL_MS = 30000;
+
+    const GENRES = ['Sertanejo','Country','Pop','Rock','Metal','Hip Hop','Funk','Samba','Pagode','MPB','R&B','Jazz','Eletrônica','Coral','Orquestra','Phonk','Gospel','Forró','Boom Bap','J-pop','K-pop','Trip Hop','Piano','Ambiente','Infantil','Comédia','Música Clássica','Reggae','Louvor','Reggaeton','Dubstep','Halloween/Terror'];
+
+    const STATUS_COLORS = {
+      'Ao Vivo':{bg:'rgba(163,230,53,.15)',color:'#a3e635'},
+      'Aprovado':{bg:'rgba(34,197,94,.15)',color:'#22c55e'},
+      'Revisão':{bg:'rgba(251,191,36,.15)',color:'#fbbf24'},
+      'Rejeitado':{bg:'rgba(239,68,68,.15)',color:'#ef4444'},
+      'Em edição':{bg:'rgba(100,116,139,.15)',color:'#94a3b8'}
+    };
+
+    const LICENSE_OPTIONS = [
+      { v:'direitos', l:'Direitos Autorais (do próprio artista)' },
+      { v:'cc0', l:'Creative Commons CC0' },
+      { v:'cc-by', l:'Creative Commons CC BY' },
+      { v:'cc-by-nd', l:'Creative Commons CC BY-ND' }
+    ];
+
+    const state = {
+      user:null, page:'dashboard', draft:{}, catalog:'releases',
+      statusPollTimer:null, statusFetching:false
+    };
+
+    // ============================================================
+    // UTILITÁRIOS
+    // ============================================================
+    function normUser(u){ return String(u||'').trim().toLowerCase(); }
+    function $(sel,ctx){ return (ctx||document).querySelector(sel); }
+    function $$(sel,ctx){ return Array.from((ctx||document).querySelectorAll(sel)); }
+    function esc(s){
+      return String(s==null?'':s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    function fmtDate(d){
+      if(!d) return '';
+      try{
+        const dt = (typeof d==='string' && d.length===10) ? new Date(d+'T12:00:00') : new Date(d);
+        return dt.toLocaleDateString('pt-BR');
+      }catch(e){ return String(d); }
+    }
+    function uid(){
+      if(window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+      return Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+    }
+    function datePlus(days){ const d=new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+    function safePathUser(u){
+      return String(u||'anon').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/g,'_').slice(0,40)||'anon';
+    }
+    function safeName(n){
+      return String(n||'file').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_').slice(0,80);
+    }
+    function normStatus(s){
+      return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    }
+    function displayStatus(s){
+      const n = normStatus(s);
+      if(n==='ao vivo') return 'Ao Vivo';
+      if(n==='aprovado') return 'Aprovado';
+      if(n==='revisao') return 'Revisão';
+      if(n==='rejeitado') return 'Rejeitado';
+      if(n==='rascunho') return 'Em edição';
+      return s || 'Em edição';
+    }
+    function getStatusColor(status){ return STATUS_COLORS[displayStatus(status)] || STATUS_COLORS['Em edição']; }
+    function isBlocked(){
+      const u = state.user; if(!u) return true;
+      return !!(u.disabled || u.rescinded || u.deleted);
+    }
+    function generateNumericId(existing){
+      const used = new Set((existing||[]).map(r=>String(r.id)));
+      let tries = 0;
+      while(tries < 9000){
+        const n = 1000 + Math.floor(Math.random()*9000);
+        if(!used.has(String(n))) return n;
+        tries++;
+      }
+      for(let n=1000;n<=9999;n++){ if(!used.has(String(n))) return n; }
+      return Date.now() % 9000 + 1000;
+    }
+
+    // ============================================================
+    // DELTA DE ESTADO
+    // ============================================================
+    const DELTA_FIELDS = [
+      'releases','artists','videoReleases',
+      'answeredContract','contractType','contractSigned','contractPdfDownloaded',
+      'knittingAcknowledged','hasRealContract',
+      'disabled','rescinded','deleted',
+      'bandMembers','isBand'
+    ];
+
+    function loadDelta(username){
+      try{
+        const raw = localStorage.getItem(STATE_PREFIX + normUser(username));
+        if(!raw) return {};
+        const obj = JSON.parse(raw);
+        return (obj && typeof obj==='object') ? obj : {};
+      }catch(e){ return {}; }
+    }
+    function saveDelta(username, delta){
+      const clean = {};
+      for(const k of DELTA_FIELDS){ if(k in delta) clean[k] = delta[k]; }
+      localStorage.setItem(STATE_PREFIX + normUser(username), JSON.stringify(clean));
+    }
+    function clearDelta(username){ localStorage.removeItem(STATE_PREFIX + normUser(username)); }
+
+    function mergeAccount(base, delta){
+      const merged = { ...base, ...delta };
+      if(!Array.isArray(merged.releases)) merged.releases = [];
+      if(!Array.isArray(merged.videoReleases)) merged.videoReleases = [];
+      if(!Array.isArray(merged.artists)) merged.artists = [];
+      if(!Array.isArray(merged.bandMembers)) merged.bandMembers = [];
+      return merged;
+    }
+
+    function persistUser(){
+      if(!state.user) return;
+      const delta = {};
+      for(const k of DELTA_FIELDS){ if(k in state.user) delta[k] = state.user[k]; }
+      saveDelta(state.user.username, delta);
+      const key = normUser(state.user.username);
+      localStorage.setItem(SESSION_KEY, key);
+      localStorage.setItem(SESSION_LEGACY_KEY, key);
+    }
+
+    // ============================================================
+    // SUPABASE E ARQUIVOS
+    // ============================================================
+    let _sb = null;
+    function getSupabase(){
+      if(!window.supabase) throw new Error('Biblioteca do Supabase não carregou.');
+      if(!_sb) _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return _sb;
+    }
+
+    async function uploadFile(file, path){
+      const sb = getSupabase();
+      const { error } = await sb.storage.from(BUCKET).upload(path, file, { cacheControl:'3600', upsert:true });
+      if(error) throw new Error('Supabase: '+(error.message||JSON.stringify(error)));
+      const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+      return data.publicUrl;
+    }
+
+    async function uploadText(text, path){
+      const blob = new Blob([text], { type:'text/plain;charset=utf-8' });
+      const file = new File([blob], safeName(path.split('/').pop()), { type:'text/plain' });
+      return await uploadFile(file, path);
+    }
+
+    async function deleteFolderFiles(folderPath){
+      const sb = getSupabase();
+      const { data, error } = await sb.storage.from(BUCKET).list(folderPath);
+      if(error){ console.warn('list error', error); return; }
+      if(!data || !data.length) return;
+      const paths = data.map(f => folderPath + '/' + f.name);
+      const { error: delErr } = await sb.storage.from(BUCKET).remove(paths);
+      if(delErr) console.warn('remove error', delErr);
+    }
+
+    async function fetchTextFile(path){
+      try{
+        const sb = getSupabase();
+        const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+        if(!data || !data.publicUrl) return null;
+        const res = await fetch(data.publicUrl);
+        if(!res.ok) return null;
+        return await res.text();
+      }catch(e){ return null; }
+    }
+
+    async function fetchJsonFile(path){
+      const txt = await fetchTextFile(path);
+      if(!txt) return null;
+      try { return JSON.parse(txt); } catch(e) { return null; }
+    }
+
+    function parseStatusTxt(txt){
+      if(!txt) return null;
+      const s = txt.match(/^\s*Status\s*:\s*(.*)$/mi);
+      const m = txt.match(/^\s*Motivo\s*:\s*(.*)$/mi);
+      return { status: s ? (s[1].trim() || null) : null, motivo: m ? m[1].trim() : '' };
+    }
+
+    // ============================================================
+    // PROTEÇÃO DE ROTA E INICIALIZAÇÃO
+    // ============================================================
+    async function init(){
+      document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
+      
+      const sess = localStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_LEGACY_KEY);
+      if(!sess){
+        window.location.href = '/login.html';
+        return;
+      }
+
+      try {
+        const base = await loadAccount(sess);
+        if(!base){
+          // Sessão expirada ou conta deletada
+          localStorage.removeItem(SESSION_KEY);
+          localStorage.removeItem(SESSION_LEGACY_KEY);
+          window.location.href = '/login.html';
+          return;
+        }
+        const delta = loadDelta(base.username || sess);
+        state.user = mergeAccount(base, delta);
+        
+        render();
+        startStatusPolling();
+        syncSharedReleases(); // Puxa releases da banda ao carregar
+      } catch(e) {
+        console.error(e);
+        window.location.href = '/login.html';
+      }
+    }
+
+    async function loadAccount(username){
+      const safe = safePathUser(username);
+      const json = await fetchJsonFile(`${safe}.json`);
+      if(!json) return null;
+      return json;
+    }
+
+    // ============================================================
+    // RENDERIZAÇÃO PRINCIPAL
+    // ============================================================
+    function render(){
+      const app = $('#app'); if(!app) return;
+      let html=''; let binder=null;
+
+      if(!state.user.answeredContract){ html=viewContractQuestion(); binder=bindContractQuestion; }
+      else if(state.user.contractType==='knitting' && !state.user.knittingAcknowledged){ html=viewKnitting(); binder=bindKnitting; }
+      else if(state.user.contractType==='none' && !state.user.contractSigned){ html=viewNoneOption(); binder=bindNoneOption; }
+      else if(state.user.contractType==='none' && state.user.contractSigned && !state.user.contractPdfDownloaded){ html=viewContractSigned(); binder=bindContractSigned; }
+      else if(state.page==='physical'){ html=viewPhysicalDate(); binder=bindPhysicalDate; }
+      else if(state.page==='settings'){ html=viewSettings(); binder=bindSettings; }
+      else if(state.page==='catalogs'){ html=viewCatalogs(); binder=bindCatalogs; }
+      else if(state.page==='support'){ html=viewSupport(); binder=bindSupport; }
+      else if(state.page==='video'){ html=viewVideo(); binder=bindVideo; }
+      else if(state.page==='type'){ html=viewType(); binder=bindType; }
+      else if(state.page==='cover'){ html=viewCover(); binder=bindCover; }
+      else if(state.page==='tracks'){ html=viewTracks(); binder=bindTracks; }
+      else { html=viewDashboard(); binder=bindDashboard; }
+
+      app.innerHTML = html;
+      if(binder) binder();
+    }
+
+    // ============================================================
+    // DASHBOARD
+    // ============================================================
+    function viewDashboard(){
+      const u = state.user;
+      const blocked = isBlocked();
+      const showRevive = u.disabled || u.rescinded;
+      const releases = (u.releases || []);
+      return `
+        <div class="min-h-screen" style="background-image:url('./praia.jpg');background-size:cover;background-position:center;background-attachment:fixed;">
+          <header class="glass sticky top-0 z-50 mx-2 mt-2 px-4 py-3 flex items-center justify-between" style="background:rgba(11,31,19,0.85)">
+            <div class="flex items-center gap-3">
+              <img src="./tucano.png" alt="Tucano" width="48" height="48" style="border-radius:12px" onerror="this.style.display='none'">
+              <span class="kab text-lg hidden sm:inline">Tucano Música</span>
+            </div>
+            <div class="flex items-center gap-2">
+              ${u.isBand ? `<button id="manage-band" class="btn-secondary text-sm" ${blocked?'disabled':''}><i class="fas fa-users"></i> <span class="hidden sm:inline">Gerenciar Artistas</span></button>` : ''}
+              ${showRevive ? `<button id="revive-btn" class="btn-primary text-sm"><i class="fas fa-heart-pulse"></i> Revigorar</button>` : ''}
+              <button id="refresh-status" class="btn-secondary" style="padding:.5rem .75rem" title="Atualizar status"><i class="fas fa-rotate"></i></button>
+              <button id="hamb" class="btn-secondary" style="padding:.5rem .75rem"><i class="fas fa-bars"></i></button>
+            </div>
+          </header>
+          <div id="hmenu" class="hamburger-menu">
+            <button class="menu-item" id="m-new" ${blocked?'disabled':''}><i class="fas fa-plus"></i> Novo Release</button>
+            <button class="menu-item" id="m-sup" ${blocked?'disabled':''}><i class="fas fa-life-ring"></i> Suporte</button>
+            <button class="menu-item" id="m-vid" disabled><i class="fas fa-video"></i> Distribuição de videoclipe</button>
+            <button class="menu-item" id="m-cat"><i class="fas fa-folder"></i> Catálogos</button>
+            <button class="menu-item" id="m-set"><i class="fas fa-gear"></i> Configurações</button>
+            <button class="menu-item" id="m-app"><i class="fas fa-download"></i> Baixar o App</button>
+            <div style="height:1px;background:var(--border-color);margin:6px 12px"></div>
+            <button class="menu-item danger" id="m-out"><i class="fas fa-right-from-bracket"></i> Sair</button>
+          </div>
+          <main class="p-4 max-w-6xl mx-auto">
+            ${blocked ? `<div class="warning-box mb-4 text-sm"><i class="fas fa-triangle-exclamation"></i> Conta ${u.disabled?'desativada':u.rescinded?'rescindida':'excluída'}. Envios estão bloqueados.</div>` : ''}
+            <div class="flex items-center justify-between mb-6 mt-4 glass p-4">
+              <h1 class="kab text-2xl">Meus Lançamentos</h1>
+              <button id="new-rel" class="btn-primary" ${blocked?'disabled':''}><i class="fas fa-plus"></i> Novo Release</button>
+            </div>
+            ${releases.length === 0 ? `
+              <div class="glass p-12 text-center fade-in">
+                <div style="font-size:3rem">🎵</div>
+                <p class="text-slate-400 mt-4">Nenhum lançamento ainda. Crie o primeiro!</p>
+              </div>
+            ` : `
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                ${releases.map(r=>renderReleaseCard(r, !!showRevive)).join('')}
+              </div>
+            `}
+          </main>
+        </div>`;
+    }
+
+    function renderReleaseCard(r, dimmed){
+      const st = displayStatus(r.status || 'Em edição');
+      const sc = getStatusColor(st);
+      return `
+        <div class="glass grid-card relative p-3 ${dimmed?'opacity-50':''}" data-release-id="${esc(r.id)}">
+          ${r.coverUrl ? `<img src="${esc(r.coverUrl)}" alt="${esc(r.title)}" class="release-card-cover mb-3" loading="lazy">` : `<div class="release-card-cover mb-3 flex items-center justify-center text-4xl">🎵</div>`}
+          <h3 class="kab text-sm truncate">${esc(r.title)}</h3>
+          <p class="text-xs text-slate-400 mb-1">${esc((r.type||'').toUpperCase())} • ID ${esc(String(r.id))}</p>
+          <span class="status-badge" style="background:${sc.bg};color:${sc.color}"><i class="fas fa-circle" style="font-size:6px"></i> ${esc(st)}</span>
+          ${st==='Rejeitado' && r.motivo ? `<div class="mt-2 alert-box text-xs">${esc(r.motivo)}</div>` : ''}
+          <button class="edit-rel btn-secondary absolute top-2 right-2" style="padding:.4rem .6rem" data-id="${esc(r.id)}"><i class="fas fa-pen"></i></button>
+          <button class="kebab-btn absolute bottom-2 right-2 btn-secondary" style="padding:.3rem .5rem" data-id="${esc(r.id)}"><i class="fas fa-ellipsis-vertical"></i></button>
+        </div>`;
+    }
+
+    function bindDashboard(){
+      startStatusPolling();
+      syncSharedReleases();
+
+      $('#refresh-status').addEventListener('click', async ()=>{
+        const btn=$('#refresh-status'); const old=btn.innerHTML;
+        btn.innerHTML='<span class="spinner"></span>';
+        await refreshReleaseStatuses(); btn.innerHTML=old;
+      });
+      $('#hamb').addEventListener('click', (e)=>{ e.stopPropagation(); $('#hmenu').classList.toggle('open'); playSound('botao'); });
+      const onDocClick = (e)=>{
+        const menu = $('#hmenu');
+        if(menu && !menu.contains(e.target) && e.target.id !== 'hamb') menu.classList.remove('open');
+        $$('.kebab-menu').forEach(m=>{ if(!m.contains(e.target) && !e.target.classList.contains('kebab-btn')) m.remove(); });
+      };
+      document.addEventListener('click', onDocClick);
+
+      const bindMenu = (id, action, blockedFlag)=>{
+        const el=$(id); if(!el) return;
+        el.addEventListener('click', ()=>{
+          playSound('botao');
+          if(blockedFlag){ alert('Conta bloqueada. Não é possível realizar esta ação.'); return; }
+          action();
+          const m=$('#hmenu'); if(m) m.classList.remove('open');
+        });
+      };
+      const blocked = isBlocked();
+      bindMenu('#m-new', ()=>startNewRelease(), blocked);
+      bindMenu('#m-sup', ()=>{ state.page='support'; render(); }, blocked);
+      bindMenu('#m-vid', ()=>{ alert('🚧 Estamos implementando, chegará em breve.'); }, false);
+      bindMenu('#m-cat', ()=>{ state.catalog='releases'; state.page='catalogs'; render(); }, false);
+      bindMenu('#m-set', ()=>{ state.page='settings'; render(); }, false);
+      bindMenu('#m-app', ()=>{ openInstallMenu(); }, false);
+      bindMenu('#m-out', ()=>{
+        stopStatusPolling();
+        state.user=null;
+        localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY);
+        window.location.href = '/login.html';
+      }, false);
+
+      const newRel = $('#new-rel');
+      if(newRel) newRel.addEventListener('click', ()=>{
+        playSound('botao');
+        if(isBlocked()){ alert('Conta bloqueada. Não é possível criar release.'); return; }
+        startNewRelease();
+      });
+      const manageBtn = $('#manage-band');
+      if(manageBtn) manageBtn.addEventListener('click', ()=>{ if(isBlocked()) return; openBandManager(); });
+      const reviveBtn = $('#revive-btn');
+      if(reviveBtn) reviveBtn.addEventListener('click', ()=>{
+        if(!confirm('Revigorar reativa a conta apenas localmente. Fonogramas removidos no servidor não serão reativados automaticamente. Continuar?')) return;
+        state.user.disabled=false; state.user.rescinded=false;
+        persistUser(); render();
+      });
+
+      $$('.edit-rel').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          if(isBlocked()){ alert('Conta bloqueada.'); return; }
+          const id=btn.dataset.id;
+          const r=(state.user.releases||[]).find(x=>String(x.id)===String(id)); if(!r) return;
+          state.draft = JSON.parse(JSON.stringify(r));
+          state.page='cover'; render();
+        });
+      });
+
+      $$('.kebab-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          $$('.kebab-menu').forEach(m=>m.remove());
+          const id=btn.dataset.id;
+          const menu=document.createElement('div');
+          menu.className='kebab-menu open';
+          menu.style.position='absolute'; menu.style.bottom='40px'; menu.style.right='8px';
+          menu.innerHTML = `
+            <button class="kebab-item" data-act="edit"><i class="fas fa-pen"></i> Editar</button>
+            <button class="kebab-item" data-act="takedown"><i class="fas fa-arrow-down"></i> Takedown</button>
+            <button class="kebab-item danger" data-act="delete"><i class="fas fa-trash"></i> Excluir</button>`;
+          btn.parentElement.appendChild(menu);
+          menu.querySelectorAll('.kebab-item').forEach(item=>{
+            item.addEventListener('click', async (ev)=>{
+              ev.stopPropagation(); menu.remove();
+              if(isBlocked()){ alert('Conta bloqueada.'); return; }
+              try{ await handleReleaseAction(id, item.dataset.act); }
+              catch(err){ alert('Erro: '+err.message); }
+            });
+          });
+        });
+      });
+    }
+
+    // ============================================================
+    // SINCRONIZAÇÃO DA BANDA (CORRIGIDA COM CAPA)
+    // ============================================================
+    async function syncSharedReleases(){
+      if(!state.user) return;
+      try{
+        const sb = getSupabase();
+        const members = (state.user.bandMembers || []).slice();
+        if(!members.includes(state.user.username)) members.push(state.user.username);
+
+        const seen = new Set((state.user.releases||[]).map(r=>r.basePath));
+        let count = 0;
+
+        for(const m of members){
+          const safe = safePathUser(m);
+          const { data, error } = await sb.storage.from(BUCKET).list(safe, { limit: 200 });
+          if(error || !data) continue;
+
+          for(const folder of data){
+            if(!folder.name) continue;
+            if(folder.name.includes('.')) continue;
+            if(['support','applications'].includes(folder.name)) continue;
+
+            const basePath = `${safe}/${folder.name}`;
+            if(seen.has(basePath)) continue;
+
+            const txt = await fetchTextFile(`${basePath}/metadados.txt`);
+            if(!txt) continue;
+
+            const statusTxt = await fetchTextFile(`${basePath}/status.txt`);
+            const parsed = parseStatusTxt(statusTxt || '');
+
+            const titleMatch = txt.match(/Título:\s*(.+)/);
+            const typeMatch = txt.match(/Tipo:\s*(.+)/);
+            const idMatch = txt.match(/ID:\s*(\d{4})/);
+            const coverMatch = txt.match(/Capa:\s*(.+)/);
+            const isCompMatch = txt.match(/Compilação:\s*(Sim|Não)/i);
+            const isFeatMatch = txt.match(/É um feat\?:\s*(Sim|Não)/i);
+
+            let coverUrl = '';
+            if(coverMatch){
+              const coverName = coverMatch[1].trim();
+              if(!coverName.includes('(já no servidor)') && coverName !== ''){
+                // CORREÇÃO DE CAPA: Pega o caminho relativo exato
+                const { data: cData } = sb.storage.from(BUCKET).getPublicUrl(`${basePath}/${coverName}`);
+                if(cData) coverUrl = cData.publicUrl;
+              }
+            }
+
+            const tracks = [];
+            const blocks = txt.split(/Música\s+\d+/i).slice(1);
+            blocks.forEach(block=>{
+              const get = (k)=>{
+                const mm = block.match(new RegExp('^\\s*'+k+'\\s*:\\s*(.*)$','mi'));
+                return mm ? mm[1].trim() : '';
+              };
+              tracks.push({
+                title:get('Título'), artist:get('Artista principal'),
+                isFeat: /sim/i.test(get('É um feat?')) ? 'sim' : 'nao',
+                feat:get('Artista featured'), featSpotify:get('Spotify do feat'),
+                composers:get('Compositores'), license:get('Licença'),
+                isrc:get('ISRC'), explicit:/Sim/.test(get('Explícito')),
+                fileName:get('Nome do arquivo'), url:''
+              });
+            });
+
+            let releaseId = idMatch ? idMatch[1] : folder.name;
+            if(!/^\d{4}$/.test(String(releaseId))) releaseId = folder.name;
+
+            if((state.user.releases||[]).some(r=>String(r.id)===String(releaseId))) {
+              seen.add(basePath); continue;
+            }
+
+            state.user.releases = state.user.releases || [];
+            state.user.releases.push({
+              id: releaseId,
+              title: titleMatch ? titleMatch[1].trim() : folder.name,
+              type: typeMatch ? typeMatch[1].trim().toLowerCase() : 'single',
+              isCompilation: isCompMatch ? /sim/i.test(isCompMatch[1]) : false,
+              isFeat: isFeatMatch ? (/sim/i.test(isFeatMatch[1]) ? 'sim' : 'nao') : 'nao',
+              basePath,
+              status: parsed?.status ? displayStatus(parsed.status) : 'Revisão',
+              motivo: parsed?.motivo || '',
+              coverUrl,
+              createdAt: folder.created_at || new Date().toISOString(),
+              tracks
+            });
+            seen.add(basePath);
+            count++;
+          }
+        }
+
+        if(count > 0){
+          persistUser();
+          await refreshReleaseStatuses();
+          if(state.page === 'dashboard' || state.page === 'catalogs') render();
+        }
+      }catch(e){ console.warn('syncSharedReleases', e); }
+    }
+
+    // ============================================================
+    // FUNÇÕES DO SISTEMA (Polling, Sons, etc)
+    // ============================================================
+    const soundCache = {};
+    function playSound(name){
+      try{
+        const files = { botao:'./botao.mp3', alerta:'./alerta.wav', sucesso:'./sucesso.mp3', sucessao:'./sucessao.mp3' };
+        const src = files[name]; if(!src) return;
+        if(!soundCache[src]){ soundCache[src] = new Audio(src); soundCache[src].preload='auto'; }
+        const a = soundCache[src].cloneNode(); a.volume = 0.6; a.play().catch(()=>{});
+      }catch(e){}
+    }
+
+    async function refreshReleaseStatuses(){
+      if(!state.user || state.statusFetching) return;
+      state.statusFetching = true;
+      let changed = false;
+      try{
+        for(const r of (state.user.releases || [])){
+          if(!r.basePath) continue;
+          const txt = await fetchTextFile(`${r.basePath}/status.txt`);
+          if(!txt) continue;
+          const p = parseStatusTxt(txt); if(!p || !p.status) continue;
+          const disp = displayStatus(p.status);
+          if(disp !== r.status || p.motivo !== (r.motivo||'')){
+            r.status = disp; r.motivo = p.motivo; changed = true;
+          }
+        }
+        if(changed){
+          persistUser();
+          if((state.page==='dashboard' || state.page==='catalogs') && !document.activeElement?.matches?.('input,select,textarea')){
+            render();
+          }
+        }
+      }catch(e){ console.warn('refreshReleaseStatuses', e); }
+      finally{ state.statusFetching = false; }
+    }
+
+    function startStatusPolling(){
+      if(state.statusPollTimer) return;
+      if(!state.user) return;
+      refreshReleaseStatuses();
+      state.statusPollTimer = setInterval(()=>{ if(state.user) refreshReleaseStatuses(); }, STATUS_POLL_MS);
+    }
+    function stopStatusPolling(){
+      if(state.statusPollTimer){ clearInterval(state.statusPollTimer); state.statusPollTimer = null; }
+    }
+
+    // ============================================================
+    // START
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

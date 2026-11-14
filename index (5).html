@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1f13">
+  <meta name="description" content="Tucano Música - Plataforma de distribuição musical digital">
+  <title>Tucano Música</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="./tucano.png">
+  <link rel="apple-touch-icon" href="./tucano.png">
+
+  <style>
+    @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'TikTok Sans';src:url('./tiktok.ttf') format('truetype');font-display:swap;}
+    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+
+    :root{
+      --bg-primary:#0b1f13; --bg-secondary:#123a24; --bg-tertiary:#1f5c38;
+      --text-primary:#f0fdf4; --text-secondary:#bbf7d0; --text-muted:#86efac;
+      --border-color:rgba(163,230,53,.18);
+      --accent-blue:#a3e635; --accent-blue-dark:#65a30d; --accent-yellow:#fbbf24;
+      --accent-green:#22c55e; --accent-red:#ef4444;
+      --glass-bg:rgba(18,58,36,.72); --glass-border:rgba(163,230,53,.22);
+    }
+    html[data-theme="light"]{
+      --bg-primary:#f0fdf4; --bg-secondary:#dcfce7; --bg-tertiary:#bbf7d0;
+      --text-primary:#052e16; --text-secondary:#14532d; --text-muted:#166534;
+      --border-color:rgba(20,83,45,.2);
+      --glass-bg:rgba(255,255,255,.88); --glass-border:rgba(20,83,45,.22);
+    }
+    *{font-family:'Ifood RC',sans-serif;}
+    body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
+    h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
+    .tts{font-family:'TikTok Sans',sans-serif;}
+    .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
+    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+    
+    .header-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+      font-family: 'Ifood RC', sans-serif;
+    }
+    .header-link:hover {
+      color: var(--accent-blue);
+    }
+
+    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
+    input::placeholder,textarea::placeholder{color:var(--text-muted);}
+    label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
+
+    .landing-bg{position:fixed;inset:0;background-size:cover;background-position:center;filter:blur(3px) brightness(.4);z-index:-1;}
+    .jungle-texture{background-image:radial-gradient(circle at 20% 30%,rgba(163,230,53,.08),transparent 45%),radial-gradient(circle at 80% 70%,rgba(34,197,94,.08),transparent 45%);}
+    .leaf-divider{height:2px;background:linear-gradient(90deg,transparent,#a3e635,transparent);opacity:.4;margin:2.5rem auto;max-width:220px;}
+
+    .white-block{background:#f8fafc;color:#0f172a;}
+    .white-block h1,.white-block h2,.white-block h3{color:#0f172a;}
+    .white-block .tts{color:#334155;}
+
+    .carousel-track{display:flex;gap:24px;width:max-content;animation:esteira 38s linear infinite;}
+    .carousel-track:hover{animation-play-state:paused;}
+    @keyframes esteira{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    .carousel-card{width:280px;flex:0 0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;text-align:left;}
+    .carousel-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.15);}
+    .carousel-card img,.carousel-card video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#e2e8f0;}
+    .carousel-card p{margin-top:10px;font-weight:600;color:#0f172a;font-family:'TikTok Sans',sans-serif;}
+
+    .review-card{background:rgba(18,58,36,.85);border:1px solid rgba(163,230,53,.25);border-radius:20px;color:#f0fdf4;}
+    .review-text{color:#dcfce7;}
+    .review-name{color:#f0fdf4;}
+
+    .faq-item{border-bottom:1px solid var(--border-color);}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;cursor:pointer;font-weight:600;width:100%;background:transparent;border:none;color:var(--text-primary);text-align:left;font-family:'Ifood RC',sans-serif;font-size:1rem;}
+    .faq-q .fa-chevron-down{transition:transform .25s;}
+    .faq-item.open .fa-chevron-down{transform:rotate(180deg);}
+    .faq-a{display:none;padding:0 0 16px;color:var(--text-secondary);}
+    .faq-item.open .faq-a{display:block;}
+
+    .footer-dark{background:#000;color:#fff;}
+    .footer-dark a{color:#a3e635;text-decoration:underline;}
+    .footer-dark input{background:#111!important;border-color:#333!important;color:#fff!important;}
+
+    /* Seções Artistas e Lançamentos */
+    .artist-row { display: flex; flex-direction: column; gap: 24px; margin-bottom: 60px; }
+    @media (min-width: 768px) { .artist-row { flex-direction: row; align-items: center; } }
+    .artist-video { flex: 1; border-radius: 20px; overflow: hidden; background: #000; aspect-ratio: 16/9; }
+    .artist-video video { width: 100%; height: 100%; object-fit: cover; }
+    .artist-info { flex: 1; background: #f8fafc; color: #0f172a; padding: 32px; border-radius: 20px; }
+    .artist-info h3 { color: #0f172a; margin-bottom: 12px; }
+
+    .spotify-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media (min-width: 768px) { .spotify-grid { grid-template-columns: 1fr 1fr; } }
+    .spotify-embed { background: #121212; border-radius: 12px; padding: 12px; }
+  </style>
+</head>
+<body>
+  <div class="landing-bg" style="background-image:url('./praia.jpg')"></div>
+
+  <header class="sticky top-0 z-50 backdrop-blur-md" style="background:rgba(11,31,19,.85);border-bottom:1px solid var(--glass-border)">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3" style="text-decoration:none;color:inherit">
+        <img src="./tucano.png" alt="Tucano" width="40" height="40" style="border-radius:10px" onerror="this.style.display='none'">
+        <span class="kab text-xl">Tucano Música</span>
+      </a>
+      <nav class="flex items-center gap-4 text-sm sm:gap-6">
+        <a href="#contato" class="header-link">Contate-nos</a>
+        <a href="/login.html" class="header-link font-bold">Conecte-se</a>
+        <a href="https://plataformasknitting.vercel.app" target="_blank" rel="noopener noreferrer" class="header-link">Parceiros</a>
+        <a href="#artistas" class="header-link">Artistas</a>
+        <a href="#lancamentos" class="header-link">Lançamentos</a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="top" class="min-h-screen flex items-center justify-center p-4 jungle-texture">
+    <div class="max-w-5xl w-full fade-in-scale">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h1 class="kab text-3xl md:text-5xl leading-tight">Já pensou em ver sua música em <span style="color:#a3e635">+480 plataformas</span>?</h1>
+          <p class="tts mt-4 text-slate-300 text-lg">Distribua sua música em 480+ plataformas, uploads ilimitados e ganhe 75% dos seus royalties.</p>
+          <div class="leaf-divider"></div>
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <img src="./tucano.png" alt="Tucano Música" class="float mb-4" style="max-width:240px;height:auto;" onerror="this.style.display='none'">
+          <h2 class="kab text-2xl" style="text-shadow:0 2px 14px rgba(0,0,0,.95)">Tucano Música</h2>
+          <p class="tts text-slate-300 text-sm mt-1" style="text-shadow:0 2px 12px rgba(0,0,0,.95)">Distribuição musical digital</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="white-block py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="kab text-3xl md:text-4xl text-center">Se liga no que a gente faz pra você:</h2>
+      <div class="overflow-hidden mt-8" style="mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)">
+        <div class="carousel-track" id="carousel">
+          <!-- Cards (duplicados para loop) -->
+          <button class="carousel-card" data-scroll="sec-a"><img src="./sample.png" alt=""><p>Seja curado em playlists</p></button>
+          <button class="carousel-card" data-scroll="sec-b"><video src="./sistema_tucanico.mp4" autoplay muted loop playsinline></video><p>Distribua sua música em uma cacetada de DSPs</p></button>
+          <button class="carousel-card" data-scroll="sec-c"><img src="./dinheiro.png" alt=""><p>Receba 75% dos seus royalties</p></button>
+          <button class="carousel-card" data-scroll="sec-d"><img src="./spotify.png" alt=""><p>Tenha fácil acesso ao Spotify for Artists</p></button>
+          <!-- Duplicados -->
+          <button class="carousel-card" data-scroll="sec-a"><img src="./sample.png" alt=""><p>Seja curado em playlists</p></button>
+          <button class="carousel-card" data-scroll="sec-b"><video src="./sistema_tucanico.mp4" autoplay muted loop playsinline></video><p>Distribua sua música em uma cacetada de DSPs</p></button>
+          <button class="carousel-card" data-scroll="sec-c"><img src="./dinheiro.png" alt=""><p>Receba 75% dos seus royalties</p></button>
+          <button class="carousel-card" data-scroll="sec-d"><img src="./spotify.png" alt=""><p>Tenha fácil acesso ao Spotify for Artists</p></button>
+        </div>
+      </div>
+
+      <div class="mt-20 space-y-24">
+        <div id="sec-b" class="scroll-mt-24 rounded-3xl overflow-hidden"><video src="./sistema_tucanico.mp4" autoplay muted loop playsinline class="w-full" style="display:block;max-height:60vh;object-fit:cover"></video><div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)"><h3 class="kab text-3xl" style="color:#fff">Distribua sua música em uma cacetada de DSPs</h3><p class="tts mt-4 text-lg" style="color:#e5e7eb">São +480 plataformas para onde a sua música vai! Veja elas em <a href="https://plataformasknitting.vercel.app" target="_blank" style="color:#a3e635;text-decoration:underline">https://plataformasknitting.vercel.app</a>.</p></div></div>
+        <div id="sec-a" class="scroll-mt-24 rounded-3xl overflow-hidden"><img src="./sample.png" alt="" class="w-full" style="display:block;max-height:60vh;object-fit:cover"><div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)"><h3 class="kab text-3xl" style="color:#fff">Seja curado em playlists</h3><p class="tts mt-4 text-lg" style="color:#e5e7eb">A Tucano Música é uma sub-empresa de uma gravadora chamada Knitting Records™. A Knitting te curará. Entre em playlists públicas e playlists da própria Tucano!</p></div></div>
+        <div id="sec-c" class="scroll-mt-24 rounded-3xl overflow-hidden"><img src="./dinheiro.png" alt="" class="w-full" style="display:block;max-height:60vh;object-fit:cover"><div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)"><h3 class="kab text-3xl" style="color:#fff">Receba 75% dos seus royalties</h3><p class="tts mt-4 text-lg" style="color:#e5e7eb">Você cede uma pequena comissão de 25% dos royalties a Tucano para nossos sistemas continuarem operando!</p></div></div>
+        <div id="sec-d" class="scroll-mt-24 rounded-3xl overflow-hidden"><img src="./spotify.png" alt="" class="w-full" style="display:block;max-height:60vh;object-fit:cover"><div class="p-8 md:p-12" style="background:rgba(6,78,59,.92)"><h3 class="kab text-3xl" style="color:#fff">Tenha fácil acesso ao Spotify for Artists</h3><p class="tts mt-4 text-lg" style="color:#e5e7eb">A Tucano reivindica o seu perfil do Spotify for Artists e você pode solicitar acesso ao seu perfil! Mas não mexemos em nada nele.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção Artistas -->
+  <section id="artistas" class="py-16 scroll-mt-20" style="background:var(--bg-primary)">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="kab text-3xl text-center mb-12" style="color:#a3e635">Nossos Artistas</h2>
+      <div class="space-y-12">
+        <!-- Artista 1 -->
+        <div class="artist-row">
+          <div class="artist-video"><video src="./artista1.mp4" autoplay muted loop playsinline></video></div>
+          <div class="artist-info"><h3 class="kab text-2xl">Nome do Artista</h3><p class="tts">História do artista...</p></div>
+        </div>
+        <!-- Artista 2 -->
+        <div class="artist-row">
+          <div class="artist-video"><video src="./artista2.mp4" autoplay muted loop playsinline></video></div>
+          <div class="artist-info"><h3 class="kab text-2xl">Outro Artista</h3><p class="tts">Mais uma história...</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção Lançamentos -->
+  <section id="lancamentos" class="py-16 scroll-mt-20" style="background:var(--bg-secondary)">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="kab text-3xl text-center mb-12" style="color:#a3e635">Lançamentos</h2>
+      <div class="spotify-grid">
+        <!-- Exemplo 1 -->
+        <div class="spotify-embed">
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+        <!-- Exemplo 2 -->
+        <div class="spotify-embed">
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/1ATL5GLyefJaxhQzSPVrLX?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 jungle-texture">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="kab text-3xl text-center mb-8">O que dizem por aí</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="review-card p-6"><div class="text-yellow-400 mb-2">★★★★★</div><p class="review-text text-sm mb-3">Subi meu single e em duas semanas já estava no ar. A curadoria deles é real.</p><p class="review-name text-sm font-semibold">— Lucas M.</p></div>
+        <div class="review-card p-6"><div class="text-yellow-400 mb-2">★★★★★</div><p class="review-text text-sm mb-3">O painel é simples e o suporte respondeu no mesmo dia. Recomendo.</p><p class="review-name text-sm font-semibold">— Bia R.</p></div>
+        <div class="review-card p-6"><div class="text-yellow-400 mb-2">★★★★☆</div><p class="review-text text-sm mb-3">Bom demais para quem tá começando. O contrato é justo e sem enrolação.</p><p class="review-name text-sm font-semibold">— Pedro K.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 flex flex-col items-center justify-center relative" style="background:url('./computador.jpg') center/cover no-repeat #052e16">
+    <div style="position:absolute;inset:0;background:rgba(5,46,22,.55)"></div>
+    <div class="relative z-10 flex flex-col items-center">
+      <img src="./tucano.png" alt="Tucano Música" style="max-width:200px;border-radius:20px;margin-bottom:20px" onerror="this.style.display='none'">
+      <h2 class="kab text-4xl text-center" style="color:#a3e635;text-shadow:0 2px 10px rgba(0,0,0,0.7)">Sua carreira nos agradece</h2>
+    </div>
+  </section>
+
+  <section class="py-16" style="background:var(--bg-secondary)">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="kab text-3xl text-center mb-8">Perguntas frequentes</h2>
+      <div class="glass p-6" id="faq-list">
+        <div class="faq-item"><button class="faq-q">Tem contrato?<i class="fas fa-chevron-down"></i></button><div class="faq-a">Sim, mas é um totalmente flexível e justo! Serve para evitar problemas ou simplicidade.</div></div>
+        <div class="faq-item"><button class="faq-q">É fácil de usar?<i class="fas fa-chevron-down"></i></button><div class="faq-a">Sim! É igual uma distribuidora normal: faça o upload, preencha os campos e envie para a revisão. Temos distribuição de vídeoclipe também.</div></div>
+        <div class="faq-item"><button class="faq-q">Como funciona o cadastro?<i class="fas fa-chevron-down"></i></button><div class="faq-a">Você passa por um processo de aprovação de artista, não operamos como self-service.</div></div>
+        <div class="faq-item"><button class="faq-q">Em quanto tempo minha música chega nas plataformas?<i class="fas fa-chevron-down"></i></button><div class="faq-a">Na data em que você selecionar, mas temos um mínimo de 14 dias para áudio e 28 dias para vídeo.</div></div>
+        <div class="faq-item"><button class="faq-q">Em quanto tempo o suporte responderá minhas reclamações?<i class="fas fa-chevron-down"></i></button><div class="faq-a">Em cerca de 1-5 dias corridos. Pode variar.</div></div>
+      </div>
+      <div class="glass p-6 mt-6">
+        <label>Envie sua pergunta</label>
+        <div class="flex gap-2">
+          <input id="faq-q" type="text" placeholder="Sua pergunta...">
+          <button id="faq-send" class="btn-primary whitespace-nowrap">Enviar</button>
+        </div>
+        <div id="faq-msg" class="text-sm mt-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contato" class="py-16 scroll-mt-20" style="background:var(--bg-primary)">
+    <div class="max-w-2xl mx-auto px-4">
+      <h2 class="kab text-3xl text-center mb-6">Contate-nos</h2>
+      <p class="tts text-center text-slate-300 mb-6">Quer usar a Tucano, reclamar do serviço ou dar uma avaliação? É aqui.</p>
+      <div class="glass p-6 space-y-4">
+        <div><label>Nome completo *</label><input id="ct-name" type="text"></div>
+        <div>
+          <label>Motivo *</label>
+          <select id="ct-reason">
+            <option value="">Selecione</option>
+            <option value="Quero poder utilizar a Tucano">Quero poder utilizar a Tucano</option>
+            <option value="Quero reclamar do serviço">Quero reclamar do serviço</option>
+            <option value="Quero dar uma avaliação">Quero dar uma avaliação</option>
+          </select>
+        </div>
+        <div id="ct-pref-wrap" style="display:none">
+          <label>Como deseja preencher o formulário de inscrição na Tucano? *</label>
+          <select id="ct-pref">
+            <option value="">Selecione</option>
+            <option value="Por e-mail/zap">Prefiro preencher tudo por e-mail/zap para ter uma conta</option>
+            <option value="No formulário da Tucano">Prefiro preencher no próprio formulário da Tucano</option>
+          </select>
+        </div>
+        <div id="ct-stars-wrap" style="display:none">
+          <label>Quantas estrelas você dá? *</label>
+          <input id="ct-stars" type="text" placeholder="Digite um número de 0 a 5" inputmode="numeric">
+          <div id="ct-stars-view" class="text-yellow-400 text-2xl mt-2"></div>
+        </div>
+        <div id="ct-channel-wrap" style="display:none">
+          <label>Por onde quer ser respondido? *</label>
+          <select id="ct-channel">
+            <option value="">Selecione</option>
+            <option value="E-mail">E-mail</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Discord">Discord</option>
+          </select>
+        </div>
+        <div id="ct-channel-data" style="display:none">
+          <label id="ct-channel-label">Contato *</label>
+          <input id="ct-channel-value" type="text">
+        </div>
+        <div id="ct-msg-wrap" style="display:none">
+          <label>Mensagem *</label>
+          <textarea id="ct-msg" rows="4"></textarea>
+        </div>
+        <div id="ct-error" class="alert-box" style="display:none;color:#fca5a5;background:rgba(239,68,68,.1);padding:12px;border-radius:8px"></div>
+        <div id="ct-ok" class="success-box" style="display:none;color:#86efac;background:rgba(34,197,94,.1);padding:12px;border-radius:8px"></div>
+        <button id="ct-send" class="btn-primary w-full"><i class="fas fa-paper-plane"></i> Enviar</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer-dark py-12">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div>
+        <img src="./tucano.png" alt="Tucano" width="64" height="64" style="border-radius:14px" onerror="this.style.display='none'">
+        <p class="mt-3 text-sm text-slate-400">Tucano Música — distribuição musical digital.</p>
+      </div>
+      <div class="text-sm space-y-2">
+        <p><a href="https://www.tiktok.com/@tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i> @tucanomusica</a></p>
+        <p><a href="https://www.instagram.com/tucanomusica" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> @tucanomusica</a></p>
+        <p><a href="mailto:ncolassuport@gmail.com"><i class="fas fa-envelope"></i> ncolassuport@gmail.com</a></p>
+        <p><a href="https://open.spotify.com/user/31prcfuajw4lieuejvul45sjmizi" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" style="color:#1DB954"></i> Perfil no Spotify</a></p>
+      </div>
+      <div>
+        <label class="text-white">Assinar newsletter</label>
+        <div class="flex gap-2">
+          <input id="nl-mail" type="email" placeholder="Seu e-mail">
+          <button id="nl-send" class="btn-primary whitespace-nowrap">Assinar</button>
+        </div>
+        <div id="nl-msg" class="text-sm mt-2 text-slate-400"></div>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-4 mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500">
+      <p>Todos os direitos são livres. Créditos de desenvolvimento ao DeepSeek e créditos de geração de imagem ao ChatGPT e à Meta AI.</p>
+    </div>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://mjqwiqjojkzobuysziyv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcXdpcWpvamt6b2J1eXN6aXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Nzc4MzMsImV4cCI6MjEwNjM1MzgzM30.w4zDJdmAOmZBnvfXHZ3YDu2qfiUs_gSOnccY0S2ahG8';
+    const BUCKET = 'releases';
+    let _sb = null;
+    function getSupabase(){
+      if(!window.supabase) throw new Error('Supabase não carregou.');
+      if(!_sb) _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return _sb;
+    }
+    function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
+    async function uploadText(text, path){
+      const sb = getSupabase();
+      const blob = new Blob([text], { type:'text/plain;charset=utf-8' });
+      const file = new File([blob], path.split('/').pop(), { type:'text/plain' });
+      const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert:true });
+      if(error) throw new Error(error.message);
+    }
+
+    // Scroll e Carrossel
+    document.querySelectorAll('.carousel-card').forEach(b => {
+      b.addEventListener('click', () => {
+        const el = document.getElementById(b.dataset.scroll);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // FAQ
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-q').addEventListener('click', () => item.classList.toggle('open'));
+    });
+
+    // Envio FAQ
+    document.getElementById('faq-send').addEventListener('click', async () => {
+      const q = document.getElementById('faq-q').value.trim();
+      const msg = document.getElementById('faq-msg');
+      if(!q){ msg.textContent='Digite sua pergunta.'; msg.style.color='#fca5a5'; return; }
+      const btn = document.getElementById('faq-send'); btn.disabled=true; btn.textContent='...';
+      try {
+        await uploadText(`Pergunta FAQ\n\nPergunta: ${q}\nData: ${new Date().toLocaleString('pt-BR')}`, `landing_faq_${uid()}.txt`);
+        msg.textContent='Pergunta enviada!'; msg.style.color='#86efac'; document.getElementById('faq-q').value='';
+      } catch(e) { msg.textContent='Erro: '+e.message; msg.style.color='#fca5a5'; }
+      finally { btn.disabled=false; btn.textContent='Enviar'; }
+    });
+
+    // Envio Newsletter
+    document.getElementById('nl-send').addEventListener('click', async () => {
+      const mail = document.getElementById('nl-mail').value.trim();
+      const msg = document.getElementById('nl-msg');
+      if(!/^\S+@\S+\.\S+$/.test(mail)){ msg.textContent='E-mail inválido.'; msg.style.color='#fca5a5'; return; }
+      const btn = document.getElementById('nl-send'); btn.disabled=true; btn.textContent='...';
+      try {
+        await uploadText(`Newsletter\n\nE-mail: ${mail}\nData: ${new Date().toLocaleString('pt-BR')}`, `landing_newsletter_${uid()}.txt`);
+        msg.textContent='Inscrito!'; msg.style.color='#86efac'; document.getElementById('nl-mail').value='';
+      } catch(e) { msg.textContent='Erro: '+e.message; msg.style.color='#fca5a5'; }
+      finally { btn.disabled=false; btn.textContent='Assinar'; }
+    });
+
+    // Lógica do Contato
+    const reasonSel = document.getElementById('ct-reason');
+    const prefWrap = document.getElementById('ct-pref-wrap');
+    const starsWrap = document.getElementById('ct-stars-wrap');
+    const channelWrap = document.getElementById('ct-channel-wrap');
+    const channelDataWrap = document.getElementById('ct-channel-data');
+    const msgWrap = document.getElementById('ct-msg-wrap');
+    const channelLabel = document.getElementById('ct-channel-label');
+    const channelValue = document.getElementById('ct-channel-value');
+
+    const channelPlaceholders = {
+      'E-mail': { label:'E-mail *', placeholder:'seu@email.com', type:'email' },
+      'WhatsApp': { label:'WhatsApp *', placeholder:'+55 (DD) 9 9999-9999', type:'tel' },
+      'TikTok': { label:'TikTok *', placeholder:'@seu_usuario', type:'text' },
+      'Discord': { label:'Discord *', placeholder:'usuario#0000 ou usuario', type:'text' }
+    };
+
+    reasonSel.addEventListener('change', () => {
+      const v = reasonSel.value;
+      prefWrap.style.display = (v === 'Quero poder utilizar a Tucano') ? 'block' : 'none';
+      starsWrap.style.display = (v === 'Quero dar uma avaliação') ? 'block' : 'none';
+      const showMsg = (v === 'Quero reclamar do serviço' || v === 'Quero dar uma avaliação');
+      msgWrap.style.display = showMsg ? 'block' : 'none';
+      channelWrap.style.display = v ? 'block' : 'none';
+      if(!v){ channelDataWrap.style.display='none'; channelValue.value=''; }
+      if(v !== 'Quero dar uma avaliação'){ document.getElementById('ct-stars').value=''; document.getElementById('ct-stars-view').textContent=''; }
+      if(!showMsg){ document.getElementById('ct-msg').value=''; }
+    });
+
+    document.getElementById('ct-stars').addEventListener('input', () => {
+      const raw = document.getElementById('ct-stars').value.trim();
+      const n = Math.max(0, Math.min(5, parseInt(raw,10) || 0));
+      document.getElementById('ct-stars-view').textContent = '★'.repeat(n) + '☆'.repeat(5-n);
+    });
+
+    document.getElementById('ct-channel').addEventListener('change', () => {
+      const v = document.getElementById('ct-channel').value;
+      if(!v){ channelDataWrap.style.display='none'; channelValue.value=''; return; }
+      const meta = channelPlaceholders[v];
+      channelLabel.textContent = meta.label;
+      channelValue.type = meta.type;
+      channelValue.placeholder = meta.placeholder;
+      channelValue.value = '';
+      channelDataWrap.style.display = 'block';
+    });
+
+    document.getElementById('ct-send').addEventListener('click', async () => {
+      const name = document.getElementById('ct-name').value.trim();
+      const reason = reasonSel.value;
+      const pref = prefWrap.style.display==='none' ? '' : document.getElementById('ct-pref').value;
+      const starsRaw = document.getElementById('ct-stars').value.trim();
+      const channel = channelWrap.style.display==='none' ? '' : document.getElementById('ct-channel').value;
+      const channelVal = channelDataWrap.style.display==='none' ? '' : channelValue.value.trim();
+      const message = msgWrap.style.display==='none' ? '' : document.getElementById('ct-msg').value.trim();
+      const err = document.getElementById('ct-error'); err.style.display='none';
+      const ok = document.getElementById('ct-ok'); ok.style.display='none';
+
+      if(!name){ err.textContent='Preencha seu nome.'; err.style.display='block'; return; }
+      if(!reason){ err.textContent='Selecione um motivo.'; err.style.display='block'; return; }
+      if(reason==='Quero poder utilizar a Tucano' && !pref){ err.textContent='Escolha como preencher o formulário.'; err.style.display='block'; return; }
+      if(reason==='Quero dar uma avaliação'){
+        const n = parseInt(starsRaw,10);
+        if(isNaN(n) || n<0 || n>5){ err.textContent='Digite uma nota de 0 a 5.'; err.style.display='block'; return; }
+      }
+      if(!channel || !channelVal){ err.textContent='Informe o contato e o dado.'; err.style.display='block'; return; }
+      if((reason==='Quero reclamar do serviço' || reason==='Quero dar uma avaliação') && !message){
+        err.textContent='Escreva sua mensagem.'; err.style.display='block'; return;
+      }
+      if(channel==='E-mail' && !/^\S+@\S+\.\S+$/.test(channelVal)){ err.textContent='E-mail inválido.'; err.style.display='block'; return; }
+
+      const btn = document.getElementById('ct-send'); btn.disabled=true; btn.innerHTML='...';
+      try {
+        const txt = `Contato\n\nNome completo: ${name}\nMotivo: ${reason}\n` +
+          (pref ? `Preferência: ${pref}\n` : '') +
+          (reason==='Quero dar uma avaliação' ? `Estrelas: ${starsRaw}\n` : '') +
+          `Canal: ${channel}\nContato: ${channelVal}\n` +
+          (message ? `\nMensagem:\n${message}\n` : '') +
+          `\nData: ${new Date().toLocaleString('pt-BR')}`;
+        await uploadText(txt, `landing_contato_${uid()}.txt`);
+        ok.textContent='Mensagem enviada!'; ok.style.display='block';
+        document.getElementById('ct-name').value='';
+        document.getElementById('ct-stars').value='';
+        document.getElementById('ct-msg').value='';
+        document.getElementById('ct-channel-value').value='';
+        document.getElementById('ct-stars-view').textContent='';
+        reasonSel.value=''; document.getElementById('ct-pref').value=''; document.getElementById('ct-channel').value='';
+        prefWrap.style.display='none'; starsWrap.style.display='none';
+        channelWrap.style.display='none'; channelDataWrap.style.display='none'; msgWrap.style.display='none';
+      } catch(e) { err.textContent='Erro: '+e.message; err.style.display='block'; }
+      finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Enviar'; }
+    });
+  </script>
+</body>
+</html>
