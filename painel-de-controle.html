@@ -606,7 +606,285 @@
     function bindKnitting(){ let t=5; const el=$('#cd'); const btn=$('#k-ok'); const iv = setInterval(()=>{ t--; if(el) el.textContent=t; if(t<=0){ clearInterval(iv); btn.disabled=false; } }, 1000); btn.addEventListener('click', ()=>{ clearInterval(iv); state.user.knittingAcknowledged=true; persistUser(); render(); }); }
     function viewNoneOption(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full fade-in-scale"><h1 class="kab text-2xl mb-2">Sem contrato.</h1><p class="tts text-slate-400 mb-6">Assinar com a Tucano?</p><div class="space-y-3"><button id="n-yes" class="btn-primary w-full"><i class="fas fa-pen"></i> Sim</button><button id="n-no" class="btn-secondary w-full"><i class="fas fa-xmark"></i> Não</button></div><div id="n-warn" class="warning-box mt-4" style="display:none"><p class="mb-2">Sem contrato não pode usar.</p><button id="n-login" class="btn-secondary text-sm w-full">Sair</button></div></div></div>`; }
     function bindNoneOption(){ const doLogout = ()=>{ stopStatusPolling(); state.user = null; localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY); window.location.href='/login.html'; }; $('#n-no').addEventListener('click', ()=>{ $('#n-warn').style.display='block'; }); $('#n-yes').addEventListener('click', ()=>{ const u = state.user; showContract(u.fullName||'', u.artistName||'', u.email||'', u.whatsapp||'', u.tiktok||'', u.schoolGrade||''); }); $('#n-login').addEventListener('click', doLogout); }
-    function showContract(){ $('#app').innerHTML = `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full text-center fade-in-scale"><h1 class="kab text-2xl mb-4">Contrato Assinado!</h1><button id="done" class="btn-primary w-full">Continuar</button></div></div>`; $('#done').addEventListener('click', ()=>{ state.user.contractType='tucano'; state.user.answeredContract=true; state.user.contractSigned=true; state.user.contractPdfDownloaded=true; state.user.hasRealContract=true; persistUser(); render(); }); }
+        function showContract(fullName, artistName, email, whatsapp, tiktok, schoolGrade){
+      const today = fmtDate(new Date());
+      const fill = v=>`<span class="contract-fill">${esc(v)}</span>`;
+      const html = `
+        <div class="min-h-screen p-4 py-8 jungle-texture">
+          <div class="glass glow p-6 md:p-8 max-w-3xl mx-auto fade-in">
+            <div class="flex items-center justify-between mb-4">
+              <h1 class="kab text-2xl">Contrato de Distribuição</h1>
+              <button id="ct-back" class="btn-secondary text-sm"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+            <div class="bg-slate-900/60 p-6 rounded-xl max-h-96 overflow-y-auto mb-6 text-sm whitespace-pre-wrap scrollbar-thin" style="line-height:1.7;color:var(--text-secondary)"><strong>CONTRATO DE DISTRIBUIÇÃO FONOGRÁFICA E AUDIOVISUAL</strong>
+
+Pelo presente instrumento particular celebrado em ${fill(today)}, as partes, doravante denominadas <strong>Tucano</strong> e <strong>Artista</strong> se identificarão abaixo:
+
+<strong>Tucano:</strong> Tucano Música, de e-mail <a href="mailto:ncolassuport@gmail.com" style="color:#a3e635">ncolassuport@gmail.com</a>, WhatsApp +55 41 8452-7352, TikTok @tucanomusica, Discord yanbananao_.42487, com seu representante legal Yan Matheus Antunes Batista, de WhatsApp +55 (41) 9 9147-1356, e-mail <a href="mailto:yanmatheus160589@gmail.com" style="color:#a3e635">yanmatheus160589@gmail.com</a>, TikTok @knitting.cat e Discord yanbananao._42487.
+
+<strong>Artista:</strong> ${fill(fullName)}, de nome artístico ${fill(artistName)}, e-mail ${fill(email)}, WhatsApp ${fill(whatsapp)}, TikTok ${fill(tiktok || '(não informado)')} e série escolar ${fill(schoolGrade)}.
+
+Quando a Tucano e o Artista forem referidos em conjunto, serão denominados "<strong>partes</strong>".
+
+Considerando que:
+
+<em>a) Isso aqui não tem validade jurídica alguma e serve apenas como acordo, pois as partes são menores impúberes</em>
+<em>b) Só isso mesmo</em>
+
+As partes resolvem celebrar o justo e firmado o seguinte:
+
+<strong>CLÁUSULA PRIMEIRA - PROPOSTA</strong>
+
+A Tucano deverá <u>distribuir as obras fonográficas</u> (doravante "Obras") do Artista nas plataformas digitais disponíveis listadas <a href="https://www.plataformasknitting.vercel.app" target="_blank" rel="noopener noreferrer" style="color:#a3e635;text-decoration:underline">neste anexo público</a>.
+
+<strong>CLÁUSULA SEGUNDA - DA CONTA</strong>
+
+2.1. Quando o Artista for aprovado pela candidatura, a Tucano se obriga a criar uma conta para o Artista poder utilizar o site, com uma senha que o Artista poderá definir conforme o Anexo I.
+2.2. Este contrato é assinado quando o Artista já tem a conta e a Tucano já cria uma senha para o Artista poder entrar na conta e assinar, podendo o Artista mudar depois.
+
+<strong>CLÁUSULA TERCEIRA - REQUISITOS</strong>
+
+Para áudio:
+
+I. MP3;
+a) 320kbps se for MP3;
+II. WAV
+a) 16/24 bits;
+b) codec PCM_S16LE/PCM_S24LE;
+III. 44,1kHz+;
+IV. Capa em PNG ou JPG/JPEG, quadrado, únicos textos permitidos são nome do lançamento, do artista/banda e opcionalmente, obrigatoriamente se for explícito, selo Parental Advisory.
+
+<strong>CLÁUSULA QUARTA - EXCLUSIVIDADE</strong>
+
+4.1. <u>Este contrato não é exclusivo</u>, podendo o Artista distribuir suas obras em outras distribuidoras.
+4.2. A exclusividade fica apenas para os releases que já foram lançados pela Tucano, não podendo ser re-distribuídas por outras distribuidoras.
+4.2.1. Isso não se deve a uma simples decisão da Tucano, mas sim por causa da distribuidora utilizada pela Tucano para realizar as distribuições, a Lantuns.
+4.3. Caso o Artista <strong>deseje</strong> utilizar a Tucano com <strong>exclusividade</strong>, deverá solicitar via <strong>e-mail ncolassuport@gmail.com</strong> ou <strong>WhatsApp +55 41 8452-7352</strong>.
+
+<strong>CLÁUSULA QUINTA - DIREITOS AUTORAIS</strong>
+
+5.1. <u>O Artista mantém 100% dos direitos autorais, fonográficos e conexos</u> sobre suas Obras e Vídeos.
+5.2. A Tucano não reivindica nenhum direito sobre as obras além da distribuição digital das Obras, Vídeos e da de reivindicar o painel do Spotify for Artists prevista neste acordo.
+
+<strong>CLÁUSULA SEXTA - ROYALTIES</strong>
+
+6.1. A comissão sobre royalties de Obras e Vídeos é de <strong>25% para a Tucano e 75% para o Artista</strong>.
+6.2. A Tucano deverá pagar os royalties em até 15 dias corridos após receber das plataformas.
+6.3. Como acordo entre amigos, <u>não há taxa de adesão nem cobrança extra</u> além da comissão prevista no item 6.1.
+
+<strong>CLÁUSULA SÉTIMA - DAS VIAS</strong>
+
+O Artista pode optar por assinar este contrato em 2 vias físicas de igual teor, 1 via eletrônica digital neste site, ou em 2 vias eletrônicas de igual teor em PDF para cada uma das partes se solicitado por WhatsApp, e-mail, Discord ou TikTok.
+
+<strong>CLÁUSULA OITAVA - VIGÊNCIA, VIGOR E RENOVAÇÃO</strong>
+
+8.1. A vigência deste contrato é de <u>730 </u>(setecentos e trinta) dias <u>corridos</u>.
+8.2. O vigor deste contrato tem efeito imediato.
+8.3. A renovação é automática, salvo se qualquer das partes manifestar intenção de rescindir conforme a cláusula nona.
+
+<strong>CLÁUSULA NONA - RESCISÃO</strong>
+
+9.1. A rescisão é gratuita, podendo ser realizada por acordo entre a Tucano e o Artista.
+9.2. Após a rescisão, a Tucano tem até 15 dias corridos para remover as Obras e Vídeos do Artista das plataformas digitais.
+
+<strong>CLÁUSULA DÉCIMA - QUEM PODE USAR</strong>
+
+Apenas estudantes do colégio do representante legal da Tucano (Colégio Estadual Victor Gabriel Camargo) ou parceiros de companhia do representante legal da Tucano são membros autorizados para a distribuição.
+
+<strong>CLÁUSULA DÉCIMA PRIMEIRA - CONDUTA</strong>
+
+Não serão aceitas Obras ou Vídeos que contenham:
+
+I. Plágio de outro artista sem licença;
+II. Apologia a crime, drogas ou violência;
+III. Discurso de ódio;
+IV. Conteúdo sexual sem aviso explícito.
+
+<strong>CLÁUSULA DÉCIMA SEGUNDA - DOS ANEXOS NO PDF</strong>
+
+A segunda via que o Artista fizer o download (PDF) não contém os anexos junto, e se o Artista desejar, deverá contatar diretamente a Tucano pelo e-mail <a href="mailto:ncolassuport@gmail.com" style="color:#a3e635">ncolassuport@gmail.com</a>.
+
+<strong>CLÁUSULA DÉCIMA TERCEIRA - GERENCIAMENTO DE ESTATÍSTICAS E DINHEIRO</strong>
+
+13.1. O Artista poderá gerenciar suas estatísticas de dinheiro, ouvintes mensais e streams no total em uma conta que a Tucano criará no site https://paineldoartista.vercel.app, que é um serviço da Knitting Records™ que a Tucano contratou (doravante denominado "Painel de Gerenciamento").
+13.2. O nome artístico, senha e releases serão os mesmos da Tucano.
+13.3. Foto de perfil, biografia, foto de biografia e estatísticas serão os mesmos do Spotify for Artists.
+13.4. Caso não tenha biografia, foto de biografia ou foto de perfil, serão usadas a logo da Knitting Records™ no lugar e o texto "Sem biografia" no lugar da biografia.
+13.5. Não haverá nenhuma conta no Painel de Gerenciamento caso não tenha conta no Spotify for Artists.
+13.5.1. Isso se deve por causa que a Knitting Records™ precisa disso para mostrar estatísticas.
+
+<strong>CLÁUSULA DÉCIMA QUARTA - DO SPOTIFY FOR ARTISTS</strong>
+
+14.1. A Tucano tem direito de reivindicar o perfil do Spotify for Artists do Artista.
+14.2. O Artista poderá solicitar a Tucano para entrar no grupo para gerenciar seu perfil.
+
+<strong>CLÁUSULA DÉCIMA QUINTA - DOS CRÉDITOS NAS PLATAFORMAS</strong>
+
+15.1. Os créditos © nas plataformas como o Artista digitou na hora de criar um release, junto do texto "(dist. Tucano)" ao lado.
+15.2. Os créditos ℗ nas plataformas aparecerão como "Lantuns".
+15.2.1. Isso se deve por causa que a distribuidora musical contratada pela Tucano, a Lantuns, não permite mudar os créditos ℗.
+
+<strong>CLÁUSULA DÉCIMA SEXTA - PRAZO DE DISTRIBUIÇÃO DE MÍDIA</strong>
+
+O tempo que a distribuição das Obras levará para ser distribuído será escolhido pelo Artista (data e hora), <u>não podendo ser antes do prazo mínimo de 14 dias</u>.
+
+<strong>CLÁUSULA DÉCIMA SÉTIMA - PRAZO DE RESPOSTA DO SUPORTE</strong>
+
+O tempo em que o suporte da Tucano responderá o Artista será entre <u>1-5 dias corridos</u>.
+
+<strong>CLÁUSULA DÉCIMA OITAVA - CONTATO DE SUPORTE</strong>
+
+18.1. O Artista poderá enviar suas reclamações ou outras coisas via SAC no painel, Contate-Nos na seção inicial ou diretamente via e-mail de SAC <a href="mailto:ncolassuport@gmail.com" style="color:#a3e635"><strong>ncolassuport@gmail.com</strong></a>.
+18.2. As reclamações do Artista serão respondidas pelo e-mail <strong>ncolassuport@gmail.com</strong>.
+
+<strong>CLÁUSULA DÉCIMA NONA - DOS ATRASOS NOS RELEASES</strong>
+
+Caso uma das Obras seja atrasada e não seja enviada no prazo em que o Artista escolheu (data e hora), a Tucano deverá <u>avisar previamente</u> sobre o atraso.
+
+<strong>CLÁUSULA VIGÉSIMA - DOS ATRASOS NA RESPOSTA DO SUPORTE</strong>
+
+Caso o suporte atrase a resposta da reclamação do Artista, a mensagem deverá vir acompanhada do porquê o motivo do atraso.
+
+<strong>CLÁUSULA VIGÉSIMA PRIMEIRA - DOS DIREITOS AUTORAIS E LICENÇAS</strong>
+
+21.1. O Artista <u>não poderá distribuir obras sob as licenças CC-NC, CC-SA, CC BY-NC, CC BY-NC-SA, CC BY-NC-ND ou CC BY-NC-ND-SA</u>.
+21.2. Caso seja CC-BY ou CC-BY-ND, o Artista preencherá um campo do atribuído e a Tucano colocará a atribuição nos créditos © separado por barra entre o crédito © que o Artista colocou e o titular da criação e distribuição.
+21.2.1. A atribuição poderá ser o nome completo ou nome de usuário de onde o Artista pegou.
+21.3. Serão aceitos normalmente e sem exigências as Obras com licença CC0 ou direitos autorais 100% do Artista.
+21.4. Só serão aceitas a distribuição de Obras com licença Creative Commons ou direitos autorais.
+
+<strong>CLÁUSULA VIGÉSIMA SEGUNDA - DAS DISTRIBUIÇÕES ADICIONAIS</strong>
+
+O Artista também opcionalmente poderá distribuir suas Obras em:
+
+I. YouTube Content ID (requer 100% de direitos autorais);
+II. Roblox (o Artista concorda com o <a href="https://en.help.roblox.com/hc/en-us/articles/23359485439124-Audio-Upload-License-Agreement">Acordo de Licença de Upload de Áudio da Roblox</a>.)
+III. Udio;
+IV. SoundCloud Monetization;
+V. Facebook Fingerprint;
+VI. Spotify for Kids (precisa ser do gênero de música infantil e passar pelos requisitos da Spotify AB);
+VII. YouTube Kids (precisa ser do gênero de música infantil e passar pelos requisitos do YouTube).
+
+<strong>CLÁUSULA VIGÉSIMA TERCEIRA - PUBLICIDADE NOS PERFIS DA TUCANO</strong>
+
+O Artista concorda que a Tucano poderá divulgar o Artista no perfil oficial da Tucano Música (@tucanomusica).
+
+<strong>CLÁUSULA VIGÉSIMA QUARTA - CURADORIA</strong>
+
+O Artista concorda que a Tucano poderá inserir o Artista em playlists oficiais da Tucano.
+
+<strong>CLÁUSULA VIGÉSIMA QUINTA - FORCE MAJEURE</strong>
+
+25.1. Caso o Artista se mude para outro domicílio de residência ou instituição escolar de ensino, poderá continuar distribuindo suas Obras e Vídeos pela Tucano, desde que não perca contato.
+25.2. Caso o Artista mude o número de WhatsApp sem aviso prévio, deverá avisar presencialmente seu novo número de WhatsApp, e poderá continuar utilizando os serviços da Tucano.
+25.3. Caso o agente de distribuição da Tucano fique em momentos de castigo e proibido ao uso de aparelhos eletrônicos essenciais, o Artista temporariamente não poderá utilizar os serviços da Tucano, por tempo indeterminado, até que acabe o período do castigo e o agente de distribuição recupere os aparelhos eletrônicos e possa continuar a distribuição.
+25.3.1. O site será desativado temporariamente neste caso.
+25.4. Caso o Artista perca totalmente qualquer contato com a Tucano, não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
+25.5. Caso o mesmo acontecimento do item 25.4 desta cláusula aconteça com o agente de distribuição da Tucano, o Artista não poderá mais utilizar os serviços da Tucano e a conta do Artista será excluída e este contrato será rescindido.
+25.6. Caso os mesmos acontecimentos dos itens 25.1 e 25.2 desta cláusula aconteçam com a Tucano, as instruções serão as mesmas e o Artista poderá continuar utilizando os serviços da Tucano.
+25.7. Caso aconteça guerras, golpes militares e quaisquer coisas sérias que envolvam destruição, destruição da nação, guerra com a nação ou com o mundo, o Artista poderá continuar utilizando os serviços da Tucano, desde que isso não afete aparelhos eletrônicos, rede de internet, saúde das partes ou quaisquer outras coisas que impossibilitem a prestação do serviço.
+
+<strong>CLÁUSULA VIGÉSIMA SEXTA - TIPO DE CONTRATO</strong>
+
+Este contrato se aplica como um contrato paritário, podendo as partes negociarem as cláusulas.
+
+<strong>CLÁUSULA VIGÉSIMA SÉTIMA - FORO</strong>
+
+Fica eleito o foro do PV do TikTok (@knitting.cat) ou do Discord (yanbananao._42487) para dirimir quaisquer controvérsias oriundas deste contrato.
+
+E por estarem assim, justos e contratados, as partes assinam este contrato em 1 via eletrônica, salvo se for solicitado 2 de igual teor, e preencherá os anexos.
+
+<strong>Assinatura da Tucano:</strong>
+
+<img src="./tucano.png" alt="Assinatura Tucano" style="max-width:180px;margin-top:8px">
+            </div>
+
+            <div class="mb-2">
+              <label>Assine abaixo com o dedo ou o mouse:</label>
+              <canvas id="sig-canvas" class="sig-canvas"></canvas>
+              <div class="flex gap-2 mt-2">
+                <button id="sig-clear" class="btn-secondary text-sm">Limpar</button>
+              </div>
+            </div>
+
+            <div class="space-y-3 mb-4">
+              <button id="sign" class="btn-primary w-full" disabled><i class="fas fa-signature"></i> Assinar Contrato</button>
+            </div>
+
+            <div class="border-t border-slate-700 pt-4 mt-4 space-y-3">
+              <button id="phys-link" class="btn-secondary w-full"><i class="fas fa-file-signature"></i> Assinar Físico</button>
+            </div>
+          </div>
+        </div>`;
+      $('#app').innerHTML = html;
+
+      $('#ct-back').addEventListener('click', ()=>{ state.page='dashboard'; render(); });
+
+      const canvas = $('#sig-canvas');
+      const ctx = canvas.getContext('2d');
+      const fit = ()=>{
+        const r = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = r.width * dpr;
+        canvas.height = r.height * dpr;
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#0f172a';
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(0,0,r.width,r.height);
+      };
+      setTimeout(fit, 0);
+      window.addEventListener('resize', fit);
+
+      let drawing=false; let hasStroke=false;
+      const pos = (e)=>{
+        const r = canvas.getBoundingClientRect();
+        const p = e.touches ? e.touches[0] : e;
+        return { x: p.clientX - r.left, y: p.clientY - r.top };
+      };
+      const start = (e)=>{ e.preventDefault(); drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); };
+      const move = (e)=>{ if(!drawing) return; e.preventDefault(); const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); if(!hasStroke){ hasStroke=true; $('#sign').disabled=false; } };
+      const end = ()=> drawing=false;
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      canvas.addEventListener('mouseup', end);
+      canvas.addEventListener('mouseleave', end);
+      canvas.addEventListener('touchstart', start, {passive:false});
+      canvas.addEventListener('touchmove', move, {passive:false});
+      canvas.addEventListener('touchend', end);
+
+      $('#sig-clear').addEventListener('click', ()=>{
+        fit(); hasStroke=false; $('#sign').disabled=true;
+      });
+
+      $('#sign').addEventListener('click', async ()=>{
+        if(!hasStroke) return;
+        state.user.fullName = fullName;
+        state.user.artistName = artistName;
+        state.user.contractType = 'tucano';
+        state.user.contractSigned = true;
+        state.user.contractPdfDownloaded = false;
+        state.user.hasRealContract = true;
+        state.user.answeredContract = true;
+        if(!state.user.artists) state.user.artists = [];
+        if(artistName && !state.user.artists.includes(artistName)) state.user.artists.push(artistName);
+        persistUser();
+
+        try{
+          const dataUrl = canvas.toDataURL('image/png');
+          const blob = await (await fetch(dataUrl)).blob();
+          const file = new File([blob], `assinatura_${Date.now()}.png`, { type:'image/png' });
+          await uploadFile(file, `${safePathUser(state.user.username)}/assinatura_${Date.now()}.png`);
+        }catch(e){ console.warn('Falha ao subir assinatura (não bloqueante):', e); }
+
+        render();
+      });
+
+      $('#phys-link').addEventListener('click', ()=>{
+        state.page='physical'; persistUser(); render();
+      });
+    }
     function viewContractSigned(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full text-center fade-in-scale"><div style="font-size:4rem">📜</div><h1 class="kab text-2xl mt-4 mb-2">Assinado!</h1><button id="pdf-done" class="btn-secondary w-full">Continuar</button></div></div>`; }
     function bindContractSigned(){ $('#pdf-done').addEventListener('click', ()=>{ state.user.contractPdfDownloaded=true; persistUser(); render(); }); }
     function viewPhysicalDate(){ return `<div class="min-h-screen flex items-center justify-center p-4"><div class="glass p-8"><h1 class="kab text-2xl mb-4">Data Física</h1><button id="bk" class="btn-primary w-full">Voltar</button></div></div>`; }
