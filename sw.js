@@ -13,7 +13,7 @@
 
 const VERSION = 'tucano_gostoso_v4';
 const SHELL_CACHE = 'tucano_gostoso_v4-shell';
-const STATIC_CACHE = 'tucano_gostoso_v4-static;
+const STATIC_CACHE = 'tucano_gostoso_v4-static';
 
 const SHELL_ASSETS = [
   './',
