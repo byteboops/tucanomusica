@@ -351,7 +351,8 @@
         }catch(e){ err.textContent='Erro: '+e.message; err.style.display='block'; }
         finally{ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Enviar'; }
       });
-          function viewVideo(){
+    }
+    function viewVideo(){
       return `
         <div class="min-h-screen p-4 py-8 flex items-center justify-center">
           <div class="glass glow p-12 max-w-lg w-full text-center fade-in-scale">
