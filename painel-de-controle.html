@@ -20,28 +20,28 @@
   <style>
     @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
     @font-face{font-family:'TikTok Sans';src:url('./tiktok.ttf') format('truetype');font-display:swap;}
-    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+    @font-face{font-family:'Londrina Solid';src:url('./fonte.ttf') format('truetype');font-display:swap;}
     :root{--bg-primary:#0b1f13;--bg-secondary:#123a24;--bg-tertiary:#1f5c38;--text-primary:#f0fdf4;--text-secondary:#bbf7d0;--text-muted:#86efac;--border-color:rgba(163,230,53,.18);--accent-blue:#a3e635;--accent-blue-dark:#65a30d;--accent-yellow:#fbbf24;--accent-green:#22c55e;--accent-red:#ef4444;--glass-bg:rgba(18,58,36,.72);--glass-border:rgba(163,230,53,.22);}
     html[data-theme="light"]{--bg-primary:#f0fdf4;--bg-secondary:#dcfce7;--bg-tertiary:#bbf7d0;--text-primary:#052e16;--text-secondary:#14532d;--text-muted:#166534;--border-color:rgba(20,83,45,.2);--glass-bg:rgba(255,255,255,.88);--glass-border:rgba(20,83,45,.22);}
-    *{font-family:'Ifood RC',sans-serif;}
+    *{font-family:'Londrina Solid',sans-serif;}
     body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
     h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
     .tts{font-family:'TikTok Sans',sans-serif;}
     .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
     .glow{box-shadow:0 0 40px rgba(163,230,53,.15),0 0 80px rgba(163,230,53,.05);}
-    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Londrina Solid',sans-serif;}
     .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
     .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
-    .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border-radius:12px;padding:.75rem 1.5rem;font-weight:500;transition:all .25s ease;border:1px solid var(--border-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border-radius:12px;padding:.75rem 1.5rem;font-weight:500;transition:all .25s ease;border:1px solid var(--border-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Londrina Solid',sans-serif;}
     .btn-secondary:hover{background:var(--bg-secondary);border-color:var(--accent-blue);}
-    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:600;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:600;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Londrina Solid',sans-serif;}
     .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(239,68,68,.4);}
     .progress-bar{width:100%;height:8px;background:var(--bg-tertiary);border-radius:999px;overflow:hidden;}
     .progress-fill{height:100%;background:linear-gradient(90deg,#65a30d,#a3e635);border-radius:999px;transition:width .3s ease;width:0%;}
     .grid-card{transition:transform .25s ease,box-shadow .25s ease;}
     .grid-card:hover{transform:scale(1.02);box-shadow:0 10px 40px rgba(0,0,0,.3);}
     .contract-fill{background:rgba(251,191,36,.15);color:#fbbf24;padding:1px 6px;border-radius:4px;font-weight:500;}
-    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
+    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Londrina Solid',sans-serif;}
     input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
     input::placeholder,textarea::placeholder{color:var(--text-muted);}
     label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
@@ -51,7 +51,7 @@
     .fade-in-scale{animation:fadeInScale .4s ease forwards;}
     .hamburger-menu{position:fixed;top:70px;right:16px;width:260px;background:var(--glass-bg);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:16px;padding:8px;z-index:100;display:none;box-shadow:0 20px 60px rgba(0,0,0,.5);}
     .hamburger-menu.open{display:block;animation:fadeInScale .2s ease;}
-    .menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:background .2s;color:var(--text-primary);font-weight:500;font-size:.9rem;border:none;background:transparent;width:100%;text-align:left;font-family:'Ifood RC',sans-serif;}
+    .menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:background .2s;color:var(--text-primary);font-weight:500;font-size:.9rem;border:none;background:transparent;width:100%;text-align:left;font-family:'Londrina Solid',sans-serif;}
     .menu-item:hover{background:rgba(163,230,53,.1);}
     .menu-item.danger{color:#ef4444;}
     .menu-item.danger:hover{background:rgba(239,68,68,.1);}
@@ -64,7 +64,7 @@
     .type-card:hover{border-color:var(--accent-blue);transform:translateY(-4px);}
     .kebab-menu{position:absolute;bottom:12px;right:12px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:10px;padding:4px;z-index:10;display:none;box-shadow:0 10px 30px rgba(0,0,0,.4);min-width:150px;}
     .kebab-menu.open{display:block;animation:fadeInScale .15s ease;}
-    .kebab-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;color:var(--text-primary);border:none;background:transparent;width:100%;text-align:left;font-family:'Ifood RC',sans-serif;}
+    .kebab-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;color:var(--text-primary);border:none;background:transparent;width:100%;text-align:left;font-family:'Londrina Solid',sans-serif;}
     .kebab-item:hover{background:var(--bg-secondary);}
     .kebab-item.danger{color:#ef4444;}
     .scrollbar-thin::-webkit-scrollbar{width:6px;}
@@ -115,7 +115,7 @@
     function isBlocked(){ const u = state.user; if(!u) return true; return !!(u.disabled || u.rescinded || u.deleted); }
     function generateNumericId(existing){ const used = new Set((existing||[]).map(r=>String(r.id))); let tries=0; while(tries<9000){ const n = 1000+Math.floor(Math.random()*9000); if(!used.has(String(n))) return n; tries++; } for(let n=1000;n<=9999;n++){ if(!used.has(String(n))) return n; } return Date.now()%9000+1000; }
 
-    const DELTA_FIELDS = ['releases','artists','videoReleases','answeredContract','contractType','contractSigned','contractPdfDownloaded','knittingAcknowledged','hasRealContract','disabled','rescinded','deleted','bandMembers','isBand'];
+    const DELTA_FIELDS = ['releases','artists','videoReleases','answeredContract','contractType','contractSigned','knittingAcknowledged','hasRealContract','disabled','rescinded','deleted','bandMembers','isBand'];
     function loadDelta(username){ try{ const raw = localStorage.getItem(STATE_PREFIX + normUser(username)); if(!raw) return {}; const obj = JSON.parse(raw); return (obj && typeof obj==='object') ? obj : {}; }catch(e){ return {}; } }
     function saveDelta(username, delta){ const clean = {}; for(const k of DELTA_FIELDS){ if(k in delta) clean[k] = delta[k]; } localStorage.setItem(STATE_PREFIX + normUser(username), JSON.stringify(clean)); }
     function clearDelta(username){ localStorage.removeItem(STATE_PREFIX + normUser(username)); }
@@ -151,7 +151,6 @@
       if(!state.user.answeredContract){ html=viewContractQuestion(); binder=bindContractQuestion; }
       else if(state.user.contractType==='knitting' && !state.user.knittingAcknowledged){ html=viewKnitting(); binder=bindKnitting; }
       else if(state.user.contractType==='none' && !state.user.contractSigned){ html=viewNoneOption(); binder=bindNoneOption; }
-      else if(state.user.contractType==='none' && state.user.contractSigned && !state.user.contractPdfDownloaded){ html=viewContractSigned(); binder=bindContractSigned; }
       else if(state.page==='physical'){ html=viewPhysicalDate(); binder=bindPhysicalDate; }
       else if(state.page==='settings'){ html=viewSettings(); binder=bindSettings; }
       else if(state.page==='catalogs'){ html=viewCatalogs(); binder=bindCatalogs; }
@@ -682,7 +681,7 @@
     }
 
     function viewContractQuestion(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full fade-in-scale"><h1 class="kab text-2xl mb-2">Contrato?</h1><div class="space-y-3"><button id="c-knit" class="btn-secondary w-full justify-start"><i class="fas fa-scroll"></i> Knitting Records™</button><button id="c-tuc" class="btn-secondary w-full justify-start"><i class="fas fa-bird"></i> Tucano Independente</button><button id="c-none" class="btn-secondary w-full justify-start"><i class="fas fa-ban"></i> Nenhum</button></div><button id="cq-out" class="btn-danger w-full mt-6">Sair</button></div></div>`; }
-    function bindContractQuestion(){ const doLogout = ()=>{ stopStatusPolling(); state.user = null; localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY); window.location.href='/login.html'; }; $('#cq-out').addEventListener('click', doLogout); const real = state.user.hasRealContract === true; const contractTypeAtual = state.user.contractType || 'none'; $('#c-knit').addEventListener('click', ()=>{ if(contractTypeAtual !== 'knitting' && !real) return liarAlert(); state.user.contractType='knitting'; state.user.answeredContract=true; state.user.knittingAcknowledged=false; state.user.hasRealContract=true; persistUser(); render(); }); $('#c-tuc').addEventListener('click', ()=>{ if(contractTypeAtual !== 'tucano' && !real) return liarAlert(); state.user.contractType='tucano'; state.user.answeredContract=true; state.user.contractSigned=true; state.user.contractPdfDownloaded=true; state.user.hasRealContract=true; persistUser(); render(); }); $('#c-none').addEventListener('click', ()=>{ state.user.contractType='none'; state.user.answeredContract=true; state.user.contractSigned=false; state.user.contractPdfDownloaded=false; state.user.hasRealContract=false; persistUser(); render(); }); }
+    function bindContractQuestion(){ const doLogout = ()=>{ stopStatusPolling(); state.user = null; localStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_LEGACY_KEY); window.location.href='/login.html'; }; $('#cq-out').addEventListener('click', doLogout); const real = state.user.hasRealContract === true; const contractTypeAtual = state.user.contractType || 'none'; $('#c-knit').addEventListener('click', ()=>{ if(contractTypeAtual !== 'knitting' && !real) return liarAlert(); state.user.contractType='knitting'; state.user.answeredContract=true; state.user.knittingAcknowledged=false; state.user.hasRealContract=true; persistUser(); render(); }); $('#c-tuc').addEventListener('click', ()=>{ if(contractTypeAtual !== 'tucano' && !real) return liarAlert(); state.user.contractType='tucano'; state.user.answeredContract=true; state.user.contractSigned=true; state.user.hasRealContract=true; persistUser(); render(); }); $('#c-none').addEventListener('click', ()=>{ state.user.contractType='none'; state.user.answeredContract=true; state.user.contractSigned=false; state.user.hasRealContract=false; persistUser(); render(); }); }
     function liarAlert(){ const ov = document.createElement('div'); ov.className='modal-overlay'; ov.innerHTML = `<div class="modal-content text-center"><div style="font-size:5rem">😡</div><h2 class="kab text-2xl text-red-500 mb-3">Mentiroso!</h2><p class="text-slate-400 mb-6">Escolha "Nenhum" e assine de verdade.</p><button id="liar-ok" class="btn-primary w-full">Entendi</button></div>`; document.body.appendChild(ov); $('#liar-ok').addEventListener('click', ()=>ov.remove()); }
     function viewKnitting(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full fade-in-scale"><h1 class="kab text-2xl mb-2 text-red-400">Knitting Records™</h1><p class="tts text-slate-300 mb-4">A Knitting retém 80% dos seus ganhos e todos os direitos.</p><p class="text-sm text-slate-500 mb-4">Aguarde <span id="cd">5</span>s.</p><button id="k-ok" class="btn-primary w-full" disabled>Entendi</button></div></div>`; }
     function bindKnitting(){ let t=5; const el=$('#cd'); const btn=$('#k-ok'); const iv = setInterval(()=>{ t--; if(el) el.textContent=t; if(t<=0){ clearInterval(iv); btn.disabled=false; } }, 1000); btn.addEventListener('click', ()=>{ clearInterval(iv); state.user.knittingAcknowledged=true; persistUser(); render(); }); }
@@ -756,7 +755,7 @@ IV. Capa em PNG ou JPG/JPEG, quadrado, únicos textos permitidos são nome do la
 
 <strong>CLÁUSULA SÉTIMA - DAS VIAS</strong>
 
-O Artista pode optar por assinar este contrato em 2 vias físicas de igual teor, 1 via eletrônica digital neste site, ou em 2 vias eletrônicas de igual teor em PDF para cada uma das partes se solicitado por WhatsApp, e-mail, Discord ou TikTok.
+O Artista pode optar por assinar este contrato em 2 vias físicas de igual teor, 1 via eletrônica digital neste site, ou em 2 vias eletrônicas de igual teor se solicitado por WhatsApp, e-mail, Discord ou TikTok.
 
 <strong>CLÁUSULA OITAVA - VIGÊNCIA, VIGOR E RENOVAÇÃO</strong>
 
@@ -782,9 +781,9 @@ II. Apologia a crime, drogas ou violência;
 III. Discurso de ódio;
 IV. Conteúdo sexual sem aviso explícito.
 
-<strong>CLÁUSULA DÉCIMA SEGUNDA - DOS ANEXOS NO PDF</strong>
+<strong>CLÁUSULA DÉCIMA SEGUNDA - CÓPIA DIGITAL DO CONTRATO</strong>
 
-A segunda via que o Artista fizer o download (PDF) não contém os anexos junto, e se o Artista desejar, deverá contatar diretamente a Tucano pelo e-mail <a href="mailto:ncolassuport@gmail.com" style="color:#a3e635">ncolassuport@gmail.com</a>.
+O Artista poderá solicitar para a Tucano diretamente via e-mail ou WhatsApp, uma cópia digital do contrato em PDF assinado.
 
 <strong>CLÁUSULA DÉCIMA TERCEIRA - GERENCIAMENTO DE ESTATÍSTICAS E DINHEIRO</strong>
 
@@ -953,7 +952,6 @@ E por estarem assim, justos e contratados, as partes assinam este contrato em 1 
         state.user.artistName = artistName;
         state.user.contractType = 'tucano';
         state.user.contractSigned = true;
-        state.user.contractPdfDownloaded = false;
         state.user.hasRealContract = true;
         state.user.answeredContract = true;
         if(!state.user.artists) state.user.artists = [];
@@ -974,8 +972,6 @@ E por estarem assim, justos e contratados, as partes assinam este contrato em 1 
         state.page='physical'; persistUser(); render();
       });
     }
-    function viewContractSigned(){ return `<div class="min-h-screen flex items-center justify-center p-4 jungle-texture"><div class="glass glow p-8 max-w-lg w-full text-center fade-in-scale"><div style="font-size:4rem">📜</div><h1 class="kab text-2xl mt-4 mb-2">Assinado!</h1><button id="pdf-done" class="btn-secondary w-full">Continuar</button></div></div>`; }
-    function bindContractSigned(){ $('#pdf-done').addEventListener('click', ()=>{ state.user.contractPdfDownloaded=true; persistUser(); render(); }); }
     function viewPhysicalDate(){ return `<div class="min-h-screen flex items-center justify-center p-4"><div class="glass p-8"><h1 class="kab text-2xl mb-4">Data Física</h1><button id="bk" class="btn-primary w-full">Voltar</button></div></div>`; }
     function bindPhysicalDate(){ $('#bk').addEventListener('click', ()=>{ state.page='dashboard'; render(); }); }
 
