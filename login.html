@@ -246,7 +246,7 @@
       const btn = document.getElementById('btn-email-check'); btn.disabled=true; btn.textContent='Verificando...';
       try{
         const acc = await findAccountByEmail(val);
-        if(!acc){ msg(m,'Não achei nenhuma conta com esse e-mail.','err'); return; }
+        if(!acc){ msg(m,'Não foi encontrada nenhuma conta com esse e-mail.','err'); return; }
         pendingEmailAccount = acc;
         show(stepEmailPass);
         document.getElementById('in-email-pass').focus();
@@ -285,7 +285,7 @@
       const btn = document.getElementById('btn-artist-check'); btn.disabled=true; btn.textContent='Verificando...';
       try{
         const acc = await findAccountByArtist(val);
-        if(!acc){ msg(m,'Não achei nenhum artista com esse nome.','err'); return; }
+        if(!acc){ msg(m,'Não foi encontrado nenhuma conta com esse nome artístico.','err'); return; }
         pendingArtistAccount = acc;
         show(stepArtistPass);
         document.getElementById('in-artist-pass').focus();
