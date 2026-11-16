@@ -1,79 +1,124 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1f13">
-  
-  <meta name="description" content="Tucano Música - Login">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Entrar na Tucano Música">
+  <title>Entrar — Tucano Música</title>
+
   <meta name="google-adsense-account" content="ca-pub-5813647886625192">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5813647886625192"
      crossorigin="anonymous"></script>
-  <title>Entrar na Tucano</title>
-<link rel="manifest" href="./manifest.webmanifest">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./tucano.png">
   <link rel="apple-touch-icon" href="./tucano.png">
 
   <style>
-    @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
-    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+    *{ box-sizing: border-box; margin:0; padding:0; font-family:'Barlow', sans-serif; }
+    html, body{ background:#000; color:#e5e5e5; min-height:100vh; }
+    body{ display:flex; align-items:center; justify-content:center; padding:16px; }
+    .box{ width:100%; max-width:360px; }
+    .logo{ display:block; width:72px; height:72px; margin:0 auto 24px; border-radius:6px; }
+    h1{ font-size:18px; font-weight:600; text-align:center; margin-bottom:20px; letter-spacing:.2px; }
 
-    :root{
-      --bg-primary:#0b1f13; --bg-secondary:#123a24; --bg-tertiary:#1f5c38;
-      --text-primary:#f0fdf4; --text-secondary:#bbf7d0; --text-muted:#86efac;
-      --border-color:rgba(163,230,53,.18);
-      --accent-blue:#a3e635; --accent-blue-dark:#65a30d; --accent-red:#ef4444;
-      --glass-bg:rgba(18,58,36,.72); --glass-border:rgba(163,230,53,.22);
+    label{ display:block; font-size:13px; color:#a3a3a3; margin-bottom:6px; }
+    input{
+      width:100%; padding:12px 14px; font-size:15px; color:#fff;
+      background:#0d0d0d; border:1px solid #262626; border-radius:2px;
+      outline:none; transition:border-color .15s;
     }
-    html[data-theme="light"]{
-      --bg-primary:#f0fdf4; --bg-secondary:#dcfce7; --bg-tertiary:#bbf7d0;
-      --text-primary:#052e16; --text-secondary:#14532d; --text-muted:#166534;
-      --border-color:rgba(20,83,45,.2);
-      --glass-bg:rgba(255,255,255,.88); --glass-border:rgba(20,83,45,.22);
-    }
-    *{font-family:'Ifood RC',sans-serif;}
-    body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
-    h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
-    .tts{font-family:'TikTok Sans',sans-serif;}
-    .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
-    .glow{box-shadow:0 0 40px rgba(163,230,53,.15),0 0 80px rgba(163,230,53,.05);}
-    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;width:100%;}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
-    .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
-    
-    input{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
-    input:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
-    input::placeholder{color:var(--text-muted);}
-    label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
+    input:focus{ border-color:#525252; }
+    input::placeholder{ color:#4a4a4a; }
+    .field{ margin-bottom:14px; }
 
-    .jungle-texture{background-image:radial-gradient(circle at 20% 30%,rgba(163,230,53,.08),transparent 45%),radial-gradient(circle at 80% 70%,rgba(34,197,94,.08),transparent 45%);}
-    .alert-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:16px;color:#fca5a5;}
-    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;}
-    @keyframes spin{to{transform:rotate(360deg);}}
-    @keyframes fadeInScale{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
-    .fade-in-scale{animation:fadeInScale .4s ease forwards;}
+    button{
+      width:100%; padding:12px 14px; font-size:15px; font-weight:600; cursor:pointer;
+      border:none; border-radius:2px; transition:opacity .15s;
+    }
+    .btn-main{ background:#fff; color:#000; }
+    .btn-main:hover{ opacity:.85; }
+    .btn-main:disabled{ opacity:.4; cursor:not-allowed; }
+    .btn-alt{
+      background:transparent; color:#e5e5e5; border:1px solid #262626; margin-top:10px;
+    }
+    .btn-alt:hover{ background:#0d0d0d; }
+
+    .link-forgot{
+      display:block; width:100%; text-align:center; font-size:13px; color:#737373;
+      background:none; border:none; cursor:pointer; padding:6px 0; margin-bottom:14px;
+    }
+    .link-forgot:hover{ color:#a3a3a3; text-decoration:underline; }
+
+    .msg{ font-size:13px; margin-top:10px; text-align:center; min-height:18px; }
+    .msg.err{ color:#f87171; }
+    .msg.ok{ color:#4ade80; }
+
+    .modal-bg{
+      position:fixed; inset:0; background:rgba(0,0,0,.8); display:none;
+      align-items:center; justify-content:center; padding:16px; z-index:10;
+    }
+    .modal-bg.open{ display:flex; }
+    .modal{ background:#0d0d0d; border:1px solid #262626; border-radius:2px; padding:24px; max-width:320px; width:100%; text-align:center; }
+    .modal p{ font-size:15px; margin-bottom:18px; }
   </style>
 </head>
 <body>
-  <div class="min-h-screen flex items-center justify-center p-4 jungle-texture">
-    <div class="glass glow p-8 max-w-md w-full fade-in-scale">
-      <div class="text-center mb-8">
-        <img src="./tucano.png" alt="Tucano" class="mx-auto mb-4" style="max-width:100px" onerror="this.style.display='none'">
-        <h1 class="kab text-2xl">Entrar na Tucano</h1>
-        <p class="tts text-slate-400 text-sm mt-1">Use seu usuário e senha</p>
+  <div class="box">
+    <img src="./tucano.png" alt="Tucano" class="logo" onerror="this.style.display='none'">
+    <h1>Entrar na Tucano</h1>
+
+    <!-- Etapa 1: e-mail/artista -->
+    <div id="step-user">
+      <div class="field">
+        <label for="in-user" id="lbl-user">E-mail ou artista</label>
+        <input id="in-user" type="text" placeholder="email@exemplo.com ou nome" autocomplete="username" autofocus>
       </div>
-      <div class="space-y-4">
-        <div><label for="login-user">Usuário</label><input id="login-user" type="text" placeholder="Seu nome de usuário" autocomplete="username"></div>
-        <div><label for="login-pass">Senha</label><input id="login-pass" type="password" placeholder="Sua senha" autocomplete="current-password"></div>
-        <div id="login-error" class="alert-box" style="display:none"></div>
-        <button id="login-btn" class="btn-primary"><i class="fas fa-right-to-bracket"></i> Fazer Login</button>
-        <div class="text-center pt-2">
-          <a href="/" class="text-sm" style="color:#a3e635">Voltar ao início</a>
-        </div>
+      <button id="btn-check" class="btn-main">Continuar</button>
+      <button id="btn-artist-toggle" class="btn-alt">Entrar com artista e senha</button>
+      <div id="msg-user" class="msg"></div>
+    </div>
+
+    <!-- Etapa 2: senha -->
+    <div id="step-pass" style="display:none">
+      <button id="btn-forgot" class="link-forgot">Esqueci minha senha</button>
+      <div class="field">
+        <label for="in-pass">Senha</label>
+        <input id="in-pass" type="password" placeholder="Sua senha" autocomplete="current-password">
       </div>
+      <button id="btn-login" class="btn-main">Fazer login</button>
+      <button id="btn-back" class="btn-alt">Voltar</button>
+      <div id="msg-pass" class="msg"></div>
+    </div>
+
+    <!-- Etapa 3: artista + senha (modo alternativo) -->
+    <div id="step-artist" style="display:none">
+      <button id="btn-forgot2" class="link-forgot">Esqueci minha senha</button>
+      <div class="field">
+        <label for="in-artist">Nome artístico</label>
+        <input id="in-artist" type="text" placeholder="Seu nome artístico">
+      </div>
+      <div class="field">
+        <label for="in-artist-pass">Senha</label>
+        <input id="in-artist-pass" type="password" placeholder="Sua senha" autocomplete="current-password">
+      </div>
+      <button id="btn-artist-login" class="btn-main">Fazer login</button>
+      <button id="btn-artist-back" class="btn-alt">Voltar</button>
+      <div id="msg-artist" class="msg"></div>
+    </div>
+  </div>
+
+  <!-- Modal esqueci senha -->
+  <div id="forgot-modal" class="modal-bg">
+    <div class="modal">
+      <p>Me chama no zap então.</p>
+      <button id="forgot-close" class="btn-main">Fechar</button>
     </div>
   </div>
 
@@ -83,8 +128,6 @@
     const BUCKET = 'releases';
     const SESSION_KEY = 'tucano_session_v2';
     const SESSION_LEGACY_KEY = 'sessao_tucano_contas_v1';
-    const CACHE_VERSION = 'tucano_gostoso_v4';
-    const STATE_PREFIX = CACHE_VERSION + '_state_';
 
     let _sb = null;
     function getSupabase(){
@@ -92,12 +135,10 @@
       if(!_sb) _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       return _sb;
     }
-
     function normUser(u){ return String(u||'').trim().toLowerCase(); }
     function safePathUser(u){
       return String(u||'anon').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/g,'_').slice(0,40)||'anon';
     }
-
     async function fetchTextFile(path){
       try{
         const sb = getSupabase();
@@ -108,59 +149,124 @@
         return await res.text();
       }catch(e){ return null; }
     }
-
     async function fetchJsonFile(path){
       const txt = await fetchTextFile(path);
       if(!txt) return null;
       try { return JSON.parse(txt); } catch(e) { return null; }
     }
-
-    async function loadAccount(username){
+    async function loadAccountByUser(username){
       const safe = safePathUser(username);
-      const json = await fetchJsonFile(`${safe}.json`);
-      if(!json) return null;
-      return json;
+      return await fetchJsonFile(`${safe}.json`);
     }
 
-    async function loginAccount(username, password){
-      const base = await loadAccount(username);
-      if(!base) return { ok:false, error:'Conta não encontrada. Se você ainda não tem conta, use o Contate-nos.' };
-      if(String(base.password) !== String(password)) return { ok:false, error:'Senha incorreta.' };
-      
-      // Salva a sessão no localStorage para o painel ler
-      const key = normUser(base.username || username);
+    // Tenta achar uma conta por e-mail ou nome artístico varrendo o bucket
+    // (fallback: verifica se o próprio input já é um username válido)
+    async function findAccountByEmailOrArtist(input){
+      const raw = String(input||'').trim();
+      if(!raw) return null;
+
+      // 1) Tenta como username direto
+      const direct = await loadAccountByUser(raw);
+      if(direct) return direct;
+
+      // 2) Varre o bucket procurando *.json cujo email ou artistName bata
+      const sb = getSupabase();
+      const { data, error } = await sb.storage.from(BUCKET).list('', { limit: 1000 });
+      if(error || !data) return null;
+
+      const wanted = raw.toLowerCase();
+      for(const item of data){
+        if(!item.name || !item.name.endsWith('.json')) continue;
+        const acc = await fetchJsonFile(item.name);
+        if(!acc) continue;
+        const email = String(acc.email||'').trim().toLowerCase();
+        const artist = String(acc.artistName||'').trim().toLowerCase();
+        const user = String(acc.username||'').trim().toLowerCase();
+        if(email === wanted || artist === wanted || user === wanted) return acc;
+      }
+      return null;
+    }
+
+    // ===== Etapas =====
+    const stepUser = document.getElementById('step-user');
+    const stepPass = document.getElementById('step-pass');
+    const stepArtist = document.getElementById('step-artist');
+
+    let pendingAccount = null;
+
+    function show(el){ stepUser.style.display='none'; stepPass.style.display='none'; stepArtist.style.display='none'; el.style.display='block'; }
+    function msg(el, text, type){ el.textContent = text||''; el.className = 'msg' + (type?' '+type:''); }
+
+    // Etapa 1
+    document.getElementById('btn-check').addEventListener('click', async ()=>{
+      const val = document.getElementById('in-user').value.trim();
+      const m = document.getElementById('msg-user');
+      msg(m,'','');
+      if(!val){ msg(m,'Digite seu e-mail ou nome artístico.','err'); return; }
+      const btn = document.getElementById('btn-check'); btn.disabled=true; btn.textContent='Verificando...';
+      try{
+        const acc = await findAccountByEmailOrArtist(val);
+        if(!acc){ msg(m,'Não achei nenhuma conta com esse e-mail/artista.','err'); return; }
+        pendingAccount = acc;
+        show(stepPass);
+        document.getElementById('in-pass').focus();
+      }catch(e){
+        msg(m,'Erro: '+e.message,'err');
+      }finally{
+        btn.disabled=false; btn.textContent='Continuar';
+      }
+    });
+    document.getElementById('in-user').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-check').click(); });
+
+    // Etapa 2 (login com username/email + senha)
+    document.getElementById('btn-login').addEventListener('click', async ()=>{
+      const pass = document.getElementById('in-pass').value;
+      const m = document.getElementById('msg-pass');
+      msg(m,'','');
+      if(!pendingAccount){ show(stepUser); return; }
+      if(!pass){ msg(m,'Digite a senha.','err'); return; }
+      if(String(pendingAccount.password) !== String(pass)){ msg(m,'Senha incorreta.','err'); return; }
+      const key = normUser(pendingAccount.username || '');
       localStorage.setItem(SESSION_KEY, key);
       localStorage.setItem(SESSION_LEGACY_KEY, key);
-      
-      return { ok:true, user: base };
-    }
+      window.location.href = '/painel-de-controle.html';
+    });
+    document.getElementById('in-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-login').click(); });
+    document.getElementById('btn-back').addEventListener('click', ()=>{ pendingAccount=null; show(stepUser); });
 
-    const attempt = async () => {
-      const user = document.getElementById('login-user').value.trim();
-      const pass = document.getElementById('login-pass').value;
-      const errEl = document.getElementById('login-error');
-      errEl.style.display='none';
-      if(!user || !pass){ errEl.textContent='Preencha usuário e senha.'; errEl.style.display='block'; return; }
-      
-      const btn = document.getElementById('login-btn'); const old = btn.innerHTML;
-      btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
-      
+    // Etapa 3 (artista + senha)
+    document.getElementById('btn-artist-toggle').addEventListener('click', ()=>{ show(stepArtist); document.getElementById('in-artist').focus(); });
+    document.getElementById('btn-artist-back').addEventListener('click', ()=>{ show(stepUser); });
+    document.getElementById('btn-artist-login').addEventListener('click', async ()=>{
+      const artist = document.getElementById('in-artist').value.trim();
+      const pass = document.getElementById('in-artist-pass').value;
+      const m = document.getElementById('msg-artist');
+      msg(m,'','');
+      if(!artist || !pass){ msg(m,'Preencha artista e senha.','err'); return; }
+      const btn = document.getElementById('btn-artist-login'); btn.disabled=true; btn.textContent='Entrando...';
       try{
-        const res = await loginAccount(user, pass);
-        if(!res.ok){ errEl.textContent = res.error; errEl.style.display='block'; return; }
-        
-        // Login OK: redireciona para o painel
+        const acc = await findAccountByEmailOrArtist(artist);
+        if(!acc){ msg(m,'Artista não encontrado.','err'); return; }
+        if(String(acc.password) !== String(pass)){ msg(m,'Senha incorreta.','err'); return; }
+        const key = normUser(acc.username || '');
+        localStorage.setItem(SESSION_KEY, key);
+        localStorage.setItem(SESSION_LEGACY_KEY, key);
         window.location.href = '/painel-de-controle.html';
       }catch(e){
-        errEl.textContent = 'Erro ao entrar: '+e.message; errEl.style.display='block';
-      }finally{ 
-        btn.disabled=false; btn.innerHTML=old; 
+        msg(m,'Erro: '+e.message,'err');
+      }finally{
+        btn.disabled=false; btn.textContent='Fazer login';
       }
-    };
+    });
 
-    document.getElementById('login-btn').addEventListener('click', attempt);
-    document.getElementById('login-user').addEventListener('keydown', e=>{ if(e.key==='Enter') attempt(); });
-    document.getElementById('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') attempt(); });
+    // Esqueci minha senha
+    const forgotModal = document.getElementById('forgot-modal');
+    ['btn-forgot','btn-forgot2'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.addEventListener('click', ()=> forgotModal.classList.add('open'));
+    });
+    document.getElementById('forgot-close').addEventListener('click', ()=> forgotModal.classList.remove('open'));
+    forgotModal.addEventListener('click', (e)=>{ if(e.target === forgotModal) forgotModal.classList.remove('open'); });
   </script>
 </body>
 </html>
