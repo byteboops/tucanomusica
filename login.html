@@ -74,43 +74,50 @@
     <img src="./tucano.png" alt="Tucano" class="logo" onerror="this.style.display='none'">
     <h1>Entrar na Tucano</h1>
 
-    <!-- Etapa 1: e-mail/artista -->
-    <div id="step-user">
+    <!-- ===== ETAPA 1: só e-mail ===== -->
+    <div id="step-email">
       <div class="field">
-        <label for="in-user" id="lbl-user">E-mail ou artista</label>
-        <input id="in-user" type="text" placeholder="email@exemplo.com ou nome" autocomplete="username" autofocus>
+        <label for="in-email">E-mail</label>
+        <input id="in-email" type="email" placeholder="email@exemplo.com" autocomplete="email" autofocus>
       </div>
-      <button id="btn-check" class="btn-main">Continuar</button>
-      <button id="btn-artist-toggle" class="btn-alt">Entrar com artista e senha</button>
-      <div id="msg-user" class="msg"></div>
+      <button id="btn-email-check" class="btn-main">Continuar</button>
+      <button id="btn-go-artist" class="btn-alt">Entrar com artista e senha</button>
+      <div id="msg-email" class="msg"></div>
     </div>
 
-    <!-- Etapa 2: senha -->
-    <div id="step-pass" style="display:none">
-      <button id="btn-forgot" class="link-forgot">Esqueci minha senha</button>
+    <!-- ===== ETAPA 2: senha (vinda do e-mail) ===== -->
+    <div id="step-email-pass" style="display:none">
+      <button id="btn-forgot-email" class="link-forgot">Esqueci minha senha</button>
       <div class="field">
-        <label for="in-pass">Senha</label>
-        <input id="in-pass" type="password" placeholder="Sua senha" autocomplete="current-password">
+        <label for="in-email-pass">Senha</label>
+        <input id="in-email-pass" type="password" placeholder="Sua senha" autocomplete="current-password">
       </div>
-      <button id="btn-login" class="btn-main">Fazer login</button>
-      <button id="btn-back" class="btn-alt">Voltar</button>
-      <div id="msg-pass" class="msg"></div>
+      <button id="btn-email-login" class="btn-main">Fazer login</button>
+      <button id="btn-email-back" class="btn-alt">Voltar</button>
+      <div id="msg-email-pass" class="msg"></div>
     </div>
 
-    <!-- Etapa 3: artista + senha (modo alternativo) -->
+    <!-- ===== ETAPA 3: só artista ===== -->
     <div id="step-artist" style="display:none">
-      <button id="btn-forgot2" class="link-forgot">Esqueci minha senha</button>
       <div class="field">
         <label for="in-artist">Nome artístico</label>
-        <input id="in-artist" type="text" placeholder="Seu nome artístico">
+        <input id="in-artist" type="text" placeholder="Seu nome artístico" autocomplete="username">
       </div>
+      <button id="btn-artist-check" class="btn-main">Continuar</button>
+      <button id="btn-go-email" class="btn-alt">Entrar com e-mail e senha</button>
+      <div id="msg-artist" class="msg"></div>
+    </div>
+
+    <!-- ===== ETAPA 4: senha (vinda do artista) ===== -->
+    <div id="step-artist-pass" style="display:none">
+      <button id="btn-forgot-artist" class="link-forgot">Esqueci minha senha</button>
       <div class="field">
         <label for="in-artist-pass">Senha</label>
         <input id="in-artist-pass" type="password" placeholder="Sua senha" autocomplete="current-password">
       </div>
       <button id="btn-artist-login" class="btn-main">Fazer login</button>
       <button id="btn-artist-back" class="btn-alt">Voltar</button>
-      <div id="msg-artist" class="msg"></div>
+      <div id="msg-artist-pass" class="msg"></div>
     </div>
   </div>
 
@@ -159,109 +166,156 @@
       return await fetchJsonFile(`${safe}.json`);
     }
 
-    // Tenta achar uma conta por e-mail ou nome artístico varrendo o bucket
-    // (fallback: verifica se o próprio input já é um username válido)
-    async function findAccountByEmailOrArtist(input){
-      const raw = String(input||'').trim();
-      if(!raw) return null;
-
-      // 1) Tenta como username direto
-      const direct = await loadAccountByUser(raw);
-      if(direct) return direct;
-
-      // 2) Varre o bucket procurando *.json cujo email ou artistName bata
+    // Lista todos os *.json do bucket raiz (com paginação manual)
+    async function listAllRootJson(){
       const sb = getSupabase();
-      const { data, error } = await sb.storage.from(BUCKET).list('', { limit: 1000 });
-      if(error || !data) return null;
+      const out = [];
+      let offset = 0;
+      const limit = 100;
+      while(true){
+        const { data, error } = await sb.storage.from(BUCKET).list('', { limit, offset, sortBy:{ column:'name', order:'asc' } });
+        if(error || !data || !data.length) break;
+        for(const f of data){ if(f.name && f.name.endsWith('.json')) out.push(f.name); }
+        if(data.length < limit) break;
+        offset += limit;
+      }
+      return out;
+    }
 
-      const wanted = raw.toLowerCase();
-      for(const item of data){
-        if(!item.name || !item.name.endsWith('.json')) continue;
-        const acc = await fetchJsonFile(item.name);
+    // Busca por e-mail (exato, case-insensitive)
+    async function findAccountByEmail(email){
+      const wanted = String(email||'').trim().toLowerCase();
+      if(!wanted || !/^\S+@\S+\.\S+$/.test(wanted)) return null;
+      const files = await listAllRootJson();
+      for(const name of files){
+        const acc = await fetchJsonFile(name);
         if(!acc) continue;
-        const email = String(acc.email||'').trim().toLowerCase();
-        const artist = String(acc.artistName||'').trim().toLowerCase();
-        const user = String(acc.username||'').trim().toLowerCase();
-        if(email === wanted || artist === wanted || user === wanted) return acc;
+        const e = String(acc.email||'').trim().toLowerCase();
+        if(e === wanted) return acc;
       }
       return null;
     }
 
-    // ===== Etapas =====
-    const stepUser = document.getElementById('step-user');
-    const stepPass = document.getElementById('step-pass');
+    // Busca por nome artístico (exato, case-insensitive, com e sem acento)
+    function normStr(s){ return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+    async function findAccountByArtist(artist){
+      const wanted = normStr(artist);
+      if(!wanted) return null;
+      const files = await listAllRootJson();
+      for(const name of files){
+        const acc = await fetchJsonFile(name);
+        if(!acc) continue;
+        const a = normStr(acc.artistName);
+        if(a === wanted) return acc;
+      }
+      return null;
+    }
+
+    function doLogin(account){
+      const key = normUser(account.username || '');
+      localStorage.setItem(SESSION_KEY, key);
+      localStorage.setItem(SESSION_LEGACY_KEY, key);
+      window.location.href = '/painel-de-controle.html';
+    }
+
+    // ===== Elementos =====
+    const stepEmail = document.getElementById('step-email');
+    const stepEmailPass = document.getElementById('step-email-pass');
     const stepArtist = document.getElementById('step-artist');
+    const stepArtistPass = document.getElementById('step-artist-pass');
 
-    let pendingAccount = null;
-
-    function show(el){ stepUser.style.display='none'; stepPass.style.display='none'; stepArtist.style.display='none'; el.style.display='block'; }
+    function show(el){
+      stepEmail.style.display='none';
+      stepEmailPass.style.display='none';
+      stepArtist.style.display='none';
+      stepArtistPass.style.display='none';
+      el.style.display='block';
+    }
     function msg(el, text, type){ el.textContent = text||''; el.className = 'msg' + (type?' '+type:''); }
 
-    // Etapa 1
-    document.getElementById('btn-check').addEventListener('click', async ()=>{
-      const val = document.getElementById('in-user').value.trim();
-      const m = document.getElementById('msg-user');
+    let pendingEmailAccount = null;
+    let pendingArtistAccount = null;
+
+    // ===== Etapa 1: e-mail =====
+    document.getElementById('btn-email-check').addEventListener('click', async ()=>{
+      const val = document.getElementById('in-email').value.trim();
+      const m = document.getElementById('msg-email');
       msg(m,'','');
-      if(!val){ msg(m,'Digite seu e-mail ou nome artístico.','err'); return; }
-      const btn = document.getElementById('btn-check'); btn.disabled=true; btn.textContent='Verificando...';
+      if(!val){ msg(m,'Digite seu e-mail.','err'); return; }
+      if(!/^\S+@\S+\.\S+$/.test(val)){ msg(m,'E-mail inválido.','err'); return; }
+      const btn = document.getElementById('btn-email-check'); btn.disabled=true; btn.textContent='Verificando...';
       try{
-        const acc = await findAccountByEmailOrArtist(val);
-        if(!acc){ msg(m,'Não foi encontrado nenhuma conta com esse e-mail/artista.','err'); return; }
-        pendingAccount = acc;
-        show(stepPass);
-        document.getElementById('in-pass').focus();
+        const acc = await findAccountByEmail(val);
+        if(!acc){ msg(m,'Não achei nenhuma conta com esse e-mail.','err'); return; }
+        pendingEmailAccount = acc;
+        show(stepEmailPass);
+        document.getElementById('in-email-pass').focus();
       }catch(e){
         msg(m,'Erro: '+e.message,'err');
       }finally{
         btn.disabled=false; btn.textContent='Continuar';
       }
     });
-    document.getElementById('in-user').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-check').click(); });
+    document.getElementById('in-email').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-email-check').click(); });
 
-    // Etapa 2 (login com username/email + senha)
-    document.getElementById('btn-login').addEventListener('click', async ()=>{
-      const pass = document.getElementById('in-pass').value;
-      const m = document.getElementById('msg-pass');
+    // ===== Etapa 2: senha (email) =====
+    document.getElementById('btn-email-login').addEventListener('click', ()=>{
+      const pass = document.getElementById('in-email-pass').value;
+      const m = document.getElementById('msg-email-pass');
       msg(m,'','');
-      if(!pendingAccount){ show(stepUser); return; }
+      if(!pendingEmailAccount){ show(stepEmail); return; }
       if(!pass){ msg(m,'Digite a senha.','err'); return; }
-      if(String(pendingAccount.password) !== String(pass)){ msg(m,'Senha incorreta.','err'); return; }
-      const key = normUser(pendingAccount.username || '');
-      localStorage.setItem(SESSION_KEY, key);
-      localStorage.setItem(SESSION_LEGACY_KEY, key);
-      window.location.href = '/painel-de-controle.html';
+      if(String(pendingEmailAccount.password) !== String(pass)){ msg(m,'Senha incorreta.','err'); return; }
+      doLogin(pendingEmailAccount);
     });
-    document.getElementById('in-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-login').click(); });
-    document.getElementById('btn-back').addEventListener('click', ()=>{ pendingAccount=null; show(stepUser); });
+    document.getElementById('in-email-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-email-login').click(); });
+    document.getElementById('btn-email-back').addEventListener('click', ()=>{ pendingEmailAccount=null; document.getElementById('in-email-pass').value=''; show(stepEmail); });
 
-    // Etapa 3 (artista + senha)
-    document.getElementById('btn-artist-toggle').addEventListener('click', ()=>{ show(stepArtist); document.getElementById('in-artist').focus(); });
-    document.getElementById('btn-artist-back').addEventListener('click', ()=>{ show(stepUser); });
-    document.getElementById('btn-artist-login').addEventListener('click', async ()=>{
-      const artist = document.getElementById('in-artist').value.trim();
-      const pass = document.getElementById('in-artist-pass').value;
+    // ===== Etapa 3: artista =====
+    document.getElementById('btn-go-artist').addEventListener('click', ()=>{
+      pendingArtistAccount = null;
+      show(stepArtist);
+      document.getElementById('in-artist').focus();
+    });
+    document.getElementById('btn-artist-check').addEventListener('click', async ()=>{
+      const val = document.getElementById('in-artist').value.trim();
       const m = document.getElementById('msg-artist');
       msg(m,'','');
-      if(!artist || !pass){ msg(m,'Preencha artista e senha.','err'); return; }
-      const btn = document.getElementById('btn-artist-login'); btn.disabled=true; btn.textContent='Entrando...';
+      if(!val){ msg(m,'Digite seu nome artístico.','err'); return; }
+      const btn = document.getElementById('btn-artist-check'); btn.disabled=true; btn.textContent='Verificando...';
       try{
-        const acc = await findAccountByEmailOrArtist(artist);
-        if(!acc){ msg(m,'Artista não encontrado.','err'); return; }
-        if(String(acc.password) !== String(pass)){ msg(m,'Senha incorreta.','err'); return; }
-        const key = normUser(acc.username || '');
-        localStorage.setItem(SESSION_KEY, key);
-        localStorage.setItem(SESSION_LEGACY_KEY, key);
-        window.location.href = '/painel-de-controle.html';
+        const acc = await findAccountByArtist(val);
+        if(!acc){ msg(m,'Não achei nenhum artista com esse nome.','err'); return; }
+        pendingArtistAccount = acc;
+        show(stepArtistPass);
+        document.getElementById('in-artist-pass').focus();
       }catch(e){
         msg(m,'Erro: '+e.message,'err');
       }finally{
-        btn.disabled=false; btn.textContent='Fazer login';
+        btn.disabled=false; btn.textContent='Continuar';
       }
     });
+    document.getElementById('in-artist').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-artist-check').click(); });
 
-    // Esqueci minha senha
+    // ===== Etapa 4: senha (artista) =====
+    document.getElementById('btn-artist-login').addEventListener('click', ()=>{
+      const pass = document.getElementById('in-artist-pass').value;
+      const m = document.getElementById('msg-artist-pass');
+      msg(m,'','');
+      if(!pendingArtistAccount){ show(stepArtist); return; }
+      if(!pass){ msg(m,'Digite a senha.','err'); return; }
+      if(String(pendingArtistAccount.password) !== String(pass)){ msg(m,'Senha incorreta.','err'); return; }
+      doLogin(pendingArtistAccount);
+    });
+    document.getElementById('in-artist-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btn-artist-login').click(); });
+    document.getElementById('btn-artist-back').addEventListener('click', ()=>{ pendingArtistAccount=null; document.getElementById('in-artist-pass').value=''; show(stepArtist); });
+
+    // ===== Voltar pro e-mail (a partir da etapa 3) =====
+    document.getElementById('btn-go-email').addEventListener('click', ()=>{ show(stepEmail); document.getElementById('in-email').focus(); });
+
+    // ===== Esqueci minha senha (os dois fluxos) =====
     const forgotModal = document.getElementById('forgot-modal');
-    ['btn-forgot','btn-forgot2'].forEach(id=>{
+    ['btn-forgot-email','btn-forgot-artist'].forEach(id=>{
       const el = document.getElementById(id);
       if(el) el.addEventListener('click', ()=> forgotModal.classList.add('open'));
     });
