@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0b1f13">
   <meta name="description" content="Tucano Música - Plataforma de distribuição musical digital">
-  
+
   <title>Tucano Música</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +21,7 @@
   <style>
     @font-face{font-family:'Kablammo';src:url('./kablammo.ttf') format('truetype');font-display:swap;}
     @font-face{font-family:'TikTok Sans';src:url('./tiktok.ttf') format('truetype');font-display:swap;}
-    @font-face{font-family:'Ifood RC';src:url('./tucanomusicaletra.woff2') format('woff2');font-display:swap;}
+    @font-face{font-family:'Londrina Solid';src:url('./fonte.ttf') format('truetype');font-display:swap;}
 
     :root{
       --bg-primary:#0b1f13; --bg-secondary:#123a24; --bg-tertiary:#1f5c38;
@@ -37,12 +37,12 @@
       --border-color:rgba(20,83,45,.2);
       --glass-bg:rgba(255,255,255,.88); --glass-border:rgba(20,83,45,.22);
     }
-    *{font-family:'Ifood RC',sans-serif;}
+    *{font-family:'Londrina Solid',sans-serif;}
     body{background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden;}
     h1,h2,h3,.kab{font-family:'Kablammo',cursive;}
     .tts{font-family:'TikTok Sans',sans-serif;}
     .glass{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:20px;}
-    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Ifood RC',sans-serif;}
+    .btn-primary{background:linear-gradient(135deg,#65a30d,#a3e635);color:#052e16!important;border-radius:12px;padding:.75rem 1.5rem;font-weight:700;transition:all .25s ease;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Londrina Solid',sans-serif;}
     .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(163,230,53,.4);}
     .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
     
@@ -51,13 +51,13 @@
       text-decoration: none;
       font-weight: 500;
       transition: color 0.2s;
-      font-family: 'Ifood RC', sans-serif;
+      font-family: 'Londrina Solid', sans-serif;
     }
     .header-link:hover {
       color: var(--accent-blue);
     }
 
-    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Ifood RC',sans-serif;}
+    input,select,textarea{background:var(--bg-secondary)!important;border:1px solid var(--bg-tertiary)!important;border-radius:12px!important;padding:.75rem!important;color:var(--text-primary)!important;width:100%;transition:border-color .2s,box-shadow .2s;font-family:'Londrina Solid',sans-serif;}
     input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent-blue)!important;box-shadow:0 0 0 3px rgba(163,230,53,.15);}
     input::placeholder,textarea::placeholder{color:var(--text-muted);}
     label{color:var(--text-secondary);font-size:.875rem;font-weight:500;display:block;margin-bottom:.375rem;}
@@ -83,7 +83,7 @@
     .review-name{color:#f0fdf4;}
 
     .faq-item{border-bottom:1px solid var(--border-color);}
-    .faq-q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;cursor:pointer;font-weight:600;width:100%;background:transparent;border:none;color:var(--text-primary);text-align:left;font-family:'Ifood RC',sans-serif;font-size:1rem;}
+    .faq-q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;cursor:pointer;font-weight:600;width:100%;background:transparent;border:none;color:var(--text-primary);text-align:left;font-family:'Londrina Solid',sans-serif;font-size:1rem;}
     .faq-q .fa-chevron-down{transition:transform .25s;}
     .faq-item.open .fa-chevron-down{transform:rotate(180deg);}
     .faq-a{display:none;padding:0 0 16px;color:var(--text-secondary);}
@@ -179,18 +179,17 @@
           <div class="artist-video"><video src="./bosta.mp4" autoplay muted loop playsinline></video></div>
           <div class="artist-info"><h3 class="kab text-2xl">Ricardo</h3><p class="tts">Um moleque de 11 anos simples. Ele havia uma ideia legal de funk, cujo o A&R da Knitting Records™ ADOROU a ideia. O Ricardo então, decidiu assinar o contrato com a Knitting Records™ e lançar esta música. Agora ele é famoso.</p></div>
         </div>
-      </div>
-    </div>
-    <div class="artist-row">
+        <!-- Cratera Çaí -->
+        <div class="artist-row">
           <div class="artist-video"><video src="./acai-com-leite-ninho.mp4" autoplay muted loop playsinline></video></div>
           <div class="artist-info"><h3 class="kab text-2xl">Cratera Çaí</h3><p class="tts">Um canal inspirado em um canal infantil chamado Mundo Torajo, um mundo de frutas. Cratera Çaí é um trio com 3 integrantes: Çaí (um açaí), Itoshi (uma maçã) e Max (um morango). Após a Knitting Records™ descobrir os 2 canais e descobrir que o Mundo Torajo faz músicas, a Knitting Records™ gostou de saber se queriam fazer músicas também. Eles responderam que sim e agora são artistas da Knitting Records™. Por enquanto não há músicas criadas, mas está sendo planejado a criação e distribuição do primeiro EP, com expectativa de sucesso, pois o canal do Cratera Çaí já tem uma boa fama, e com as músicas, irá bombar ainda mais.</p></div>
         </div>
       </div>
     </div>
     <div class="mt-12 text-center">
-  <p class="tts text-lg mb-4" style="color:var(--text-secondary)">Quer ver todos os artistas?</p>
-  <a href="./artistas.html" class="btn-primary">Ver todos os artistas</a>
-</div>
+      <p class="tts text-lg mb-4" style="color:var(--text-secondary)">Quer ver todos os artistas?</p>
+      <a href="./artistas.html" class="btn-primary">Ver todos os artistas</a>
+    </div>
   </section>
 
   <!-- Seção Lançamentos -->
@@ -205,9 +204,9 @@
       </div>
     </div>
     <div class="mt-12 text-center">
-  <p class="tts text-lg mb-4" style="color:var(--text-secondary)">Quer ver o catálogo completo? Entre em:</p>
-  <a href="./releases.html" class="btn-primary">Ver catálogo completo</a>
-</div>
+      <p class="tts text-lg mb-4" style="color:var(--text-secondary)">Quer ver o catálogo completo? Entre em:</p>
+      <a href="./releases.html" class="btn-primary">Ver catálogo completo</a>
+    </div>
   </section>
 
   <section class="py-16 jungle-texture">
