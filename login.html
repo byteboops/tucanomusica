@@ -206,7 +206,7 @@
       const btn = document.getElementById('btn-check'); btn.disabled=true; btn.textContent='Verificando...';
       try{
         const acc = await findAccountByEmailOrArtist(val);
-        if(!acc){ msg(m,'Não achei nenhuma conta com esse e-mail/artista.','err'); return; }
+        if(!acc){ msg(m,'Não foi encontrado nenhuma conta com esse e-mail/artista.','err'); return; }
         pendingAccount = acc;
         show(stepPass);
         document.getElementById('in-pass').focus();
