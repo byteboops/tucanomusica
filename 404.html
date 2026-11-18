@@ -157,13 +157,6 @@
         <p><a href="mailto:ncolassuport@gmail.com"><i class="fas fa-envelope"></i> ncolassuport@gmail.com</a></p>
         <p><a href="https://open.spotify.com/user/31prcfuajw4lieuejvul45sjmizi" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" style="color:#1DB954"></i> Perfil no Spotify</a></p>
       </div>
-      <div>
-        <label class="text-white">Assinar newsletter</label>
-        <div class="flex gap-2">
-          <input id="nl-mail" type="email" placeholder="Seu e-mail">
-          <button id="nl-send" class="btn-primary whitespace-nowrap">Assinar</button>
-          <p>Ao assinar um newsletter, você concorda com a nossa <a href="./privacidade.html">política de privacidade</a>.</p>
-        </div>
         <div id="nl-msg" class="text-sm mt-2 text-slate-400"></div>
       </div>
     </div>
@@ -171,19 +164,5 @@
       <p>2026 - Tucano Música. Créditos de desenvolvimento ao DeepSeek e créditos de geração de imagem ao ChatGPT e à Meta AI.</p>
     </div>
   </footer>
-
-  <script>
-    // Feedback simples da newsletter (sem backend)
-    document.getElementById('nl-send').addEventListener('click', function () {
-      const mail = document.getElementById('nl-mail').value.trim();
-      const msg = document.getElementById('nl-msg');
-      if (!mail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
-        msg.textContent = 'Digite um e-mail válido.';
-        return;
-      }
-      msg.textContent = 'Valeu, tucano! Em breve você receberá novidades. 🐦';
-      document.getElementById('nl-mail').value = '';
-    });
-  </script>
 </body>
 </html>
