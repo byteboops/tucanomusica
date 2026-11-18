@@ -1,145 +1,234 @@
 // ============================================================
 // Tucano Música - Service Worker
 // ============================================================
-// Estratégias:
-//  - Shell (HTML/CSS/JS/ícones): network-first com fallback de cache
-//    → atualiza quando online, funciona offline se cair.
-//  - Assets estáticos (imagens, áudios de efeito): cache-first
-//    → carregam rápido e não dependem da rede pra tocar.
-//  - Supabase Storage (status.txt, metadados.txt, etc.):
-//    NUNCA cacheia → sempre vai à rede, senão status fica "preso"
-//    e o artista acha que não foi aprovado.
-//  - Supabase Auth/API: nunca cacheia.
 
-const VERSION = 'tucano_gostoso_v4';
-const SHELL_CACHE = 'tucano_gostoso_v4-shell';
-const STATIC_CACHE = 'tucano_gostoso_v4-static';
+const VERSION = 'tucano_gostoso_v5';
+const SHELL_CACHE = `${VERSION}-shell`;
+const STATIC_CACHE = `${VERSION}-static`;
+
+// ---------- SHELL ----------
 
 const SHELL_ASSETS = [
   './',
   './index.html',
+  './artistas.html',
+  './faq.html',
+  './login.html',
+  './painel-de-controle.html',
+  './privacidade.html',
+  './releases.html',
   './manifest.webmanifest',
-  './tucano.png'
+  './tucano.png',
+  './favicon_tucano.svg',
+  './tucano.svg'
 ];
 
+// ---------- ASSETS ESTÁTICOS ----------
+
 const STATIC_ASSETS = [
-  './botao.mp3',
-  './alerta.wav',
-  './sucesso.mp3',
-  './sucessao.mp3',
+  // Imagens
+  './Captura_de_tela_2026-11-16_190536-removebg-preview.png',
+  './celular.jpg',
   './computador.jpg',
-  './celular.jpg'
+  './dinheiro.png',
+  './praia.jpg',
+  './sample.png',
+  './spotify.png',
+  './testi.png',
+  './tucano-lindo-e-gostoso.png',
+  './tucano_celuleiro.png',
+  './tucano_computadorico.png',
+
+  // SVGs
+  './preto_tucano.svg',
+  './pretocon.svg',
+
+  // Áudios
+  './alerta.wav',
+  './botao.mp3',
+  './sucessao.mp3',
+  './sucesso.mp3',
+
+  // Vídeos
+  './acai-com-leite-ninho.mp4',
+  './bosta.mp4',
+  './sistema_tucanico.mp4',
+
+  // Fontes
+  './fonte.ttf',
+  './kablammo.ttf',
+  './tiktok.ttf'
 ];
 
 // ---------- INSTALL ----------
+
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const shell = await caches.open(SHELL_CACHE);
-    // addAll falha inteiro se um faltar; fazemos um por um pra não bloquear
+
     await Promise.all(SHELL_ASSETS.map(async (url) => {
-      try { await shell.add(new Request(url, { cache: 'reload' })); }
-      catch (e) { console.warn('[SW] shell falhou:', url, e); }
+      try {
+        await shell.add(new Request(url, { cache: 'reload' }));
+      } catch (e) {
+        console.warn('[SW] Shell falhou:', url, e);
+      }
     }));
+
     const stat = await caches.open(STATIC_CACHE);
+
     await Promise.all(STATIC_ASSETS.map(async (url) => {
-      try { await stat.add(new Request(url, { cache: 'reload' })); }
-      catch (e) { console.warn('[SW] static falhou:', url, e); }
+      try {
+        await stat.add(new Request(url, { cache: 'reload' }));
+      } catch (e) {
+        console.warn('[SW] Static falhou:', url, e);
+      }
     }));
-    self.skipWaiting();
+
+    await self.skipWaiting();
   })());
 });
 
 // ---------- ACTIVATE ----------
+
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys
-      .filter((k) => k !== SHELL_CACHE && k !== STATIC_CACHE)
-      .map((k) => caches.delete(k))
+
+    await Promise.all(
+      keys
+        .filter((key) => key !== SHELL_CACHE && key !== STATIC_CACHE)
+        .map((key) => caches.delete(key))
     );
+
     await self.clients.claim();
   })());
 });
 
 // ---------- FETCH ----------
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
 
-  // 1) Supabase Storage / API / Auth: NUNCA cachear.
-  //    status.txt, metadados.txt, mensagem.txt, candidatura.txt precisam
-  //    ser sempre fresquinhos; senão o artista vê status antigo.
-  if (url.hostname.endsWith('supabase.co') || url.hostname.endsWith('supabase.in')) {
-    return; // deixa o navegador fazer o fetch normal
+  // 1. Supabase: nunca armazenar em cache.
+  if (
+    url.hostname.endsWith('supabase.co') ||
+    url.hostname.endsWith('supabase.in')
+  ) {
+    return;
   }
 
-  // 2) Áudios de efeito, imagens de fundo e ícones: cache-first.
-  const isStatic = /\.(mp3|wav|ogg|m4a|jpg|jpeg|png|gif|webp|svg|ico)$/i.test(url.pathname);
+  // 2. Arquivos estáticos: cache-first.
+  const isStatic =
+    /\.(mp3|wav|ogg|m4a|mp4|jpg|jpeg|png|gif|webp|svg|ico|ttf|otf|woff|woff2)$/i
+      .test(url.pathname);
+
   if (isStatic) {
     event.respondWith((async () => {
       const cached = await caches.match(req);
+
       if (cached) return cached;
+
       try {
         const res = await fetch(req);
+
         if (res && res.ok) {
           const cache = await caches.open(STATIC_CACHE);
           cache.put(req, res.clone()).catch(() => {});
         }
+
         return res;
       } catch (e) {
-        // se offline e sem cache, devolve 404 "vazio" pra não travar o áudio
-        return new Response('', { status: 404, statusText: 'offline' });
+        return new Response('', {
+          status: 404,
+          statusText: 'offline'
+        });
       }
     })());
+
     return;
   }
 
-  // 3) Navegação (HTML) e demais: network-first, fallback para cache.
-  //    Assim você recebe atualização do site quando online e ainda
-  //    consegue abrir quando offline.
-  const isNavigation = req.mode === 'navigate' ||
+  // 3. Navegação: network-first com cache individual.
+  const isNavigation =
+    req.mode === 'navigate' ||
     (req.headers.get('accept') || '').includes('text/html');
 
   if (isNavigation) {
     event.respondWith((async () => {
       try {
         const res = await fetch(req);
+
         if (res && res.ok) {
           const cache = await caches.open(SHELL_CACHE);
-          cache.put('./index.html', res.clone()).catch(() => {});
+          cache.put(req, res.clone()).catch(() => {});
         }
+
         return res;
       } catch (e) {
-        const cached = await caches.match('./index.html') || await caches.match('./');
+        const cached = await caches.match(req);
+
         if (cached) return cached;
+
+        const fallback =
+          await caches.match('./index.html') ||
+          await caches.match('./');
+
+        if (fallback) return fallback;
+
         return new Response(
-          '<h1>Offline</h1><p>Abra o Tucano Música quando estiver conectado para carregar o app.</p>',
-          { headers: { 'Content-Type': 'text/html; charset=utf-8' }, status: 503 }
+          '<h1>Offline</h1><p>Conecte-se à internet para carregar o Tucano Música.</p>',
+          {
+            status: 503,
+            headers: {
+              'Content-Type': 'text/html; charset=utf-8'
+            }
+          }
         );
       }
     })());
+
     return;
   }
 
-  // 4) Resto (fetch normal): tenta rede, se falhar tenta cache.
+  // 4. Demais requisições: network-first com fallback.
   event.respondWith((async () => {
-    try { return await fetch(req); }
-    catch (e) { return (await caches.match(req)) || new Response('', { status: 504 }); }
+    try {
+      return await fetch(req);
+    } catch (e) {
+      return (
+        await caches.match(req) ||
+        new Response('', { status: 504 })
+      );
+    }
   })());
 });
 
 // ---------- MENSAGENS ----------
-// Permite ao app pedir "limpar cache e atualizar" se quiser.
+
 self.addEventListener('message', (event) => {
   const data = event.data || {};
-  if (data.type === 'SKIP_WAITING') self.skipWaiting();
+
+  if (data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+
   if (data.type === 'CLEAR_CACHE') {
     event.waitUntil((async () => {
       const keys = await caches.keys();
-      await Promise.all(keys.map((k) => caches.delete(k)));
-      if (event.source) event.source.postMessage({ type: 'CACHE_CLEARED' });
+
+      await Promise.all(
+        keys.map((key) => caches.delete(key))
+      );
+
+      if (event.source) {
+        event.source.postMessage({
+          type: 'CACHE_CLEARED'
+        });
+      }
     })());
   }
 });
